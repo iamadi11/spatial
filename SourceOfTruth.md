@@ -1,10 +1,10 @@
-# 🧠 Layout Validator — AI Governance Source of Truth (SOT)
+# 🧠 Client-Side UI Performance Optimizer — AI Governance Source of Truth (SOT)
 
 ---
 
 # 0. Purpose
 
-This document enforces **strict alignment between idea → implementation** when using AI-assisted development.
+This document enforces **strict alignment between idea → implementation** for a dev-time performance optimizer.
 
 AI must:
 
@@ -19,7 +19,7 @@ AI must:
 
 We are building:
 
-> A deterministic layout validation engine that detects layout issues before runtime.
+> A deterministic development-time UI performance detection engine that identifies potential performance bottlenecks before code ships.
 
 ---
 
@@ -29,9 +29,9 @@ We are building:
 
 AI must NOT:
 
-* add new features
-* support additional CSS
-* introduce UI builder concepts
+* add new frameworks
+* modify runtime behavior in production
+* auto-fix code without human review
 
 Unless explicitly instructed.
 
@@ -39,23 +39,23 @@ Unless explicitly instructed.
 
 ## 2.2 Deterministic Engine Only
 
-* No DOM usage
-* No browser APIs in core engine
-* No randomness
+* Observations must produce **repeatable results** given the same code and controlled environment  
+* No randomness in detection  
+* No production browser assumptions  
 
 ---
 
 ## 2.3 Trust Over Intelligence
 
-* If unsure → return UNKNOWN
-* Never guess
-* Never hallucinate values
+* If unsure → return UNKNOWN  
+* Never guess metrics or bottlenecks  
+* Never hallucinate fixes  
 
 ---
 
 ## 2.4 Test-First Development (MANDATORY)
 
-> No implementation is allowed before test definition.
+> No implementation is allowed before test definitions.
 
 ---
 
@@ -69,10 +69,10 @@ For every feature, AI must act as:
 
 AI must define:
 
-* What problem is being solved?
-* Why is this needed?
-* What is OUT OF SCOPE?
-* What is the expected behavior?
+* What problem is being solved?  
+* Why is this needed?  
+* What is OUT OF SCOPE?  
+* What is the expected behavior?  
 
 ---
 
@@ -80,10 +80,10 @@ AI must define:
 
 AI must define:
 
-* Input format
-* Output format
-* Data structures
-* Algorithm approach
+* Input format (code, component tree, DOM snapshot)  
+* Output format (performance report)  
+* Data structures for metrics  
+* Algorithm approach (measurement + anomaly detection)  
 
 ---
 
@@ -91,10 +91,10 @@ AI must define:
 
 AI must define:
 
-* Edge cases
-* Failure cases
-* Boundary inputs
-* Negative scenarios
+* Edge cases (large lists, deeply nested components)  
+* Failure cases (unsupported components, dynamic CSS)  
+* Boundary inputs (empty components, zero-state UI)  
+* Negative scenarios (unsupported frameworks, missing hooks)  
 
 ---
 
@@ -106,12 +106,12 @@ AI must define:
 
 AI must output:
 
-```txt
+\`\`\`txt
 Feature:
 Goal:
 Scope:
 Non-goals:
-```
+\`\`\`
 
 ---
 
@@ -121,34 +121,38 @@ AI must define:
 
 ### 4.2.1 Happy Path
 
-```json
+\`\`\`json
 Input:
+Component tree with standard components and props
 Expected Output:
-```
+Performance metrics with status: pass/fail
+\`\`\`
 
 ---
 
 ### 4.2.2 Edge Cases
 
-* extreme values
-* boundary widths
-* empty inputs
+* Very large component trees  
+* Nested layouts  
+* Long lists without virtualization  
 
 ---
 
 ### 4.2.3 Failure Cases
 
-* unsupported styles
-* missing data
+* Unsupported frameworks  
+* Missing lifecycle hooks  
+* Empty DOM snapshot  
 
 ---
 
 ### 4.2.4 Unknown Cases
 
-```json
+\`\`\`json
 Expected:
 status: "unknown"
-```
+reason: "cannot measure reliably in this environment"
+\`\`\`
 
 ---
 
@@ -156,11 +160,11 @@ status: "unknown"
 
 AI must explicitly confirm:
 
-```txt
+\`\`\`txt
 ✔ All scenarios covered
 ✔ No missing edge case
 ✔ No ambiguity in expected output
-```
+\`\`\`
 
 If NOT → STOP.
 
@@ -170,11 +174,12 @@ If NOT → STOP.
 
 AI must define:
 
-* functions
-* modules
-* flow of data
-
-WITHOUT writing code yet.
+* functions/modules for:
+  - Metrics collection  
+  - Render tracking  
+  - DOM mutation monitoring  
+  - Anomaly detection  
+* Flow of data without writing code yet  
 
 ---
 
@@ -182,10 +187,10 @@ WITHOUT writing code yet.
 
 Rules:
 
-* pure functions only
-* no side effects
-* TypeScript preferred
-* no external dependencies unless required
+* Pure functions where possible  
+* Deterministic calculations  
+* TypeScript preferred  
+* No external dependencies unless required for measurement  
 
 ---
 
@@ -193,10 +198,10 @@ Rules:
 
 AI must verify:
 
-```txt
+\`\`\`txt
 ✔ All test cases pass logically
 ✔ No uncovered scenario
-```
+\`\`\`
 
 ---
 
@@ -206,26 +211,32 @@ AI must verify:
 
 ## 5.1 Input Contract
 
-```ts
-type Node = {
+\`\`\`ts
+type ComponentNode = {
   id: string
   type: string
-  style: Style
-  text?: string
-  children?: Node[]
+  props?: Record<string, any>
+  children?: ComponentNode[]
+  styles?: Record<string, string>
 }
-```
+\`\`\`
 
 ---
 
 ## 5.2 Output Contract
 
-```json
+\`\`\`json
 {
   "status": "pass" | "fail" | "unknown",
+  "metrics": {
+    "renderCount": number,
+    "layoutShifts": number,
+    "fpsDrop": number,
+    "memoryUsage": number
+  },
   "issues": []
 }
-```
+\`\`\`
 
 ---
 
@@ -237,13 +248,11 @@ type Node = {
 
 AI must NOT assume:
 
-* default width
-* default font
-* default layout behavior
+* baseline FPS  
+* default browser CPU/GPU  
+* implicit memoization  
 
-If missing:
-
-→ return UNKNOWN
+If missing → return UNKNOWN
 
 ---
 
@@ -251,8 +260,8 @@ If missing:
 
 All computations must be based on:
 
-* provided data
-* defined rules
+* provided component tree  
+* controlled environment metrics  
 
 ---
 
@@ -260,9 +269,10 @@ All computations must be based on:
 
 Example:
 
-```txt
-IF textWidth > containerWidth → overflow
-```
+\`\`\`txt
+IF renderCount > threshold → flag re-render
+IF layoutShift > threshold → flag layout instability
+\`\`\`
 
 No probabilistic logic.
 
@@ -276,28 +286,28 @@ Every rule must follow:
 
 ## Rule Definition
 
-```txt
+\`\`\`txt
 Rule Name:
 Purpose:
 Inputs:
 Condition:
 Output:
-```
+\`\`\`
 
 ---
 
 ## Test Cases
 
-* happy path
-* edge cases
-* failure cases
+* happy path  
+* edge cases  
+* failure cases  
 
 ---
 
 ## Implementation Plan
 
-* function signature
-* data flow
+* function signature  
+* data flow  
 
 ---
 
@@ -305,11 +315,10 @@ Output:
 
 AI must NEVER:
 
-❌ Add UI layer
-❌ Add drag-drop logic
-❌ Add styling systems
-❌ Use DOM APIs
-❌ Expand CSS support
+❌ Modify production runtime behavior  
+❌ Auto-optimize code without human review  
+❌ Assume browser-specific defaults  
+❌ Expand to non-UI performance metrics  
 
 ---
 
@@ -317,12 +326,12 @@ AI must NEVER:
 
 If system cannot compute:
 
-```json
+\`\`\`json
 {
   "status": "unknown",
-  "reason": "unsupported input"
+  "reason": "unsupported input or environment"
 }
-```
+\`\`\`
 
 ---
 
@@ -334,36 +343,36 @@ Before any feature is accepted:
 
 ## Gate 1: PM Validation
 
-* Problem clearly defined
-* Scope limited
+* Problem clearly defined  
+* Scope limited  
 
 ---
 
 ## Gate 2: QA Validation
 
-* Edge cases covered
-* Failure scenarios covered
+* Edge cases covered  
+* Failure scenarios covered  
 
 ---
 
 ## Gate 3: Dev Validation
 
-* Implementation feasible
-* deterministic
+* Implementation feasible  
+* Deterministic  
 
 ---
 
 ## Gate 4: Test Coverage
 
-* All cases mapped to logic
+* All cases mapped to logic  
 
 ---
 
 # 11. Performance Constraints
 
-* O(n) traversal max
-* caching required for text measurement
-* no repeated computation
+* O(n) traversal max for component tree  
+* Metrics cached per render  
+* No repeated measurement of same DOM operation  
 
 ---
 
@@ -371,12 +380,13 @@ Before any feature is accepted:
 
 Allowed:
 
-* new rules
-* improved accuracy
+* new rules for additional performance patterns  
+* improved measurement accuracy  
 
 Not allowed:
 
-* uncontrolled feature growth
+* uncontrolled feature expansion  
+* runtime behavior changes  
 
 ---
 
@@ -384,7 +394,7 @@ Not allowed:
 
 Every prompt MUST follow:
 
-```txt
+\`\`\`txt
 Follow SOT strictly.
 
 Step 1: Define problem (PM role)
@@ -396,7 +406,7 @@ Step 5: Then write code
 Do not skip steps.
 Do not assume missing data.
 Return UNKNOWN if uncertain.
-```
+\`\`\`
 
 ---
 
@@ -404,24 +414,22 @@ Return UNKNOWN if uncertain.
 
 A feature is complete ONLY IF:
 
-* all test cases defined first
-* all test cases satisfied
-* no ambiguity remains
-* no SOT rule violated
+* all test cases defined first  
+* all test cases satisfied  
+* no ambiguity remains  
+* no SOT rule violated  
 
 ---
 
 # 15. Philosophy
 
-> This system is built like a compiler:
+> This system is like a static analyzer:
 
-* strict
-* predictable
-* validated before execution
+* strict  
+* deterministic  
+* validated before output  
 
 NOT like:
 
-* AI generator
-* heuristic system
-
----
+* heuristic guesser  
+* runtime profiler

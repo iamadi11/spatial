@@ -1,0 +1,55 @@
+# Source of Truth Compliance Rule
+
+## IMMUTABLE: SourceOfTruth.md must NEVER be modified
+
+All development must comply with every constraint in SourceOfTruth.md. Violations cause immediate STOP.
+
+## Technical Constraints (from SOT)
+
+### Deterministic Engine Only (SOT 2.2)
+- NO `document.*`, `window.*`, `navigator.*` or any DOM/browser API
+- NO `Math.random()` or any source of randomness
+- NO side effects — all functions must be pure
+- Every function given the same input MUST produce the same output
+
+### Trust Over Intelligence (SOT 2.3)
+- If the system cannot compute a result → return `{ status: "unknown", reason: "..." }`
+- NEVER guess or hallucinate values
+- NEVER assume baseline FPS, default browser CPU/GPU, or implicit memoization
+
+### Code Standards (SOT Step 5)
+- TypeScript with strict mode — no `any` types
+- Pure functions only — no mutations, no global state
+- No external dependencies unless absolutely required
+- All computations based on provided data and defined rules only
+
+### Performance Constraints (SOT 11)
+- O(n) traversal maximum — no nested loops over the same data
+- Metrics cached per render — no repeated measurement of same DOM operation
+- No repeated computation — memoize where needed
+
+## Anti-Deviation Rules (SOT 8) — NEVER Do These
+
+- NO modifying production runtime behavior
+- NO auto-optimizing code without human review
+- NO assuming browser-specific defaults (baseline FPS, CPU, GPU)
+- NO expanding to non-UI performance metrics
+- NO DOM/browser API usage in engine core (`document`, `window`, `navigator`)
+
+## Expansion Policy (SOT 12)
+
+What IS allowed:
+- New rules for additional performance patterns
+- Improved measurement accuracy of existing rules
+
+What is NOT allowed:
+- Uncontrolled feature growth
+- Features not explicitly requested
+- Runtime behavior changes
+
+## On Violation
+
+If you detect you are about to violate any SOT constraint:
+1. STOP immediately
+2. State which SOT section would be violated
+3. Ask for guidance before proceeding
