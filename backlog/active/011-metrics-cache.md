@@ -76,7 +76,18 @@ cache.get(key)  // → { status: 'fail', ... }
 | U1 | cached result preserves unknown status | store `{ status: 'unknown', reason: '...' }`, retrieve | retrieved result has `status: 'unknown'` |
 
 ## Implementation Plan
-(to be filled by /implement)
+
+### Functions
+| Function | Signature | Purpose |
+|----------|-----------|---------|
+| buildCacheKey | `(nodeId: string, metrics: PerformanceMetrics) => string` | Deterministic key: `nodeId:r:l:f:m` |
+| createMetricsCache | `() => MetricsCache` | Factory: returns has/get/set/clear over a Map |
+
+### Module Structure
+- `src/metrics-cache.ts` — exports `buildCacheKey`, `createMetricsCache`, `MetricsCache` type
+
+### Data Flow
+`(nodeId, metrics)` → `buildCacheKey` → string key → Map lookup/store → `PerformanceResult`
 
 ## Validation Report
 (to be filled by /validate)
