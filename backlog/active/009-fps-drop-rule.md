@@ -3,7 +3,7 @@ id: "009"
 title: "FPS drop detection rule (flag frame rate degradation)"
 type: "rule"
 priority: 3
-status: "ready"
+status: "active"
 created: "2026-04-02"
 sot-section: "Section 5.2, 7"
 depends-on: ["005", "006"]
