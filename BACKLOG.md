@@ -12,5 +12,5 @@
 | 008 | Layout shift detection rule (flag layout instability)          | rule    | 3        | done    | Section 6.3, 7       | 005, 006            |
 | 009 | FPS drop detection rule (flag frame rate degradation)          | rule    | 3        | done    | Section 5.2, 7       | 005, 006            |
 | 010 | Memory usage detection rule (flag memory anomalies)            | rule    | 3        | done    | Section 5.2, 7       | 005, 006            |
-| 011 | Metrics caching layer (cache per render, avoid recomputation)  | perf    | 4        | ready  | Section 11           | 005                 |
+| 011 | Metrics caching layer (cache per render, avoid recomputation) | perf | 4 | active | Section 11 | 005 |
 | 012 | Issue formatting (structured issue output with rule name)      | feature | 5        | ready  | Section 5.2, 9       | 007, 008, 009, 010  |
