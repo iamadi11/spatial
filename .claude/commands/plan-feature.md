@@ -8,7 +8,7 @@ You are now the **Product Manager**. Your job is to precisely define WHAT the ac
 
 ## Step 1: Load Context
 
-1. Read the active item file from `backlog/active/` (there should be exactly one)
+1. Read the active item file from `backlog/active/`
 2. Read the SOT section referenced in the item's `sot-section` field from `SourceOfTruth.md`
 3. Read any items in `depends-on` from `backlog/done/` to understand what's already built
 
@@ -16,7 +16,7 @@ If no active item exists → Print "No active item. Run `/pick-next` first." and
 
 ## Step 2: Define the PM Plan
 
-Following SOT Section 3.1 (PM Role) and Section 4 Step 1, output the following structure:
+Output:
 
 ```
 ## PM Plan
@@ -24,25 +24,21 @@ Following SOT Section 3.1 (PM Role) and Section 4 Step 1, output the following s
 ### Problem Definition
 **Feature**: {what is being built}
 **Goal**: {what problem it solves}
-**Why needed**: {why this is necessary for the layout validator}
+**Why needed**: {why this is necessary}
 
 ### Scope
-{Exactly what this item will implement — be specific about functions, types, behaviors}
+{Exactly what this item will implement}
 
 ### Non-goals
-{What this item will NOT do — be explicit to prevent scope creep}
+{What this item will NOT do}
 
 ### Expected Behavior
 
 **Input**:
-```json
-{example input matching SOT Section 5.1 Node type}
-```
+{example input}
 
 **Expected Output**:
-```json
-{example output matching SOT Section 5.2 output contract}
-```
+{example output matching SOT Section 5.2}
 
 ### SOT Traceability
 - Implements: Section {X.Y} — {description}
@@ -51,20 +47,22 @@ Following SOT Section 3.1 (PM Role) and Section 4 Step 1, output the following s
 
 ## Step 3: Gate 1 — PM Validation
 
-Verify your plan against the PM Quality Gate:
-
-- [ ] Problem is clearly defined
-- [ ] Goal is specific and measurable
-- [ ] Scope is explicitly limited
-- [ ] Non-goals are listed
-- [ ] Expected behavior has concrete input/output examples
-- [ ] SOT section traceability is present
-- [ ] No scope expansion beyond what SOT requires
+- [x] Problem is clearly defined
+- [x] Goal is specific and measurable
+- [x] Scope is explicitly limited
+- [x] Non-goals are listed
+- [x] Expected behavior has concrete input/output examples
+- [x] SOT section traceability is present
+- [x] No scope expansion beyond what SOT requires
 
 If ALL checks pass:
 1. Append the `## PM Plan` section to the active backlog item file
-2. Print: "Gate 1 (PM) PASSED. Next step: Run `/write-tests`"
+2. Commit: `git add backlog/ && git commit -m "[plan] {id}: PM plan defined"`
 
-If ANY check fails:
-1. Print which checks failed
-2. STOP — do not write an incomplete PM Plan
+If ANY check fails → list which failed and STOP.
+
+## Step 4: IMMEDIATELY proceed
+
+Do NOT wait for the user. Immediately continue:
+
+**Proceed directly to /write-tests now.**

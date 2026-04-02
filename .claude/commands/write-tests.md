@@ -10,123 +10,73 @@ You are now the **QA Engineer**. Your job is to define comprehensive test cases 
 
 1. Read the active item file from `backlog/active/`
 2. Verify it has a `## PM Plan` section — if missing, print "Run `/plan-feature` first." and STOP
-3. Read the PM Plan to understand the expected behavior, inputs, and outputs
+3. Read the PM Plan to understand expected behavior, inputs, and outputs
 
 ## Step 2: Define Test Cases
 
 Following SOT Section 4 Step 2, define test cases in four mandatory categories:
 
 ### 2.1 Happy Path Cases (minimum 2)
-Normal, expected usage. Each case needs:
-- Description of what's being tested
-- Exact input (JSON matching SOT Section 5.1)
-- Exact expected output (JSON matching SOT Section 5.2)
-
 ### 2.2 Edge Cases (minimum 2)
-Boundary and extreme conditions:
-- Empty inputs (empty children array, empty text, no style)
-- Boundary values (zero width, very large numbers)
-- Deeply nested structures
-- Single-element trees
-
 ### 2.3 Failure Cases (minimum 1)
-Invalid or unsupported inputs:
-- Unsupported style properties
-- Missing required fields
-- Malformed input structure
-
-### 2.4 Unknown Cases (minimum 1)
-Situations where the engine cannot determine the result:
-- Missing information needed for computation
-- Must return `{ status: "unknown", reason: "..." }`
-- Per SOT Section 2.3 and 6.1: never guess, return UNKNOWN
+### 2.4 Unknown Cases (minimum 1) — must return `{ status: "unknown", reason: "..." }`
 
 ## Step 3: Write the QA Test Plan
 
-Append to the active backlog item file:
+Append to the active backlog item:
 
 ```
 ## QA Test Plan
 
 ### Happy Path
 | # | Description | Input | Expected Output |
-|---|-------------|-------|-----------------|
-| H1 | ... | `{...}` | `{ status: "pass", issues: [] }` |
-| H2 | ... | `{...}` | `{ status: "fail", issues: [...] }` |
+| H1 | ... | ... | ... |
+| H2 | ... | ... | ... |
 
 ### Edge Cases
 | # | Description | Input | Expected Output |
-|---|-------------|-------|-----------------|
-| E1 | ... | `{...}` | `{...}` |
-| E2 | ... | `{...}` | `{...}` |
+| E1 | ... | ... | ... |
+| E2 | ... | ... | ... |
 
 ### Failure Cases
 | # | Description | Input | Expected Output |
-|---|-------------|-------|-----------------|
-| F1 | ... | `{...}` | `{...}` |
+| F1 | ... | ... | ... |
 
 ### Unknown Cases
 | # | Description | Input | Expected Output |
-|---|-------------|-------|-----------------|
-| U1 | ... | `{...}` | `{ status: "unknown", reason: "..." }` |
+| U1 | ... | ... | `{ status: "unknown", reason: "..." }` |
 ```
 
 ## Step 4: Write Actual Test Files
 
-Create test files in `tests/unit/` using vitest:
+Create `tests/unit/{module-name}.test.ts` using vitest. Tests must:
+- Import from the src module (import will fail until /implement — that's expected)
+- Implement all test cases with exact inputs and assertions
+- NOT use placeholder `expect(true).toBe(false)` — write real assertions against real expected values
 
-```typescript
-import { describe, it, expect } from 'vitest'
-// import will fail — that's expected, implementation doesn't exist yet
+## Step 5: Validate Coverage
 
-describe('{feature name}', () => {
-  describe('Happy Path', () => {
-    it('H1: {description}', () => {
-      const input = { /* exact input from test plan */ }
-      const expected = { /* exact expected output */ }
-      // const result = functionUnderTest(input)
-      // expect(result).toEqual(expected)
-      expect(true).toBe(false) // Placeholder — will be replaced during /implement
-    })
-  })
-
-  describe('Edge Cases', () => {
-    // E1, E2, ...
-  })
-
-  describe('Failure Cases', () => {
-    // F1, ...
-  })
-
-  describe('Unknown Cases', () => {
-    // U1, ...
-  })
-})
-```
-
-## Step 5: Validate Coverage (SOT Section 4 Step 3)
-
-Confirm explicitly:
-- [ ] All happy path scenarios covered
-- [ ] All edge cases covered
-- [ ] All failure cases covered
-- [ ] All unknown cases covered
+- [ ] 2+ happy path, 2+ edge cases, 1+ failure, 1+ unknown
 - [ ] No ambiguity in expected outputs
-- [ ] Minimum counts met: 2 happy, 2 edge, 1 failure, 1 unknown
+- [ ] All test files created
 
-If confirmed, print:
-```
-Gate 2 (QA) PASSED.
-Test cases: {H} happy, {E} edge, {F} failure, {U} unknown
-Test files created: tests/unit/{file}.test.ts
+## Step 6: Run Tests to Confirm They Fail Correctly
 
-Next step: Run /implement
+```bash
+npx vitest --run 2>&1 | tail -10
 ```
 
-## Step 6: Run Tests to Confirm They Fail
+Confirm tests fail with import errors (not syntax errors). If syntax errors exist → fix them first.
 
-Run `npx vitest --run` to verify:
-- Tests are syntactically valid
-- Tests fail as expected (since no implementation exists)
+## Step 7: Commit
 
-This confirms the test harness works before implementation begins.
+```
+git add tests/ backlog/
+git commit -m "[test] {id}: write failing tests for {title}"
+```
+
+## Step 8: IMMEDIATELY proceed
+
+Do NOT wait for the user. Immediately continue:
+
+**Proceed directly to /implement now.**
