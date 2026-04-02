@@ -72,7 +72,29 @@ depends-on: ["002"]
 | U1 | visitor that produces unknown result when pattern not found | 5-node tree, pattern never matches | `{ status: "unknown", reason: "..." }` shape is valid |
 
 ## Implementation Plan
-(to be filled by /implement)
+
+### Functions
+| Function | Signature | Purpose |
+|----------|-----------|---------|
+| walkTree | `(node: ComponentNode, visitor: (node: ComponentNode) => void) => void` | DFS traversal, calls visitor once per node |
+| collectNodes | `(node: ComponentNode) => ComponentNode[]` | Returns flat DFS-ordered array of all nodes |
+
+### Module Structure
+- `src/traversal.ts` — exports `walkTree`, `collectNodes`
+
+### Data Flow
+`ComponentNode` (tree) → `walkTree` → visitor called per node
+`ComponentNode` (tree) → `collectNodes` → `ComponentNode[]` (flat array)
 
 ## Validation Report
-(to be filled by /validate)
+
+Date: 2026-04-02
+
+| Gate | Status | Notes |
+|------|--------|-------|
+| PM Validation | PASS | Problem defined, scope limited, SOT traced |
+| QA Validation | PASS | 2 happy, 2 edge, 1 failure, 1 unknown |
+| Dev Validation | PASS | No DOM, no randomness, no `any`, pure functions, O(n) |
+| Test Coverage | PASS | 18/18 tests pass, 0 skipped |
+
+Overall: PASS
