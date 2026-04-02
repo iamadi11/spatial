@@ -1,0 +1,16 @@
+{
+  "name": "ui-performance-optimizer",
+  "version": "0.0.0",
+  "description": "Deterministic development-time UI performance detection engine",
+  "type": "module",
+  "scripts": {
+    "test": "vitest --run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0",
+    "@types/node": "^20.0.0"
+  }
+}
