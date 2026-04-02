@@ -3,7 +3,7 @@ id: "011"
 title: "Metrics caching layer (cache per render, avoid recomputation)"
 type: "perf"
 priority: 4
-status: "active"
+status: "done"
 created: "2026-04-02"
 sot-section: "Section 11"
 depends-on: ["005"]
