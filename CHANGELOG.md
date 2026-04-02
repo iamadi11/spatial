@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.3] - 2026-04-02
+
+### Added
+- [003] Component tree traversal: `walkTree` and `collectNodes` — O(n) depth-first traversal of ComponentNode trees
+
 ## [0.0.2] - 2026-04-02
 
 ### Added
