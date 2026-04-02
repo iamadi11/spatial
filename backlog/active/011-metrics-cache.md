@@ -51,7 +51,29 @@ cache.get(key)  // → { status: 'fail', ... }
 - Constrained by: Section 6.2 — all computations based on provided data only
 
 ## QA Test Plan
-(to be filled by /write-tests)
+
+### Happy Path
+| # | Description | Input | Expected Output |
+|---|-------------|-------|-----------------|
+| H1 | set and get a cached result | `buildCacheKey('n1', metrics)`, `cache.set(key, result)`, `cache.get(key)` | returns the stored result |
+| H2 | has() returns true after set | `cache.set(key, result)`, `cache.has(key)` | `true` |
+
+### Edge Cases
+| # | Description | Input | Expected Output |
+|---|-------------|-------|-----------------|
+| E1 | different nodeIds with same metrics → different keys | `buildCacheKey('a', m)` vs `buildCacheKey('b', m)` | keys are not equal |
+| E2 | same nodeId with different metrics → different keys | `buildCacheKey('a', m1)` vs `buildCacheKey('a', m2)` | keys are not equal |
+| E3 | clear() removes all entries | set 2 entries, call `clear()`, `has(key)` | `false` for both |
+
+### Failure Cases
+| # | Description | Input | Expected Output |
+|---|-------------|-------|-----------------|
+| F1 | get() on missing key returns undefined | empty cache, `cache.get('missing')` | `undefined` |
+
+### Unknown Cases
+| # | Description | Input | Expected Output |
+|---|-------------|-------|-----------------|
+| U1 | cached result preserves unknown status | store `{ status: 'unknown', reason: '...' }`, retrieve | retrieved result has `status: 'unknown'` |
 
 ## Implementation Plan
 (to be filled by /implement)
