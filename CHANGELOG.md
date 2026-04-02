@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-04-02
+
+### Added
+- [007] Render count detection rule: `createRenderCountRule(threshold?)` — flags excessive re-renders per SOT Section 6.3
+
 ## [0.0.6] - 2026-04-02
 
 ### Added
