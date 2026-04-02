@@ -8,7 +8,6 @@ You are now the **Developer**. Your job is to write implementation code that mak
 
 ## GUARD: Tests Must Exist First
 
-Before doing ANYTHING:
 1. Check `backlog/active/` for the active item
 2. Verify the item has a `## QA Test Plan` section
 3. Verify test files exist in `tests/unit/`
@@ -23,8 +22,6 @@ If tests do NOT exist → Print "BLOCKED: No tests found. Run `/write-tests` fir
 4. Read existing `src/` files to understand what's already built
 
 ## Step 2: Write Implementation Plan
-
-Following SOT Section 4 Step 4, define the plan WITHOUT writing code yet.
 
 Append to the active backlog item file:
 
@@ -45,54 +42,44 @@ Append to the active backlog item file:
 
 ## Step 3: Implement
 
-Now write the code in `src/`:
-
-### Rules (from SOT):
+Write code in `src/`. Rules:
 - **Pure functions only** — no side effects, no mutations
-- **TypeScript strict** — no `any` types, explicit return types
+- **TypeScript strict** — no `any`, explicit return types
 - **No DOM** — no `document`, `window`, `navigator`
 - **No randomness** — no `Math.random()`
-- **No external dependencies** — unless absolutely required
-- **Explicit inputs only** — all computations from provided data
-- **UNKNOWN when uncertain** — return `{ status: "unknown", reason: "..." }` if cannot compute
+- **UNKNOWN when uncertain** — return `{ status: "unknown", reason: "..." }`
 
-### Process:
-1. Create/edit source files in `src/`
-2. Implement one function at a time
-3. Update test imports to point to actual implementation
-4. Replace test placeholders with actual function calls
-5. Run tests after each function: `npx vitest --run`
-6. Iterate until all tests pass
+Process:
+1. Implement one function at a time
+2. Update test imports to point to actual implementation
+3. Run `npx vitest --run` after each function
+4. Iterate until all tests pass
 
 ## Step 4: Gate 3 — Dev Validation
 
-After all tests pass, verify:
-
-- [ ] All functions are pure (no side effects)
-- [ ] No DOM or browser API usage anywhere in `src/`
-- [ ] No `Math.random()` or non-deterministic operations
-- [ ] No `any` types — all types are explicit
-- [ ] No external dependencies added without justification
-- [ ] O(n) complexity maximum — no unnecessary nested loops
-- [ ] Same input always produces same output
-
-Run a grep check:
+Run:
+```bash
+grep -r "document\.\|window\.\|navigator\.\|Math\.random\|: any" src/ 2>/dev/null
 ```
-grep -r "document\.\|window\.\|navigator\.\|Math.random\|: any" src/
-```
-If anything is found → FIX IT before proceeding.
+If anything found → FIX IT.
 
 ## Step 5: Final Test Run
 
-Run `npx vitest --run` one final time. ALL tests must pass.
-
-If all pass:
-```
-Gate 3 (Dev) PASSED.
-All {N} tests pass.
-Files created/modified: {list}
-
-Next step: Run /validate
+```bash
+npx vitest --run 2>&1
 ```
 
-If any fail → debug and fix. Do NOT proceed with failures.
+ALL tests must pass. If any fail → debug and fix. Do NOT proceed with failures.
+
+## Step 6: Commit
+
+```
+git add src/ tests/ backlog/
+git commit -m "[feat] {id}: implement {title}"
+```
+
+## Step 7: IMMEDIATELY proceed
+
+Do NOT wait for the user. Immediately continue:
+
+**Proceed directly to /validate now.**
