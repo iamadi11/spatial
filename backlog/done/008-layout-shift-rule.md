@@ -3,7 +3,7 @@ id: "008"
 title: "Layout shift detection rule (flag layout instability)"
 type: "rule"
 priority: 3
-status: "active"
+status: "done"
 created: "2026-04-02"
 sot-section: "Section 6.3, 7"
 depends-on: ["005", "006"]
