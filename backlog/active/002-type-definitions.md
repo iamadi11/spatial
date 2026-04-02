@@ -71,7 +71,17 @@ depends-on: ["001"]
 | U1 | PerformanceResult with unknown status + reason field | `{ status: "unknown", reason: "..." }` | `result.reason` contains the message |
 
 ## Implementation Plan
-(to be filled by /implement)
+
+### Functions
+| Function | Signature | Purpose |
+|----------|-----------|---------|
+| — | type only | No runtime functions; pure type exports |
+
+### Module Structure
+- `src/types.ts` — exports `ComponentNode`, `PerformanceMetrics`, `PerformanceIssue`, `PerformanceResult`
+
+### Data Flow
+`ComponentNode` (input) → engine → `PerformanceResult` (output)
 
 ## Validation Report
 (to be filled by /validate)
