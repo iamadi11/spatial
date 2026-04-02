@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.4] - 2026-04-02
+
+### Added
+- [011] Metrics caching layer: `createMetricsCache()` factory and `buildCacheKey()` helper — prevents redundant rule evaluation per SOT Section 11
+
 ## [0.1.3] - 2026-04-02
 
 ### Added

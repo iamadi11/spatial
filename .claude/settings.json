@@ -30,7 +30,7 @@
     ]
   },
   "env": {
-    "PATH": "/Users/adityaraj/.nvm/versions/node/v20.14.0/bin:/usr/local/bin:/usr/bin:/bin"
+    "PATH": "/Users/adityaraj/.nvm/versions/node/v20.14.0/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin"
   },
   "hooks": {
     "Stop": [
