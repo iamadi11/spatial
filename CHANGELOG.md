@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.4] - 2026-04-02
+
+### Added
+- [004] Rule registry: `createRegistry()` factory with `register` and `runAll` — SOT Section 7 compliant rule execution pipeline
+
 ## [0.0.3] - 2026-04-02
 
 ### Added
