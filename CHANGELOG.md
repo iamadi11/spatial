@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.6] - 2026-04-02
+
+### Added
+- [006] Unknown handler: `unknownResult(reason)` — centralised SOT Section 9 compliant UNKNOWN result builder
+
 ## [0.0.5] - 2026-04-02
 
 ### Added
