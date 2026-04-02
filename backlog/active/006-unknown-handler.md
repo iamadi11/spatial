@@ -3,7 +3,7 @@ id: "006"
 title: "Unknown/fallback handler (return UNKNOWN when cannot compute)"
 type: "infra"
 priority: 2
-status: "ready"
+status: "active"
 created: "2026-04-02"
 sot-section: "Section 2.3, 6.1, 9"
 depends-on: ["002"]
