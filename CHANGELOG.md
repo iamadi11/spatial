@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-04-02
+
+### Added
+- [012] Issue formatter: `formatIssue()` and `formatIssues()` — deterministic structured text output for `PerformanceIssue[]` per SOT Section 5.2 and 9
+
 ## [0.1.4] - 2026-04-02
 
 ### Added
