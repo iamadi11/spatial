@@ -3,7 +3,7 @@ id: "005"
 title: "Engine core (metrics pipeline + result aggregation)"
 type: "infra"
 priority: 2
-status: "active"
+status: "done"
 created: "2026-04-02"
 sot-section: "Section 4"
 depends-on: ["003", "004"]
