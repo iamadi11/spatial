@@ -47,7 +47,28 @@ depends-on: ["001"]
 - Constrained by: Section 2.2 — deterministic, no browser-specific types
 
 ## QA Test Plan
-(to be filled by /write-tests)
+
+### Happy Path
+| # | Description | Input | Expected Output |
+|---|-------------|-------|-----------------|
+| H1 | ComponentNode with all optional fields | `{ id, type, props, children, styles }` | all fields accessible with correct types |
+| H2 | PerformanceResult with passing status and metrics | `{ status: "pass", metrics: {...}, issues: [] }` | status === "pass", issues empty |
+
+### Edge Cases
+| # | Description | Input | Expected Output |
+|---|-------------|-------|-----------------|
+| E1 | ComponentNode with only required fields | `{ id: "root", type: "View" }` | optional fields undefined, no error |
+| E2 | PerformanceResult with fail status and issues array | `{ status: "fail", metrics, issues: [{rule, severity, message, nodeId}] }` | issues has 1 entry |
+
+### Failure Cases
+| # | Description | Input | Expected Output |
+|---|-------------|-------|-----------------|
+| F1 | status is restricted to union "pass" \| "fail" \| "unknown" | all three values | each accepted, no others compile |
+
+### Unknown Cases
+| # | Description | Input | Expected Output |
+|---|-------------|-------|-----------------|
+| U1 | PerformanceResult with unknown status + reason field | `{ status: "unknown", reason: "..." }` | `result.reason` contains the message |
 
 ## Implementation Plan
 (to be filled by /implement)
