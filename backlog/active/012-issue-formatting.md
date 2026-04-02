@@ -3,7 +3,7 @@ id: "012"
 title: "Issue formatting (structured issue output with rule name + reason)"
 type: "feature"
 priority: 5
-status: "ready"
+status: "active"
 created: "2026-04-02"
 sot-section: "Section 5.2, 9"
 depends-on: ["007", "008", "009", "010"]
