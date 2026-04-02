@@ -76,7 +76,19 @@ formatIssues([]) // → "No issues found."
 | U1 | formatIssues with issues from unknown result | issues array that is empty (unknown status has no issues) | `"No issues found."` |
 
 ## Implementation Plan
-(to be filled by /implement)
+
+### Functions
+| Function | Signature | Purpose |
+|----------|-----------|---------|
+| formatIssue | `(issue: PerformanceIssue) => string` | `"[severity] rule: message (node: nodeId)"` |
+| formatIssues | `(issues: PerformanceIssue[]) => string` | Newline-joined list, or `"No issues found."` |
+
+### Module Structure
+- `src/issue-formatter.ts` — exports `formatIssue`, `formatIssues`
+
+### Data Flow
+`PerformanceIssue` → `formatIssue` → string
+`PerformanceIssue[]` → `formatIssues` → joined string or empty message
 
 ## Validation Report
 (to be filled by /validate)
