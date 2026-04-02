@@ -48,7 +48,28 @@ depends-on: ["002"]
 - Constrained by: Section 2.2 — pure functions, no side effects
 
 ## QA Test Plan
-(to be filled by /write-tests)
+
+### Happy Path
+| # | Description | Input | Expected Output |
+|---|-------------|-------|-----------------|
+| H1 | collectNodes returns all nodes depth-first | 5-node tree (root→child-1→gc-1,gc-2→child-2) | array of 5 nodes in DFS order |
+| H2 | walkTree calls visitor for every node exactly once | same 5-node tree | visited IDs = ['root','child-1','grandchild-1','grandchild-2','child-2'] |
+
+### Edge Cases
+| # | Description | Input | Expected Output |
+|---|-------------|-------|-----------------|
+| E1 | single node with no children | `{ id: "alone", type: "Text" }` | array of 1 node |
+| E2 | deeply nested 4-level tree | l1→l2→l3→l4 | 4 nodes in order |
+
+### Failure Cases
+| # | Description | Input | Expected Output |
+|---|-------------|-------|-----------------|
+| F1 | empty children array | `{ id: "solo", children: [] }` | array of 1 node (no crash) |
+
+### Unknown Cases
+| # | Description | Input | Expected Output |
+|---|-------------|-------|-----------------|
+| U1 | visitor that produces unknown result when pattern not found | 5-node tree, pattern never matches | `{ status: "unknown", reason: "..." }` shape is valid |
 
 ## Implementation Plan
 (to be filled by /implement)
