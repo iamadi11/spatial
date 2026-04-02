@@ -5,7 +5,7 @@
 | 001 | Project configuration (tsconfig + vitest)                      | infra   | 1        | done   | Section 5, Step 5    | —                   |
 | 002 | Core type definitions (ComponentNode + PerformanceResult)      | infra   | 1        | done   | Section 5            | 001                 |
 | 003 | Component tree traversal (O(n) walk)                           | infra   | 2        | active  | Section 11           | 002                 |
-| 004 | Rule registry (register and execute detection rules)           | infra   | 2        | active  | Section 7            | 002                 |
+| 004 | Rule registry (register and execute detection rules)           | infra   | 2        | done    | Section 7            | 002                 |
 | 005 | Engine core (metrics pipeline + result aggregation)            | infra   | 2        | ready  | Section 4            | 003, 004            |
 | 006 | Unknown/fallback handler (return UNKNOWN when cannot compute)  | infra   | 2        | ready  | Section 2.3, 6.1, 9  | 002                 |
 | 007 | Render count detection rule (flag excessive re-renders)        | rule    | 3        | ready  | Section 6.3, 7       | 005, 006            |

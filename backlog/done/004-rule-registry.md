@@ -3,7 +3,7 @@ id: "004"
 title: "Rule registry (register and execute detection rules)"
 type: "infra"
 priority: 2
-status: "active"
+status: "done"
 created: "2026-04-02"
 sot-section: "Section 7"
 depends-on: ["002"]
