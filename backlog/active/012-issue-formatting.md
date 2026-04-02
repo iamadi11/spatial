@@ -91,4 +91,14 @@ formatIssues([]) // → "No issues found."
 `PerformanceIssue[]` → `formatIssues` → joined string or empty message
 
 ## Validation Report
-(to be filled by /validate)
+
+Date: 2026-04-02
+
+| Gate | Status | Notes |
+|------|--------|-------|
+| PM Validation | PASS | Problem defined, scope limited, SOT traced |
+| QA Validation | PASS | 3 happy, 2 edge, 1 failure, 1 unknown |
+| Dev Validation | PASS | No DOM, no randomness, no `any`, pure functions |
+| Test Coverage | PASS | 74/74 tests pass, 0 skipped |
+
+Overall: PASS
