@@ -3,7 +3,7 @@ id: "007"
 title: "Render count detection rule (flag excessive re-renders)"
 type: "rule"
 priority: 3
-status: "active"
+status: "done"
 created: "2026-04-02"
 sot-section: "Section 6.3, 7"
 depends-on: ["005", "006"]
