@@ -1,22 +1,25 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npx tsc:*)",
-      "Bash(npx vitest:*)",
-      "Bash(npm test:*)",
-      "Bash(npm run:*)",
-      "Bash(git checkout:*)",
-      "Bash(git branch:*)",
-      "Bash(git add:*)",
-      "Bash(git commit:*)",
-      "Bash(git tag:*)",
-      "Bash(git status:*)",
-      "Bash(git diff:*)",
-      "Bash(git log:*)",
-      "Bash(git merge:*)",
-      "Bash(ls:*)",
-      "Bash(mkdir:*)",
-      "Bash(mv:*)",
+      "Bash(npx *)",
+      "Bash(npm *)",
+      "Bash(node *)",
+      "Bash(git *)",
+      "Bash(ls *)",
+      "Bash(ls)",
+      "Bash(mkdir *)",
+      "Bash(mv *)",
+      "Bash(cp *)",
+      "Bash(rm *)",
+      "Bash(cat *)",
+      "Bash(find *)",
+      "Bash(grep *)",
+      "Bash(echo *)",
+      "Bash(sleep *)",
+      "Bash(export *)",
+      "Bash(source *)",
+      "Bash(bash *)",
+      "Bash(which *)",
       "Read",
       "Write",
       "Edit",
@@ -25,6 +28,9 @@
       "Agent"
     ]
   },
+  "env": {
+    "PATH": "/Users/adityaraj/.nvm/versions/node/v20.14.0/bin:/usr/local/bin:/usr/bin:/bin"
+  },
   "hooks": {
     "Stop": [
       {
@@ -32,7 +38,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'echo \"[STOP-CHECK] Session ending. Remember: update BACKLOG.md and active work item status before stopping.\"'"
+            "command": "bash -c 'cd \"/Users/adityaraj/Desktop/My Projects/spatial\" && git status --short 2>/dev/null | grep -q . && echo \"[STOP-CHECK] Uncommitted changes detected. Stage and commit before stopping.\" || echo \"[STOP-CHECK] Working tree clean.\"'"
           }
         ]
       }

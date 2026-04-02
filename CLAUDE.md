@@ -12,35 +12,44 @@
 
 ## Autonomous Development Workflow
 
-This project is built autonomously using 10 slash commands that map to the real software development lifecycle.
-
-### The Standard Cycle
+### The One Command You Need
 
 ```
-/pick-next → /plan-feature → /write-tests → /implement → /validate → /release
+/dev
+```
+
+This runs the **entire development loop** — pick-next → plan → write-tests → implement → validate → release — continuously until all backlog items are done. No other input required.
+
+### Bootstrap (first time only)
+
+```
+/kickoff   ← decomposes SourceOfTruth.md into backlog items (run once)
+/dev       ← builds everything from there
 ```
 
 ### All Commands
 
 | Command | Role | Purpose |
 |---------|------|---------|
+| `/dev` | **Autonomous loop** | **Full cycle, runs until all items done** |
 | `/kickoff` | Bootstrap | One-time: decompose SOT into backlog items |
-| `/pick-next` | Orchestrator | Select next highest-priority ready item |
-| `/plan-feature` | PM | Define problem, scope, non-goals, expected behavior |
-| `/write-tests` | QA | Define ALL test cases BEFORE implementation |
-| `/implement` | Developer | Write code to make tests pass |
-| `/validate` | QA + Dev | Run all 4 quality gates |
-| `/release` | Release Mgr | Version bump, changelog, tag, move to done |
+| `/pick-next` | Orchestrator | Select next item (chains into plan automatically) |
+| `/plan-feature` | PM | Define problem, scope, non-goals (chains into write-tests) |
+| `/write-tests` | QA | Write failing tests (chains into implement) |
+| `/implement` | Developer | Write code to pass tests (chains into validate) |
+| `/validate` | QA + Dev | Run all 4 quality gates (chains into release) |
+| `/release` | Release Mgr | Version bump, tag, merge, move to done (chains into pick-next) |
 | `/detect-bugs` | QA | Scan for regressions and SOT violations |
 | `/brainstorm` | PM | Propose new rules/improvements within SOT policy |
 | `/status` | Dashboard | Show project health, backlog state, test results |
 
 ### When to Use Each
 
-- **Starting fresh?** → `/kickoff` (once), then `/status`
-- **Ready to build?** → `/pick-next` to grab work, then follow the cycle
-- **Between features?** → `/detect-bugs` to catch regressions, `/brainstorm` for ideas
+- **Starting a new project?** → `/kickoff` once, then `/dev`
+- **Resuming work?** → `/dev` (picks up from current state)
 - **Checking health?** → `/status` anytime
+- **Found a bug?** → `/detect-bugs`
+- **Want new features?** → `/brainstorm`
 
 ---
 
