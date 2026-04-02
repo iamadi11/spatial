@@ -5,6 +5,7 @@
       "Bash(npm *)",
       "Bash(node *)",
       "Bash(git *)",
+      "Bash(gh *)",
       "Bash(ls *)",
       "Bash(ls)",
       "Bash(mkdir *)",

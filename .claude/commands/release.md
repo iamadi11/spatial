@@ -1,5 +1,5 @@
 ---
-description: "Release Manager: version bump, changelog, git tag, move item to done"
+description: "Release Manager: version bump, changelog, git tag, PR, merge to main, move item to done"
 ---
 
 # Release — Publish a Completed Work Item
@@ -55,25 +55,62 @@ git commit -m "[release] {new-version}: {item-title}"
 git tag -a v{new-version} -m "Release v{new-version}: {item-title}"
 ```
 
-## Step 7: Merge to main
+## Step 7: Push branch and create Pull Request
 
+```
+git push origin {current-branch}
+```
+
+Then create a PR using gh:
+
+```
+gh pr create \
+  --title "[{id}] {item-title} (v{new-version})" \
+  --body "## Summary
+- Implements [{id}] {item-title}
+- SOT Section: {sot-section}
+- Version bump: {old-version} → {new-version}
+
+## Changes
+- {list key files added/changed}
+
+## Quality Gates
+- PM Validation: PASS
+- QA Validation: PASS
+- Dev Validation: PASS
+- Test Coverage: PASS (all tests pass)
+
+## Test Results
+{paste npx vitest --run summary line}
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)" \
+  --base main \
+  --head {current-branch}
+```
+
+## Step 8: Merge PR to main
+
+```
+gh pr merge --merge --delete-branch
+```
+
+Wait for merge to complete, then:
 ```
 git checkout main
-git merge --no-ff {current-branch} -m "Merge {branch}: [{id}] {title}"
-git checkout -
+git pull origin main
 ```
 
-## Step 8: Close the Backlog Item
+## Step 9: Close the Backlog Item
 
 1. Move file: `backlog/active/{file}` → `backlog/done/{file}`
 2. Update frontmatter `status: "done"`
 3. Update `BACKLOG.md` status to `done`
-4. Commit: `git add backlog/ BACKLOG.md && git commit -m "[chore] close item {id}: moved to done"`
+4. Commit + push: `git add backlog/ BACKLOG.md && git commit -m "[chore] close item {id}: moved to done" && git push origin main`
 
-## Step 9: IMMEDIATELY proceed to next item
+## Step 10: IMMEDIATELY proceed to next item
 
 Do NOT wait for the user. Immediately continue:
 
 **Proceed directly to /pick-next now.**
 
-This will start the next item's full cycle automatically. Keep going until all backlog items are `done` or there are no more eligible items.
+Keep going until all backlog items are `done` or there are no more eligible items.
