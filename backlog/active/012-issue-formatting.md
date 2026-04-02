@@ -51,7 +51,29 @@ formatIssues([]) // → "No issues found."
 - Constrained by: Section 2.2 — pure functions, deterministic
 
 ## QA Test Plan
-(to be filled by /write-tests)
+
+### Happy Path
+| # | Description | Input | Expected Output |
+|---|-------------|-------|-----------------|
+| H1 | formatIssue with warning severity | `{ rule: 'render-count', severity: 'warning', message: 'Too many renders', nodeId: 'btn' }` | `"[warning] render-count: Too many renders (node: btn)"` |
+| H2 | formatIssue with error severity | `{ rule: 'fps-drop', severity: 'error', message: 'FPS drop of 20', nodeId: 'list' }` | `"[error] fps-drop: FPS drop of 20 (node: list)"` |
+| H3 | formatIssues with multiple issues | 2-issue array | newline-joined string of both formatted issues |
+
+### Edge Cases
+| # | Description | Input | Expected Output |
+|---|-------------|-------|-----------------|
+| E1 | formatIssues with empty array | `[]` | `"No issues found."` |
+| E2 | formatIssues with single issue | 1-issue array | single formatted string (no trailing newline) |
+
+### Failure Cases
+| # | Description | Input | Expected Output |
+|---|-------------|-------|-----------------|
+| F1 | formatIssue preserves exact message text | issue with special chars in message | message appears verbatim in output |
+
+### Unknown Cases
+| # | Description | Input | Expected Output |
+|---|-------------|-------|-----------------|
+| U1 | formatIssues with issues from unknown result | issues array that is empty (unknown status has no issues) | `"No issues found."` |
 
 ## Implementation Plan
 (to be filled by /implement)
