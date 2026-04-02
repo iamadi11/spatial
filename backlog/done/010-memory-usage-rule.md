@@ -3,7 +3,7 @@ id: "010"
 title: "Memory usage detection rule (flag memory anomalies)"
 type: "rule"
 priority: 3
-status: "active"
+status: "done"
 created: "2026-04-02"
 sot-section: "Section 5.2, 7"
 depends-on: ["005", "006"]
