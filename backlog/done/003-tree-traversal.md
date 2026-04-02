@@ -3,7 +3,7 @@ id: "003"
 title: "Component tree traversal (O(n) walk)"
 type: "infra"
 priority: 2
-status: "active"
+status: "done"
 created: "2026-04-02"
 sot-section: "Section 11"
 depends-on: ["002"]
