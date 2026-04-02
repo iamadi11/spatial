@@ -90,4 +90,14 @@ cache.get(key)  // → { status: 'fail', ... }
 `(nodeId, metrics)` → `buildCacheKey` → string key → Map lookup/store → `PerformanceResult`
 
 ## Validation Report
-(to be filled by /validate)
+
+Date: 2026-04-02
+
+| Gate | Status | Notes |
+|------|--------|-------|
+| PM Validation | PASS | Problem defined, scope limited, SOT traced |
+| QA Validation | PASS | 2 happy, 3 edge, 1 failure, 1 unknown |
+| Dev Validation | PASS | No DOM, no randomness, no `any`, pure functions |
+| Test Coverage | PASS | 67/67 tests pass, 0 skipped |
+
+Overall: PASS
