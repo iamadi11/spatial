@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-04-02
+
+### Added
+- [009] FPS drop detection rule: `createFpsDropRule(threshold?)` — flags frame rate degradation, never assumes baseline FPS per SOT 6.1
+
 ## [0.1.1] - 2026-04-02
 
 ### Added
