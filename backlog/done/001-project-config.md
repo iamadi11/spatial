@@ -3,7 +3,7 @@ id: "001"
 title: "Project configuration (tsconfig + vitest)"
 type: "infra"
 priority: 1
-status: "active"
+status: "done"
 created: "2026-04-02"
 sot-section: "Section 5, Step 5"
 depends-on: []

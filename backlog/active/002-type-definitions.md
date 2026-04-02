@@ -3,7 +3,7 @@ id: "002"
 title: "Core type definitions (ComponentNode + PerformanceResult)"
 type: "infra"
 priority: 1
-status: "ready"
+status: "active"
 created: "2026-04-02"
 sot-section: "Section 5"
 depends-on: ["001"]
