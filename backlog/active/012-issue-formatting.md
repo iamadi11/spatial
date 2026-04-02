@@ -14,7 +14,41 @@ depends-on: ["007", "008", "009", "010"]
 > SOT Reference: Section 5.2 — '"issues": []'; Section 9 — '"reason": "unsupported input or environment"'; Section 14 — "no ambiguity remains."
 
 ## PM Plan
-(to be filled by /plan-feature)
+
+### Problem Definition
+**Feature**: Issue formatter — transforms raw `PerformanceIssue[]` into a human-readable, structured summary string
+**Goal**: Provide a deterministic, pure function that formats issues for display without ambiguity
+**Why needed**: SOT Section 5.2 defines the `issues` array output contract; Section 9 defines the `reason` field; Section 14 requires "no ambiguity remains" — callers need a stable text representation of issues
+
+### Scope
+- `src/issue-formatter.ts` — exports `formatIssue(issue: PerformanceIssue) => string` and `formatIssues(issues: PerformanceIssue[]) => string`
+- `formatIssue`: single issue → `"[severity] rule: message (node: nodeId)"`
+- `formatIssues`: array → newline-joined formatted issues, or `"No issues found."` if empty
+
+### Non-goals
+- No colorization, HTML, or UI rendering
+- No filtering, sorting, or grouping of issues
+- No changes to the `PerformanceIssue` type itself
+
+### Expected Behavior
+
+**Input**:
+```ts
+[{ rule: 'render-count', severity: 'warning', message: 'Too many renders', nodeId: 'btn-1' }]
+```
+
+**Expected Output**:
+```ts
+formatIssue(issue) // → "[warning] render-count: Too many renders (node: btn-1)"
+formatIssues([issue]) // → "[warning] render-count: Too many renders (node: btn-1)"
+formatIssues([]) // → "No issues found."
+```
+
+### SOT Traceability
+- Implements: Section 5.2 — `issues` output contract (rule, severity, message, nodeId)
+- Implements: Section 9 — structured output without ambiguity
+- Constrained by: Section 14 — "no ambiguity remains"
+- Constrained by: Section 2.2 — pure functions, deterministic
 
 ## QA Test Plan
 (to be filled by /write-tests)
