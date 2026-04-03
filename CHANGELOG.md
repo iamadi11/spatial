@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.2] - 2026-04-03
+
+### Added
+- [020] Rule catalog: `createRuleCatalog()` — returns structured metadata (name, description, severity, defaultThreshold) for all 10 built-in rules
+
 ## [0.8.1] - 2026-04-03
 
 ### Changed

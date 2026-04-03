@@ -8,3 +8,4 @@
 | D04 | Analysis playground page (JSON input → run engine → show result)   | feature | 2        | done   | D02        |
 | D05 | Result detail view (status badge + metrics table + issue cards)    | feature | 3        | done   | D04        |
 | D06 | Navigation shell (sidebar/topbar linking all pages)                | feature | 3        | done   | D03, D05   |
+| D07 | Live analysis page (/live — reads window.__SPATIAL__ bridge)       | feature | 2        | ready  | D06        |
