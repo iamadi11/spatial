@@ -24,3 +24,24 @@ depends-on: "D05"
 **Non-goals**: Do not persist filter state across sessions. Do not add filtering to the Live Analysis page (D07) — that's a separate item if needed. Do not filter by rule name.
 
 **Done when**: The playground page shows filter toggles and clicking them correctly shows/hides issues by severity with an updated count.
+
+## QA Test Plan
+
+**Happy path:**
+- H1: SeverityFilter renders All, Errors, Warnings buttons
+- H2: Clicking Errors calls onChange with 'error'
+- H3: Clicking Warnings calls onChange with 'warning'
+- H4: ResultDetailView — Errors filter hides warning issues
+- H5: ResultDetailView — Warnings filter hides error issues
+- H6: ResultDetailView — All filter shows all issues
+
+**Edge cases:**
+- E1: Active filter button has aria-pressed=true; others have aria-pressed=false
+- E2: Issue counts displayed on each filter button
+- E3: "N of M issues" count badge updates when filter changes
+
+**Failure cases:**
+- F1: No filter rendered when result has no issues
+
+**Unknown cases:**
+- U1: Errors button shows 0 count when result has only warnings
