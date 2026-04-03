@@ -23,6 +23,16 @@ depends-on: "005, 006"
 - `children.length > threshold` → triggered, severity `warning`
 - `children.length <= threshold` or no children → not triggered
 
+## Implementation Plan
+
+**File**: `src/rules/child-count.ts`
+
+**Function**: `createChildCountRule(threshold?: number): Rule`
+- Reads `node.children?.length ?? 0`
+- Returns triggered + issue when `count > threshold`
+- Default threshold: 20
+- Does not use metrics (deterministic from node structure alone)
+
 ## QA Test Plan
 
 Test file: `tests/unit/rules/child-count.test.ts`
