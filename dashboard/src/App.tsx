@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { AppShell } from './components/AppShell'
 import { RuleCatalogPage } from './pages/RuleCatalogPage'
 import { AnalysisPlaygroundPage } from './pages/AnalysisPlaygroundPage'
+import { LiveAnalysisPage } from './pages/LiveAnalysisPage'
 
 export default function App() {
   return (
@@ -10,6 +11,7 @@ export default function App() {
         <Route path="/" element={<Navigate to="/rules" replace />} />
         <Route path="/rules" element={<RuleCatalogPage />} />
         <Route path="/analyze" element={<AnalysisPlaygroundPage />} />
+        <Route path="/live" element={<LiveAnalysisPage />} />
       </Routes>
     </AppShell>
   )

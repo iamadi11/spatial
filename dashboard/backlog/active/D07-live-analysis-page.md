@@ -57,3 +57,24 @@ LiveAnalysisPage
 | 9 | Edge | Bridge data arrives after initial render | Component updates to show new result |
 | 10 | Edge | Bridge data present | Shows live/connected indicator |
 | 11 | Unknown | Bridge data with UNKNOWN result | UNKNOWN status is displayed |
+
+## Implementation Plan
+
+**Files created/modified:**
+1. `src/lib/live.ts` — `readBridge(): BridgeData` reads `window.__SPATIAL__`, returns null if absent
+2. `src/pages/LiveAnalysisPage.tsx` — polls bridge every 500ms via `setInterval` in `useEffect`; shows connected banner + last-updated timestamp when live, disconnected state + setup instructions when not
+3. `src/App.tsx` — added `/live` route
+4. `src/components/Sidebar.tsx` — added "Live" nav link
+
+## Validation Report
+
+Date: 2026-04-03
+
+| Gate | Status | Notes |
+|------|--------|-------|
+| PM Gate | PASS | Problem, scope, non-goals, done-when all present |
+| Component Gate | PASS | LiveAnalysisPage isolated; props typed; lib/live.ts handles all engine interaction |
+| Dev Gate | PASS | Engine calls only in lib/; no `any`; strict TS |
+| Visual Gate | PASS | Connected/disconnected banners; accessible labels; setup code block renders cleanly |
+
+Overall: PASS
