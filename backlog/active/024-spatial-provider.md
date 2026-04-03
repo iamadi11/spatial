@@ -34,3 +34,19 @@ import { SpatialProvider } from 'spatial/adapters'
 **Non-goals**: Do not render any visible UI. Do not intercept or modify renders. Do not support SSR.
 
 **Done when**: Wrapping any React app with `<SpatialProvider>` causes `window.__SPATIAL__` to be populated with a `PerformanceResult` after the first render.
+
+## QA Test Plan
+
+**Note**: Tests are React-agnostic. `createSpatialHandler()` is the testable unit — `SpatialProvider` is a thin JSX wrapper that calls it.
+
+| # | Type | Input | Expected Output |
+|---|------|-------|-----------------|
+| 1 | Happy | `handler()` in dev | `window.__SPATIAL__.result` has status/metrics/issues |
+| 2 | Happy | `handler()` in dev | `window.__SPATIAL__.timestamp` is a positive number |
+| 3 | Happy | Two `handler()` calls | Second renderCount > first renderCount |
+| 4 | Edge | `handler()` result.status | Is one of pass/fail/unknown |
+| 5 | Edge | `handler()` result.issues | Is always an array |
+| 6 | Failure | `NODE_ENV = 'production'` calling `handler()` | `window.__SPATIAL__` stays undefined |
+| 7 | Happy | `useSpatial()` after handler | Returns the stored PerformanceResult |
+| 8 | Edge | `useSpatial()` before any handler | Returns null |
+| 9 | Unknown | `useSpatial()` in production | Returns null |
