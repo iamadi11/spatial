@@ -24,3 +24,18 @@ depends-on: "005, 006"
 **Non-goals**: Do not measure function prop sizes. Do not recurse into React elements inside props. Do not suggest compression or splitting strategies.
 
 **Done when**: `createLargeDataPropRule()` flags nodes whose non-function props serialize to more than the threshold bytes, handles circular references safely, and all tests pass.
+
+## QA Test Plan
+
+| # | Type | Input | Expected |
+|---|------|-------|----------|
+| H1 | Happy | props with 11KB string, threshold=10000 | triggers with warning |
+| H2 | Happy | tiny props (label, count) | does not trigger |
+| E1 | Edge | props exactly at threshold bytes | does not trigger (> not >=) |
+| E2 | Edge | custom threshold=500, 600-byte payload | triggers |
+| E3 | Edge | function props mixed with tiny data prop | functions excluded; does not trigger |
+| E4 | Edge | triggered issue | message contains byte size info |
+| F1 | Failure | no props at all | does not trigger |
+| F2 | Failure | empty props object | does not trigger |
+| U1 | Unknown | circular reference in props | no throw; triggered:false |
+| U2 | Unknown | rule.name | 'large-data-prop' |
