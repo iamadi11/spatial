@@ -1,6 +1,6 @@
 # Spatial Dashboard — Source of Truth (SOT)
 
-> This document governs the dashboard app that visualises output from the `spatial` engine.
+> This document governs the dashboard app that visualises `spatial` engine output.
 > It is IMMUTABLE. Never modify it during development — change requests require human review.
 
 ---
@@ -9,9 +9,9 @@
 
 We are building:
 
-> A development-time web dashboard that makes the `spatial` performance engine's rules, analysis results, and issue reports human-readable and explorable through a browser UI.
+> A development-time web dashboard that makes the `spatial` performance engine's rules, analysis results, and issue reports human-readable and explorable — for both manual JSON experiments and live analysis of real React projects.
 
-The dashboard is a **consumer** of the engine — it never contains detection logic itself. All detection runs through `../src/` (the spatial engine).
+The dashboard is a **consumer** of the engine — it never contains detection logic. All detection runs through `../src/` (the spatial engine) and `../src/adapters/` (the integration layer).
 
 ---
 
@@ -35,50 +35,66 @@ The dashboard is a **consumer** of the engine — it never contains detection lo
 - React + TypeScript (Vite)
 - Tailwind CSS for styling
 - No backend — runs entirely in the browser
-- Engine imported directly from `../src/` via relative import or workspace link
+- Engine imported via `src/lib/engine.ts` adapter (never directly in components)
 
 ---
 
 ## 3. Pages / Sections
 
-### 3.1 Rule Catalog Page
+### 3.1 Rule Catalog Page (`/rules`)
 Displays all available rules with:
 - Rule name
 - What it detects (description)
 - Default threshold (if applicable)
 - Severity (`warning` | `error`)
-- SOT section reference
 
-### 3.2 Analysis Playground Page
-Allows the user to:
+### 3.2 Analysis Playground Page (`/analyze`)
+Allows the developer to:
 - Input a `ComponentNode` tree (JSON editor)
 - Input `PerformanceMetrics` values (number inputs)
-- Select which rules to run (checkboxes)
 - Run the engine and see the `PerformanceResult`
 - See issues displayed as cards with severity badges
+- Pre-populated with a working example so it's useful immediately
 
-### 3.3 Result Detail View
+### 3.3 Result Detail View (component)
 For a given `PerformanceResult`:
-- Status badge (PASS / FAIL / UNKNOWN)
+- Status banner (PASS / FAIL / UNKNOWN)
 - Metrics summary table
 - Issue list with: rule name, severity, message, affected node ID
+
+### 3.4 Live Analysis Page (`/live`) ← real-world integration
+Connects to a running React app instrumented with `SpatialProvider`:
+- Displays the latest `PerformanceResult` streamed from the live app
+- Shows which component triggered each issue (real node IDs from the fiber tree)
+- Auto-refreshes when the engine produces a new result
+- Shows how to add `<SpatialProvider>` to the target app (setup instructions)
+- **Data stays local** — no network calls, communication via `window.__SPATIAL__` bridge
 
 ---
 
 ## 4. Data Flow
 
 ```
-User Input (JSON + metrics)
+Manual path (Playground):
+  User inputs JSON + metrics
         ↓
-  spatial engine (../src/)
-  - analyze(root, metrics, registry)
+  src/lib/engine.ts → runAnalysis()
         ↓
-  PerformanceResult
+  PerformanceResult → dashboard renders
+
+Live path (Live Analysis):
+  Real React app with <SpatialProvider>
         ↓
-  Dashboard renders result
+  spatial adapter extracts ComponentNode tree + collects metrics
+        ↓
+  analyze() runs inside the adapter
+        ↓
+  result posted to window.__SPATIAL__ bridge
+        ↓
+  dashboard polls bridge → renders latest result
 ```
 
-No server. No API. Engine runs client-side in the browser.
+No server. No API. All communication is local (same browser tab or devtools).
 
 ---
 
@@ -88,10 +104,10 @@ Consumed directly from the engine — never duplicated here:
 
 ```ts
 // From ../src/types.ts
-type ComponentNode = { id, type, props?, children?, styles? }
+type ComponentNode    = { id, type, props?, children?, styles? }
 type PerformanceMetrics = { renderCount, layoutShifts, fpsDrop, memoryUsage }
-type PerformanceResult = { status, metrics, issues[], reason? }
-type PerformanceIssue = { rule, severity, message, nodeId }
+type PerformanceResult  = { status, metrics, issues[], reason? }
+type PerformanceIssue   = { rule, severity, message, nodeId }
 ```
 
 ---
@@ -113,12 +129,14 @@ Every feature must pass:
 - New views/pages that display engine output
 - UI improvements to existing pages
 - Additional display formats for `PerformanceResult`
+- Live analysis page consuming the `window.__SPATIAL__` bridge
 
 **Not allowed:**
 - Adding detection rules to the dashboard (belongs in `../src/`)
 - Any backend, API calls, or data persistence
 - Auto-fix or code suggestion features
 - User authentication or accounts
+- Communicating with external servers
 
 ---
 
@@ -129,7 +147,7 @@ Every feature must pass:
 | Framework | React 18 + TypeScript |
 | Build | Vite |
 | Styling | Tailwind CSS |
-| Engine | `spatial` (relative import from `../src/`) |
+| Engine | `spatial` (relative import via `src/lib/`) |
 | Testing | Vitest + React Testing Library |
 | No backend | — |
 
