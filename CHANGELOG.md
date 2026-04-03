@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.1] - 2026-04-03
+
+### Added
+- [022] React fiber adapter: `extractTree(fiber)` — walks a React fiber tree and returns a `ComponentNode` tree the core engine can consume; dev-only guard, read-only access, function props omitted
+
 ## [0.9.0] - 2026-04-03
 
 ### Added
