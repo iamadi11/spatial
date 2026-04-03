@@ -24,3 +24,22 @@ depends-on: "D05"
 **Non-goals**: Do not add download-as-file functionality. Do not add email or share integrations. Do not show the formatted text inline (clipboard only).
 
 **Done when**: Clicking "Copy report" on any result copies the `formatReport()` text to the clipboard and shows a "Copied!" confirmation.
+
+## QA Test Plan
+
+**Happy path:**
+- H1: CopyReportButton renders a "Copy report" button
+- H2: Clicking calls `navigator.clipboard.writeText` with `formatReport` output
+- H3: Shows "Copied!" confirmation after click
+- H4: ResultDetailView renders the Copy report button
+- H5: Copying from ResultDetailView with fail result includes issues text
+
+**Edge cases:**
+- E1: Button has an accessible `aria-label`
+- E2: Copied text includes issue details for fail result
+
+**Failure cases:**
+- F1: Does not throw when `clipboard.writeText` rejects
+
+**Unknown cases:**
+- U1: Copies report correctly for result with `status: "unknown"`
