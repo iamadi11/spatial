@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.2] - 2026-04-03
+
+### Added
+- [023] Metrics adapter: `collectMetrics(renderCount)` — collects PerformanceMetrics from PerformanceObserver (layout-shift), rAF FPS sampling, and performance.memory; dev-only guard; resets via `resetMetrics()`
+
 ## [0.9.1] - 2026-04-03
 
 ### Added

@@ -24,5 +24,5 @@
 | 020 | Rule catalog (structured metadata export for all built-in rules)   | infra   | 3        | done   | Section 5.2, 7       | 004                 |
 | 021 | Report summary formatter (human-readable PerformanceResult text)   | feature | 4        | done   | Section 5.2, 9       | 012                 |
 | 022 | React fiber adapter (src/adapters/react.ts)                        | infra   | 1        | done   | Adapters section     | 004, 017            |
-| 023 | Metrics adapter (src/adapters/metrics.ts)                          | infra   | 1        | active | Adapters section     | 022                 |
+| 023 | Metrics adapter (src/adapters/metrics.ts)                          | infra   | 1        | done   | Adapters section     | 022                 |
 | 024 | SpatialProvider (src/adapters/index.ts)                            | infra   | 1        | ready  | Adapters section     | 022, 023            |
