@@ -3,7 +3,7 @@ id: D07
 title: "Live analysis page (/live) — reads window.__SPATIAL__ bridge from instrumented React app"
 type: feature
 priority: 2
-status: active
+status: done
 depends-on: D06
 ---
 

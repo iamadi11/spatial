@@ -146,7 +146,7 @@ describe('D07: LiveAnalysisPage', () => {
     const { LiveAnalysisPage } = await import('../../src/pages/LiveAnalysisPage')
     render(<LiveAnalysisPage />)
     await act(async () => { vi.advanceTimersByTime(600) })
-    expect(screen.getByText(/live|connected/i)).toBeInTheDocument()
+    expect(screen.getByText(/live\s*[—–-]\s*connected/i)).toBeInTheDocument()
   })
 
   // Unknown case: unknown status result is displayed correctly
