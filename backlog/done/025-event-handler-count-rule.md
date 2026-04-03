@@ -3,7 +3,7 @@ id: "025"
 title: "Event handler count detection rule (flag components with excessive event bindings)"
 type: rule
 priority: 3
-status: active
+status: done
 created: 2026-04-03
 sot-section: "Section 4.2.2, 7"
 depends-on: "005, 006"
