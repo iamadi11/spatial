@@ -39,3 +39,13 @@ depends-on: "004, 017"
 | 8 | Edge | Fiber with no `memoizedProps`, no `child` | `props: {}`, `children: []` |
 | 9 | Failure | `NODE_ENV = 'production'` | Returns `{ id: 'root', type: 'unknown' }`, no real props |
 | 10 | Unknown | Object with completely wrong shape | Returns a valid `ComponentNode` (id, type, children present) |
+
+## Implementation Plan
+
+**Functions**:
+1. `resolveName(type: unknown): string` — string → use as-is; function → use `.name`; else → `'unknown'`
+2. `filterProps(raw): Record<string,unknown>` — omits keys where `typeof value === 'function'`
+3. `walkFiber(fiber, indexPath): ComponentNode` — walks `child`/`sibling` chain recursively; builds id from index path
+4. `extractTree(fiber: unknown): ComponentNode` — production guard first; delegates to `walkFiber`
+
+**Files touched**: `src/adapters/react.ts` (new)
