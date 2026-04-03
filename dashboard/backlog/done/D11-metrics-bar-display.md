@@ -3,7 +3,7 @@ id: "D11"
 title: "Metrics bar display (visual metric bars for PerformanceResult)"
 type: feature
 priority: 4
-status: ready
+status: done
 created: 2026-04-04
 sot-section: "Section 16.6"
 depends-on: "D05"
