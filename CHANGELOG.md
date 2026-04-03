@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-04-03
+
+### Added
+- [018] Inline style count detection rule: `createInlineStyleCountRule(threshold?)` — flags components with excessive inline style declarations per SOT Section 4.2.2
+
 ## [0.7.0] - 2026-04-03
 
 ### Added
