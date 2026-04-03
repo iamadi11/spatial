@@ -41,3 +41,19 @@ LiveAnalysisPage
 **Non-goals**: No WebSocket. No server. No persistence. No history of past results.
 
 **Done when**: When a React app with `<SpatialProvider>` is open in the same browser, the `/live` page auto-displays its latest `PerformanceResult` and updates within 500ms of each new render.
+
+## QA Test Plan
+
+| # | Type | Input | Expected |
+|---|------|-------|----------|
+| 1 | Happy | `window.__SPATIAL__` set | `readBridge()` returns BridgeData with result + timestamp |
+| 2 | Happy | `window.__SPATIAL__` not set | `readBridge()` returns null |
+| 3 | Edge | Timestamp value | Preserved exactly in returned BridgeData |
+| 4 | Failure | `window.__SPATIAL__ = undefined` | `readBridge()` returns null |
+| 5 | Happy | No bridge data on mount | LiveAnalysisPage shows waiting/disconnected message |
+| 6 | Happy | No bridge data on mount | LiveAnalysisPage shows SpatialProvider setup instructions |
+| 7 | Happy | Bridge data present before mount | ResultDetailView shows PASS after timer tick |
+| 8 | Happy | Bridge data present | Shows "Last updated" label |
+| 9 | Edge | Bridge data arrives after initial render | Component updates to show new result |
+| 10 | Edge | Bridge data present | Shows live/connected indicator |
+| 11 | Unknown | Bridge data with UNKNOWN result | UNKNOWN status is displayed |
