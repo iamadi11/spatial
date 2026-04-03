@@ -22,3 +22,23 @@ depends-on: "015"
 **Expected behavior** (unchanged interface, expanded detection):
 - `styles` contains `animation`, `transition`, or `willChange` → triggered, same as existing expensive properties
 - Existing behavior for all 5 current properties is preserved
+
+## Implementation Plan
+
+**File**: `src/rules/style-complexity.ts` (edit only — no new files)
+
+**Change**: Add `'animation'`, `'transition'`, `'willChange'` to the `EXPENSIVE_PROPERTIES` Set.
+
+No interface changes. No new exports.
+
+## QA Test Plan
+
+Tests added to: `tests/unit/rules/style-complexity.test.ts`
+
+| # | Type | Input | Expected |
+|---|------|-------|----------|
+| 10 | New prop | `animation` in styles | triggered, message contains "animation" |
+| 11 | New prop | `transition` in styles | triggered, message contains "transition" |
+| 12 | New prop | `willChange` in styles | triggered, message contains "willChange" |
+
+(Existing 9 tests remain unchanged and continue to pass)
