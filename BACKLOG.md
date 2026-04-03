@@ -15,6 +15,6 @@
 | 011 | Metrics caching layer (cache per render, avoid recomputation)       | perf    | 4        | done   | Section 11           | 005                 |
 | 012 | Issue formatting (structured issue output with rule name + reason)  | feature | 5        | done   | Section 5.2, 9       | 007, 008, 009, 010  |
 | 013 | Child count detection rule (flag oversized component children)      | rule    | 3        | done   | Section 4.2.2, 7     | 005, 006            |
-| 014 | Prop count detection rule (flag prop-heavy components)              | rule    | 3        | active | Section 4.2.2, 7     | 005, 006            |
+| 014 | Prop count detection rule (flag prop-heavy components)              | rule    | 3        | done   | Section 4.2.2, 7     | 005, 006            |
 | 015 | Style complexity detection rule (flag expensive CSS properties)     | rule    | 3        | ready  | Section 4.2.3, 7     | 005, 006            |
 | 016 | Nesting depth detection rule (flag deeply nested trees)             | rule    | 4        | ready  | Section 4.2.2, 7     | 005, 006            |
