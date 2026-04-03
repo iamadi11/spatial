@@ -4,6 +4,7 @@
  */
 import type { ComponentNode, PerformanceMetrics, PerformanceResult, PerformanceIssue } from '@engine/types'
 import { analyze } from '@engine/engine'
+import { formatReport as _formatReport } from '@engine/report-summary'
 import { createRegistry } from '@engine/rule-registry'
 import { createChildCountRule } from '@engine/rules/child-count'
 import { createFpsDropRule } from '@engine/rules/fps-drop'
@@ -18,6 +19,14 @@ import { createTotalNodeCountRule } from '@engine/rules/total-node-count'
 
 // Re-export engine types for components to use
 export type { ComponentNode, PerformanceResult, PerformanceIssue, PerformanceMetrics } from '@engine/types'
+
+/**
+ * Formats a PerformanceResult as a human-readable text block.
+ * Re-exports the engine's formatReport — components must not import from @engine directly.
+ */
+export function formatReport(result: PerformanceResult): string {
+  return _formatReport(result)
+}
 
 export type RuleMetadata = {
   name: string

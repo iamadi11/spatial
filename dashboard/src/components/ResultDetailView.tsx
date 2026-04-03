@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { PerformanceResult, PerformanceMetrics } from '../lib/engine'
 import { IssueCard } from './IssueCard'
 import { SeverityFilter } from './SeverityFilter'
+import { CopyReportButton } from './CopyReportButton'
 
 type Severity = 'all' | 'error' | 'warning'
 
@@ -46,13 +47,16 @@ export function ResultDetailView({ result }: Props) {
     <section className="space-y-4" aria-label="Result detail">
       {/* Status banner */}
       <div className={`rounded-lg border p-4 ${style.banner}`}>
-        <div className="flex items-center gap-2">
-          <span className={`text-lg font-bold uppercase ${style.label}`}>{result.status}</span>
-          {result.status === 'fail' && (
-            <span className="text-sm text-gray-400">
-              — {result.issues.length} issue{result.issues.length !== 1 ? 's' : ''}
-            </span>
-          )}
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <span className={`text-lg font-bold uppercase ${style.label}`}>{result.status}</span>
+            {result.status === 'fail' && (
+              <span className="text-sm text-gray-400">
+                — {result.issues.length} issue{result.issues.length !== 1 ? 's' : ''}
+              </span>
+            )}
+          </div>
+          <CopyReportButton result={result} />
         </div>
         {'reason' in result && typeof result.reason === 'string' && (
           <p className="mt-1 text-xs text-gray-400">{result.reason}</p>

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [dash-0.4.0] - 2026-04-03
+
+### Added
+- [D09] Report text export: `CopyReportButton` component — calls `formatReport(result)` from engine and writes to `navigator.clipboard`; shows "Copied!" confirmation for 1.5s; integrated into `ResultDetailView` status banner; accessible `aria-label`; clipboard errors silently swallowed
+
 ## [dash-0.3.0] - 2026-04-03
 
 ### Added
