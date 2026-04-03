@@ -3,7 +3,7 @@ id: "015"
 title: "Style complexity detection rule (flag components with expensive CSS properties)"
 type: rule
 priority: 3
-status: active
+status: done
 created: 2026-04-03
 sot-section: "Section 4.2.3, Section 7"
 depends-on: "005, 006"
