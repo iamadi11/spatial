@@ -45,3 +45,8 @@ depends-on: "D05"
 
 **Unknown cases:**
 - U1: Errors button shows 0 count when result has only warnings
+
+## Implementation Plan
+
+1. `dashboard/src/components/SeverityFilter.tsx` — new component; renders three buttons (All/Errors/Warnings) with count badges; uses `aria-pressed` for active state
+2. `dashboard/src/components/ResultDetailView.tsx` — adds `useState<'all'|'error'|'warning'>('all')` filter state; computes `filteredIssues` and `counts`; renders `SeverityFilter` + "N of M issues" heading above list; filter hidden when no issues
