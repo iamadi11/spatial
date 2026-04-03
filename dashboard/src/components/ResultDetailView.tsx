@@ -1,5 +1,9 @@
+import { useState } from 'react'
 import type { PerformanceResult, PerformanceMetrics } from '../lib/engine'
 import { IssueCard } from './IssueCard'
+import { SeverityFilter } from './SeverityFilter'
+
+type Severity = 'all' | 'error' | 'warning'
 
 type Props = {
   result: PerformanceResult
@@ -25,7 +29,18 @@ const METRIC_ROWS: MetricRow[] = [
 ]
 
 export function ResultDetailView({ result }: Props) {
+  const [filter, setFilter] = useState<Severity>('all')
   const style = STATUS_STYLES[result.status] ?? STATUS_STYLES['unknown']
+
+  const hasIssues = result.issues.length > 0
+  const filteredIssues =
+    filter === 'all' ? result.issues : result.issues.filter((i) => i.severity === filter)
+
+  const counts = {
+    all: result.issues.length,
+    error: result.issues.filter((i) => i.severity === 'error').length,
+    warning: result.issues.filter((i) => i.severity === 'warning').length,
+  }
 
   return (
     <section className="space-y-4" aria-label="Result detail">
@@ -61,14 +76,17 @@ export function ResultDetailView({ result }: Props) {
         </table>
       </div>
 
-      {/* Issue list */}
-      {result.issues.length > 0 && (
+      {/* Issue list with filter */}
+      {hasIssues && (
         <div>
-          <h3 className="mb-2 text-xs font-medium text-gray-500 uppercase tracking-wide">
-            Issues ({result.issues.length})
-          </h3>
+          <div className="mb-2 flex items-center justify-between">
+            <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+              {filteredIssues.length} of {result.issues.length} issues
+            </h3>
+            <SeverityFilter active={filter} onChange={setFilter} counts={counts} />
+          </div>
           <ul className="space-y-2" aria-label="Issue list">
-            {result.issues.map((issue, i) => (
+            {filteredIssues.map((issue, i) => (
               <li key={i}>
                 <IssueCard issue={issue} />
               </li>

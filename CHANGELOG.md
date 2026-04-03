@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [dash-0.3.0] - 2026-04-03
+
+### Added
+- [D08] Issue severity filter: `SeverityFilter` component with All/Errors/Warnings toggle; integrated into `ResultDetailView` with `useState` filter, filtered count badge "N of M issues", and `aria-pressed` active state; filter hidden when result has no issues
+
 ## [0.13.0] - 2026-04-03
 
 ### Added
