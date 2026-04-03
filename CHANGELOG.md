@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-04-03
+
+### Added
+- [021] Report summary formatter: `formatReport(result)` — renders a complete `PerformanceResult` as a human-readable multi-line text block
+
 ## [0.8.2] - 2026-04-03
 
 ### Added

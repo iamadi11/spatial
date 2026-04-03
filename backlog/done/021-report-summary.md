@@ -3,7 +3,7 @@ id: "021"
 title: "Report summary formatter (human-readable text output for PerformanceResult)"
 type: feature
 priority: 4
-status: active
+status: done
 created: 2026-04-03
 sot-section: "Section 5.2, Section 9"
 depends-on: "012"
@@ -63,3 +63,16 @@ Test file: `tests/unit/report-summary.test.ts`
 | 6 | Edge | no reason field | no "Reason:" line in output |
 | 7 | Failure | any result | returns a string |
 | 8 | Unknown | same input twice | identical output (deterministic) |
+
+## Validation Report
+
+Date: 2026-04-03
+
+| Gate | Status | Notes |
+|------|--------|-------|
+| PM Validation | PASS | Problem, scope, non-goals, format defined |
+| QA Validation | PASS | 3 happy, 3 edge, 1 failure, 1 unknown |
+| Dev Validation | PASS | Pure function, no DOM, no randomness, no `any` |
+| Test Coverage | PASS | 8/8 tests pass, 155/155 total suite passes |
+
+Overall: PASS
