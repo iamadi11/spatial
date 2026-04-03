@@ -5,6 +5,7 @@ const ENGINE_VERSION = '0.8.1'
 const NAV_LINKS = [
   { to: '/rules', label: 'Rules' },
   { to: '/analyze', label: 'Analyze' },
+  { to: '/live', label: 'Live' },
 ]
 
 export function Sidebar() {
