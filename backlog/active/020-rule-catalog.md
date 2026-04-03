@@ -3,7 +3,7 @@ id: "020"
 title: "Rule catalog (structured metadata export for all built-in rules)"
 type: infra
 priority: 3
-status: ready
+status: active
 created: 2026-04-03
 sot-section: "Section 5.2, Section 7"
 depends-on: "004"
