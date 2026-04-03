@@ -48,3 +48,16 @@ Test file: `tests/unit/rules/child-count.test.ts`
 | 7 | Edge | threshold 0, 1 child | triggered |
 | 8 | Failure | default threshold, 0 children | not triggered |
 | 9 | Unknown | varying metrics, same node | result identical (metrics do not affect rule) |
+
+## Validation Report
+
+Date: 2026-04-03
+
+| Gate | Status | Notes |
+|------|--------|-------|
+| PM Validation | PASS | Problem, scope, non-goals, expected behavior all defined |
+| QA Validation | PASS | 2 happy, 4 edge, 1 failure, 1 unknown test cases |
+| Dev Validation | PASS | Pure function, no DOM, no randomness, no `any`, O(1) per node |
+| Test Coverage | PASS | 9/9 tests pass, 83/83 total suite passes |
+
+Overall: PASS
