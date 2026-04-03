@@ -3,7 +3,7 @@ id: "013"
 title: "Child count detection rule (flag oversized component children)"
 type: rule
 priority: 3
-status: active
+status: done
 created: 2026-04-03
 sot-section: "Section 4.2.2, Section 7"
 depends-on: "005, 006"
