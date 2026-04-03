@@ -3,7 +3,7 @@ id: "019"
 title: "Expand style-complexity expensive property set (improved measurement accuracy)"
 type: perf
 priority: 4
-status: ready
+status: done
 created: 2026-04-03
 sot-section: "Section 12 (improved measurement accuracy), Section 4.2.3"
 depends-on: "015"
@@ -22,3 +22,36 @@ depends-on: "015"
 **Expected behavior** (unchanged interface, expanded detection):
 - `styles` contains `animation`, `transition`, or `willChange` → triggered, same as existing expensive properties
 - Existing behavior for all 5 current properties is preserved
+
+## Implementation Plan
+
+**File**: `src/rules/style-complexity.ts` (edit only — no new files)
+
+**Change**: Add `'animation'`, `'transition'`, `'willChange'` to the `EXPENSIVE_PROPERTIES` Set.
+
+No interface changes. No new exports.
+
+## QA Test Plan
+
+Tests added to: `tests/unit/rules/style-complexity.test.ts`
+
+| # | Type | Input | Expected |
+|---|------|-------|----------|
+| 10 | New prop | `animation` in styles | triggered, message contains "animation" |
+| 11 | New prop | `transition` in styles | triggered, message contains "transition" |
+| 12 | New prop | `willChange` in styles | triggered, message contains "willChange" |
+
+(Existing 9 tests remain unchanged and continue to pass)
+
+## Validation Report
+
+Date: 2026-04-03
+
+| Gate | Status | Notes |
+|------|--------|-------|
+| PM Validation | PASS | Problem, scope, non-goals, expected behavior defined |
+| QA Validation | PASS | 3 new tests for the 3 new properties; all 12 style-complexity tests pass |
+| Dev Validation | PASS | Pure static set expansion only — no DOM, no randomness, no `any` |
+| Test Coverage | PASS | 12/12 style-complexity tests pass, 138/138 total suite passes |
+
+Overall: PASS

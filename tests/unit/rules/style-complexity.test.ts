@@ -106,6 +106,33 @@ describe('style-complexity rule', () => {
     expect(rule.detect(node, baseMetrics).triggered).toBe(false)
   })
 
+  // [019] New properties: animation — triggered
+  it('triggers for animation property', () => {
+    const rule = createStyleComplexityRule()
+    const node: ComponentNode = { id: 'n10', type: 'div', styles: { animation: 'spin 1s linear infinite' } }
+    const result = rule.detect(node, baseMetrics)
+    expect(result.triggered).toBe(true)
+    expect(result.issue?.message).toContain('animation')
+  })
+
+  // [019] New properties: transition — triggered
+  it('triggers for transition property', () => {
+    const rule = createStyleComplexityRule()
+    const node: ComponentNode = { id: 'n11', type: 'div', styles: { transition: 'all 0.3s ease' } }
+    const result = rule.detect(node, baseMetrics)
+    expect(result.triggered).toBe(true)
+    expect(result.issue?.message).toContain('transition')
+  })
+
+  // [019] New properties: willChange — triggered
+  it('triggers for willChange property', () => {
+    const rule = createStyleComplexityRule()
+    const node: ComponentNode = { id: 'n12', type: 'div', styles: { willChange: 'transform' } }
+    const result = rule.detect(node, baseMetrics)
+    expect(result.triggered).toBe(true)
+    expect(result.issue?.message).toContain('willChange')
+  })
+
   // Unknown/deterministic: metrics have no effect
   it('result is unaffected by metric values (rule only reads styles)', () => {
     const rule = createStyleComplexityRule()

@@ -20,4 +20,4 @@
 | 016 | Nesting depth detection rule (flag deeply nested trees)             | rule    | 4        | done   | Section 4.2.2, 7     | 005, 006            |
 | 017 | Total node count detection rule (flag oversized component trees)    | rule    | 3        | done   | Section 4.2.2, 7     | 005, 006            |
 | 018 | Inline style count detection rule (flag excessive inline styles)    | rule    | 3        | done   | Section 4.2.2, 7     | 005, 006            |
-| 019 | Expand style-complexity property set (accuracy improvement)        | perf    | 4        | ready  | Section 12, 4.2.3    | 015                 |
+| 019 | Expand style-complexity property set (accuracy improvement)        | perf    | 4        | done   | Section 12, 4.2.3    | 015                 |
