@@ -35,6 +35,7 @@ This is the unified backlog for both the **spatial engine** (numeric IDs) and th
 | 027 | Large data prop detection rule (flag oversized prop payloads)      | rule    | 3        | done    | Section 4.2.2, 12   | 005, 006            |
 | 028 | Unvirtualized list detection rule (flag large same-type sibling groups) | rule | 3    | done   | Section 4.2.2, 7, 12 | 005, 006           |
 | 029 | Anonymous component detection rule (flag unnamed component types)  | rule    | 4        | done   | Section 4.2.2, 7, 12 | 005, 006           |
+| 030 | Boolean prop overload detection rule (flag do-it-all components)   | rule    | 3        | ready  | Section 4.2.2, 7, 12 | 005, 006           |
 
 ## Dashboard Items
 
@@ -51,3 +52,6 @@ This is the unified backlog for both the **spatial engine** (numeric IDs) and th
 | D09 | Report text export (copy formatReport output to clipboard)         | feature | 4        | done   | Section 16.6   | D05        |
 | D10 | Rule catalog search and filter (filter rules by name or severity)  | feature | 3        | done   | Section 16.6   | D03        |
 | D11 | Metrics bar display (visual metric bars for PerformanceResult)     | feature | 4        | done   | Section 16.6   | D05        |
+| D12 | Rule catalog sync — register 5 missing engine rules in dashboard   | feature | 2        | ready  | Section 16.6   | D02        |
+| D13 | Playground preset examples (one-click load passing/failing trees)  | feature | 3        | ready  | Section 16.6   | D04        |
+| D14 | Live page last-updated indicator (timestamp + pulse on new data)   | feature | 4        | ready  | Section 16.6   | D07        |

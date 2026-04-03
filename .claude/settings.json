@@ -30,26 +30,31 @@
     ]
   },
   "env": {
-    "PATH": "/Users/adityaraj/.nvm/versions/node/v20.14.0/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin"
+    "PATH": "/Library/Frameworks/Python.framework/Versions/3.12/bin:/Users/adityaraj/.nvm/versions/node/v24.12.0/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin"
   },
   "hooks": {
     "PostToolUse": [
       {
-        "matcher": "Edit|Write|Bash",
-        "command": "code-review-graph update --quiet",
-        "timeout": 5000
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(git commit*)",
+            "command": "code-review-graph update --quiet",
+            "timeout": 30
+          }
+        ]
       }
     ],
     "SessionStart": [
       {
-        "command": "code-review-graph status --json",
-        "timeout": 3000
-      }
-    ],
-    "PreCommit": [
-      {
-        "command": "code-review-graph detect-changes --brief",
-        "timeout": 10000
+        "hooks": [
+          {
+            "type": "command",
+            "command": "code-review-graph status --json",
+            "timeout": 10
+          }
+        ]
       }
     ]
   }

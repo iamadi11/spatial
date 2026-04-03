@@ -130,7 +130,7 @@
 <header>
   <div>
     <h1>Spatial — Code Review Graph</h1>
-    <p>Module dependency map &middot; click a node to trace imports</p>
+    <p>Module dependency map &middot; 40 nodes &middot; engine v0.15.0 / dash v0.6.0 &middot; click a node to trace imports</p>
   </div>
   <div class="legend">
     <div class="legend-item"><div class="legend-dot" style="background:#58a6ff"></div>Engine Core</div>
@@ -197,7 +197,9 @@ const nodes = [
   { id: "r-prop-count",       label: "prop-count",           layer: "rules", path: "src/rules/prop-count.ts" },
   { id: "r-render-count",     label: "render-count",         layer: "rules", path: "src/rules/render-count.ts" },
   { id: "r-style-complexity", label: "style-complexity",     layer: "rules", path: "src/rules/style-complexity.ts" },
-  { id: "r-total-node-count", label: "total-node-count",     layer: "rules", path: "src/rules/total-node-count.ts" },
+  { id: "r-total-node-count",      label: "total-node-count",      layer: "rules", path: "src/rules/total-node-count.ts" },
+  { id: "r-unvirtualized-list",    label: "unvirtualized-list",    layer: "rules", path: "src/rules/unvirtualized-list.ts" },
+  { id: "r-anonymous-component",   label: "anonymous-component",   layer: "rules", path: "src/rules/anonymous-component.ts" },
 
   // Adapters
   { id: "a-react",    label: "adapters/react.ts",     layer: "adapters", path: "src/adapters/react.ts" },
@@ -219,6 +221,7 @@ const nodes = [
   { id: "c-copy-report",      label: "CopyReportButton",  layer: "components", path: "dashboard/src/components/CopyReportButton.tsx" },
   { id: "c-severity-filter",  label: "SeverityFilter",    layer: "components", path: "dashboard/src/components/SeverityFilter.tsx" },
   { id: "c-sidebar",          label: "Sidebar",           layer: "components", path: "dashboard/src/components/Sidebar.tsx" },
+  { id: "c-metrics-bar",      label: "MetricsBarDisplay", layer: "components", path: "dashboard/src/components/MetricsBarDisplay.tsx" },
 
   // Pages / App
   { id: "p-playground", label: "AnalysisPlaygroundPage", layer: "pages", path: "dashboard/src/pages/AnalysisPlaygroundPage.tsx" },
@@ -253,7 +256,9 @@ const edges = [
   { source: "r-large-data-prop",  target: "types" },
   { source: "r-dup-component",    target: "types" },
   { source: "r-nesting-depth",    target: "types" },
-  { source: "r-total-node-count", target: "types" },
+  { source: "r-total-node-count",    target: "types" },
+  { source: "r-unvirtualized-list",  target: "rule-registry" },
+  { source: "r-anonymous-component", target: "rule-registry" },
 
   // Adapters → engine + rules + adapters
   { source: "a-react",   target: "types" },
@@ -296,11 +301,13 @@ const edges = [
   { source: "c-analysis-result", target: "d-engine" },
   { source: "c-metrics-input",   target: "d-engine" },
   { source: "c-copy-report",     target: "d-engine" },
+  { source: "c-metrics-bar",     target: "d-engine" },
 
   // Components → components
   { source: "c-result-detail",  target: "c-issue-card" },
   { source: "c-result-detail",  target: "c-severity-filter" },
   { source: "c-result-detail",  target: "c-copy-report" },
+  { source: "c-result-detail",  target: "c-metrics-bar" },
   { source: "c-app-shell",      target: "c-sidebar" },
 
   // Pages → lib + components
