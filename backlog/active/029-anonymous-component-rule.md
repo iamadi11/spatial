@@ -3,7 +3,7 @@ id: "029"
 title: "Anonymous component detection rule (flag unnamed component types)"
 type: rule
 priority: 4
-status: ready
+status: active
 created: 2026-04-04
 sot-section: "Section 4.2.2, 7, 12"
 depends-on: "005, 006"
