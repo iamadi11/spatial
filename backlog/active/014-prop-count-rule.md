@@ -22,3 +22,29 @@ depends-on: "005, 006"
 **Expected behavior**:
 - `Object.keys(props).length > threshold` → triggered, severity `warning`
 - `props` absent or within threshold → not triggered
+
+## Implementation Plan
+
+**File**: `src/rules/prop-count.ts`
+
+**Function**: `createPropCountRule(threshold?: number): Rule`
+- Reads `Object.keys(node.props ?? {}).length`
+- Returns triggered + issue when `count > threshold`
+- Default threshold: 15
+- Does not use metrics
+
+## QA Test Plan
+
+Test file: `tests/unit/rules/prop-count.test.ts`
+
+| # | Type | Input | Expected |
+|---|------|-------|----------|
+| 1 | Happy | 5 props, threshold 10 | not triggered |
+| 2 | Happy | 10 props, threshold 10 (at boundary) | not triggered |
+| 3 | Happy | 11 props, threshold 10 | triggered, warning, message contains "11" |
+| 4 | Edge | no `props` property | not triggered |
+| 5 | Edge | empty `props: {}` | not triggered |
+| 6 | Edge | 500 props, threshold 10 | triggered, message contains "500" |
+| 7 | Edge | threshold 0, 1 prop | triggered |
+| 8 | Failure | default threshold, 0 props | not triggered |
+| 9 | Unknown | varying metrics, same node | result identical |
