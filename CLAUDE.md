@@ -1,8 +1,8 @@
-# Layout Validator — AI Development Instructions
+# Spatial — AI Development Instructions
 
 ## Project Identity
 
-**Product**: Client-Side UI Performance Optimizer — a deterministic development-time UI performance detection engine that identifies potential performance bottlenecks before code ships.
+**Product**: A deterministic dev-time UI performance detection engine that integrates into real React projects with ≤ 3 lines of setup code.
 
 **Governance**: `SourceOfTruth.md` is the IMMUTABLE product governance document. Never modify it. Always comply with it.
 
@@ -43,25 +43,28 @@ This runs the **entire development loop** — pick-next → plan → write-tests
 | `/brainstorm` | PM | Propose new rules/improvements within SOT policy |
 | `/status` | Dashboard | Show project health, backlog state, test results |
 
-### When to Use Each
-
-- **Starting a new project?** → `/kickoff` once, then `/dev`
-- **Resuming work?** → `/dev` (picks up from current state)
-- **Checking health?** → `/status` anytime
-- **Found a bug?** → `/detect-bugs`
-- **Want new features?** → `/brainstorm`
-
 ---
 
 ## Technical Constraints
+
+### Core Engine (`src/` — excluding `src/adapters/`)
 
 - **Language**: TypeScript with strict mode (`"strict": true`)
 - **Functions**: Pure only — no side effects, no mutations, no global state
 - **Testing**: vitest — tests MUST exist before implementation
 - **No DOM**: No `document`, `window`, `navigator`, or browser APIs
 - **No randomness**: No `Math.random()` — engine must be deterministic
-- **Performance**: O(n) max traversal, caching for text measurement
+- **Performance**: O(n) max traversal, caching where needed
 - **Unknown handling**: If uncertain, return `{ status: "unknown", reason: "..." }`
+- **Bundle target**: ≤ 5 KB gzipped
+
+### Integration Adapters (`src/adapters/`)
+
+- **Browser APIs allowed**: `PerformanceObserver`, `performance.memory`, React Profiler
+- **Dev-only guard required**: every adapter must check `process.env.NODE_ENV !== 'production'`
+- **No React internals patching**: only public APIs (`React.Profiler`, fiber read-only access)
+- **Tree-shakeable**: each adapter exported independently — unused adapters must not appear in consumer bundles
+- **Bundle target**: full integration bundle ≤ 20 KB gzipped
 
 ---
 
@@ -81,9 +84,10 @@ This runs the **entire development loop** — pick-next → plan → write-tests
 Types: `feat`, `fix`, `infra`, `perf`, `test`, `docs`
 
 ### File Naming
-- Source: `src/{module-name}.ts` (kebab-case)
+- Core source: `src/{module-name}.ts` (kebab-case)
+- Adapter source: `src/adapters/{adapter-name}.ts`
 - Tests: `tests/unit/{module-name}.test.ts`
-- Integration: `tests/integration/{feature-name}.integration.test.ts`
+- Integration tests: `tests/integration/{feature-name}.integration.test.ts`
 
 ---
 
@@ -95,9 +99,6 @@ Types: `feat`, `fix`, `infra`, `perf`, `test`, `docs`
 - Each item file has frontmatter (id, title, type, priority, status, created, sot-section, depends-on)
 - Sections are filled progressively: PM Plan → QA Test Plan → Implementation Plan → Validation Report
 
-### Item Template Location
-Items follow the template defined in the plan. Create them in `backlog/ready/` with status `ready`.
-
 ---
 
 ## Quality Gates (4 Mandatory)
@@ -106,8 +107,8 @@ Nothing ships without passing ALL gates:
 
 1. **PM Gate**: Problem defined, scope limited, non-goals listed
 2. **QA Gate**: Test cases cover happy path, edge cases, failures, unknowns
-3. **Dev Gate**: Pure functions, no DOM, deterministic, O(n) complexity
-4. **Test Gate**: All tests pass, no skipped tests, full coverage
+3. **Dev Gate**: Core = pure/no-DOM; Adapters = dev-only guard present, no internals patched
+4. **Test Gate**: All tests pass, no skipped tests, bundle size verified
 
 See `.claude/rules/quality-gates.md` for detailed checklists.
 
@@ -116,15 +117,24 @@ See `.claude/rules/quality-gates.md` for detailed checklists.
 ## Project Structure
 
 ```
-src/                    → Source code (TypeScript, pure functions)
-tests/unit/             → Unit tests (vitest)
-tests/integration/      → Integration tests
-backlog/ready/          → Work items waiting for development
-backlog/active/         → Currently being worked on (max 1)
-backlog/done/           → Completed and released items
-releases/               → Release notes per version
-BACKLOG.md              → Work item index table
-VERSION                 → Current semver version
-CHANGELOG.md            → Changelog in Keep-a-Changelog format
-SourceOfTruth.md        → [IMMUTABLE] Product governance document
+src/
+  engine.ts          ← core analyze() — pure function
+  types.ts           ← shared types
+  rule-registry.ts   ← registry factory — pure
+  traversal.ts       ← O(n) tree walker — pure
+  rules/             ← individual rule implementations — pure, no DOM
+  adapters/          ← real-world bridge — browser APIs allowed, dev-only
+    react.ts         ← React Profiler + fiber tree → ComponentNode
+    metrics.ts       ← PerformanceObserver → PerformanceMetrics
+    index.ts         ← SpatialProvider, useSpatial hook
+tests/unit/          ← vitest unit tests (pure functions only)
+tests/integration/   ← integration tests (jsdom or real browser)
+backlog/ready/       ← work items waiting
+backlog/active/      ← currently being worked on (max 1)
+backlog/done/        ← completed and released
+releases/            ← release notes per version
+BACKLOG.md           ← work item index
+VERSION              ← current semver version
+CHANGELOG.md         ← Keep-a-Changelog format
+SourceOfTruth.md     ← [IMMUTABLE] product governance
 ```
