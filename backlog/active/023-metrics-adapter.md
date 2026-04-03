@@ -27,3 +27,17 @@ depends-on: "022"
 **Non-goals**: Do not instrument React renders (that belongs to the SpatialProvider). Do not persist metrics across sessions. Do not average or smooth values.
 
 **Done when**: `collectMetrics(renderCount)` returns a valid `PerformanceMetrics` object in a browser environment without errors.
+
+## QA Test Plan
+
+| # | Type | Input | Expected Output |
+|---|------|-------|-----------------|
+| 1 | Happy | `collectMetrics(3)` with full browser mocks | Object with renderCount, layoutShifts, fpsDrop, memoryUsage fields |
+| 2 | Happy | `collectMetrics(7)` and `collectMetrics(0)` | renderCount matches injected value exactly |
+| 3 | Happy | `performance.memory.usedJSHeapSize = 52_428_800` | `memoryUsage === 50` (MB conversion) |
+| 4 | Happy | Any valid call | layoutShifts and fpsDrop >= 0 |
+| 5 | Edge | `performance.memory` missing | `memoryUsage === 0` |
+| 6 | Edge | `renderCount = 0` | No error, renderCount field is 0 |
+| 7 | Edge | Any call | All four fields are finite numbers (no NaN/Infinity) |
+| 8 | Failure | `NODE_ENV = 'production'` | Returns `{ renderCount:0, layoutShifts:0, fpsDrop:0, memoryUsage:0 }` |
+| 9 | Unknown | `PerformanceObserver` not available | Returns valid PerformanceMetrics without throwing |
