@@ -2,11 +2,11 @@
 
 ## Project Identity
 
-**Product**: A dev-time React dashboard that visualises `spatial` engine output.
+**Product**: A dev-time React dashboard that visualises `spatial` engine output — supporting both manual JSON experiments and live analysis of real React projects.
 
 **Governance**: `SourceOfTruth.md` is the IMMUTABLE product governance document. Never modify it. Always comply with it.
 
-**Engine location**: `../src/` — import engine types and functions from there directly.
+**Engine location**: `../src/` — all engine calls go through `src/lib/engine.ts`. Never import from `../src/` directly in components.
 
 ---
 
@@ -39,6 +39,7 @@
 - **No detection logic in the dashboard** — all rules live in `../src/`
 - **Pure render** — components are display-only; no side effects in render
 - **Accessible** — all interactive elements have ARIA labels
+- **Live bridge** — the `window.__SPATIAL__` bridge is read-only in the dashboard; only the engine adapter writes to it
 
 ---
 
@@ -57,10 +58,12 @@ Types: `feat`, `fix`, `style`, `refactor`, `test`
 ### File Structure
 ```
 src/
-  lib/           ← engine adapter functions (only place engine is called)
+  lib/           ← engine adapter (only place engine is called)
+    engine.ts    ← runAnalysis(), getRuleCatalog(), re-exports
+    live.ts      ← reads window.__SPATIAL__ bridge for live results
   components/    ← React components (display only)
-  pages/         ← Page-level components
-  types.ts       ← Dashboard-specific types (never duplicate engine types)
+  pages/         ← page-level components
+  types.ts       ← dashboard-specific types (never duplicate engine types)
 ```
 
 ---
@@ -87,7 +90,7 @@ src/
 ```
 dashboard/
   src/
-    lib/            ← engine adapter (calls ../src/ functions)
+    lib/            ← engine adapter + live bridge reader
     components/     ← UI components
     pages/          ← page views
     types.ts        ← dashboard-only types
@@ -96,6 +99,7 @@ dashboard/
     active/
     done/
   public/
+  tests/
   BACKLOG.md
   CLAUDE.md
   SourceOfTruth.md
