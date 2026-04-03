@@ -3,7 +3,7 @@ id: "028"
 title: "Unvirtualized list detection rule (flag large same-type sibling groups)"
 type: rule
 priority: 3
-status: active
+status: done
 created: 2026-04-04
 sot-section: "Section 4.2.2, 7, 12"
 depends-on: "005, 006"
