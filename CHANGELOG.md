@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [dash-0.5.0] - 2026-04-04
+
+### Added
+- [D10] Rule catalog search and filter: text search input (case-insensitive substring) and severity filter buttons (All / warning / error) on the `/rules` page; filters combine with AND logic; filtered count label "Showing N of M rules"; all filter buttons have `aria-pressed` state
+
 ## [0.14.0] - 2026-04-04
 
 ### Added
