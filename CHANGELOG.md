@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-04-03
+
+### Added
+- [025] Event handler count rule: `createEventHandlerCountRule(threshold=5)` — flags components with more function-valued props than threshold
+
 ## [0.10.0] - 2026-04-03
 
 ### Added

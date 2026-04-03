@@ -26,6 +26,6 @@
 | 022 | React fiber adapter (src/adapters/react.ts)                        | infra   | 1        | done   | Adapters section     | 004, 017            |
 | 023 | Metrics adapter (src/adapters/metrics.ts)                          | infra   | 1        | done   | Adapters section     | 022                 |
 | 024 | SpatialProvider (src/adapters/index.ts)                            | infra   | 1        | done   | Adapters section     | 022, 023            |
-| 025 | Event handler count detection rule (flag excessive event bindings) | rule    | 3        | ready  | Section 4.2.2, 7    | 005, 006            |
+| 025 | Event handler count detection rule (flag excessive event bindings) | rule    | 3        | done   | Section 4.2.2, 7    | 005, 006            |
 | 026 | Duplicate component type detection rule (flag repeated types)      | rule    | 3        | ready  | Section 4.2.2, 7    | 005, 006            |
 | 027 | Large data prop detection rule (flag oversized prop payloads)      | rule    | 3        | ready  | Section 4.2.2, 12   | 005, 006            |
