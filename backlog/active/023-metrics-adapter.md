@@ -41,3 +41,27 @@ depends-on: "022"
 | 7 | Edge | Any call | All four fields are finite numbers (no NaN/Infinity) |
 | 8 | Failure | `NODE_ENV = 'production'` | Returns `{ renderCount:0, layoutShifts:0, fpsDrop:0, memoryUsage:0 }` |
 | 9 | Unknown | `PerformanceObserver` not available | Returns valid PerformanceMetrics without throwing |
+
+## Implementation Plan
+
+**Functions**:
+1. `attachObserver()` — attaches `PerformanceObserver` for `layout-shift` once; accumulates `_layoutShiftCount`
+2. `attachRaf()` — registers a `requestAnimationFrame` loop once; increments `_fpsDrop` on frames > 2× target
+3. `readMemoryMB()` — reads `performance.memory?.usedJSHeapSize / 1_048_576`; returns 0 if unavailable
+4. `collectMetrics(renderCount): PerformanceMetrics` — production guard, attaches observers, returns snapshot
+5. `resetMetrics()` — resets module-level accumulators (test utility)
+
+**Files touched**: `src/adapters/metrics.ts` (new)
+
+## Validation Report
+
+Date: 2026-04-03
+
+| Gate | Status | Notes |
+|------|--------|-------|
+| PM Validation | PASS | Problem, scope, non-goals, done-when all present |
+| QA Validation | PASS | 9 tests: 4 happy, 3 edge, 1 failure, 1 unknown |
+| Dev Validation | PASS | Production guard on line 63; no DOM manipulation; no mutations of external objects |
+| Test Coverage | PASS | 174/174 tests pass; no skips |
+
+Overall: PASS
