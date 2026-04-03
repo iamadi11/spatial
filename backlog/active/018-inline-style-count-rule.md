@@ -22,3 +22,29 @@ depends-on: "005, 006"
 **Expected behavior**:
 - `Object.keys(styles).length > threshold` → triggered, severity `warning`
 - `styles` absent or within threshold → not triggered
+
+## Implementation Plan
+
+**File**: `src/rules/inline-style-count.ts`
+
+**Function**: `createInlineStyleCountRule(threshold?: number): Rule`
+- Reads `Object.keys(node.styles ?? {}).length`
+- Returns triggered + issue when `count > threshold`
+- Default threshold: 15
+- Does not use metrics (deterministic from node structure alone)
+
+## QA Test Plan
+
+Test file: `tests/unit/rules/inline-style-count.test.ts`
+
+| # | Type | Input | Expected |
+|---|------|-------|----------|
+| 1 | Happy | 5 styles, threshold 10 | not triggered |
+| 2 | Happy | 10 styles, threshold 10 (at boundary) | not triggered |
+| 3 | Happy | 11 styles, threshold 10 | triggered, warning, message contains "11" and "10" |
+| 4 | Edge | no `styles` property | not triggered |
+| 5 | Edge | empty `styles: {}` | not triggered |
+| 6 | Edge | 200 styles, threshold 10 | triggered, message contains "200" |
+| 7 | Edge | threshold 0, 1 style | triggered |
+| 8 | Failure | default threshold, 0 styles | not triggered |
+| 9 | Unknown | varying metrics, same node | result identical |
