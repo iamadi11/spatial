@@ -22,3 +22,19 @@ depends-on: "005, 006"
 **Expected behavior**:
 - `children.length > threshold` → triggered, severity `warning`
 - `children.length <= threshold` or no children → not triggered
+
+## QA Test Plan
+
+Test file: `tests/unit/rules/child-count.test.ts`
+
+| # | Type | Input | Expected |
+|---|------|-------|----------|
+| 1 | Happy | 5 children, threshold 10 | not triggered |
+| 2 | Happy | 10 children, threshold 10 (exactly at) | not triggered |
+| 3 | Happy | 11 children, threshold 10 | triggered, warning, message contains "11" |
+| 4 | Edge | node with no `children` property | not triggered |
+| 5 | Edge | node with empty `children: []` | not triggered |
+| 6 | Edge | 1000 children, threshold 10 | triggered, message contains "1000" |
+| 7 | Edge | threshold 0, 1 child | triggered |
+| 8 | Failure | default threshold, 0 children | not triggered |
+| 9 | Unknown | varying metrics, same node | result identical (metrics do not affect rule) |
