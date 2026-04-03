@@ -50,4 +50,4 @@ This is the unified backlog for both the **spatial engine** (numeric IDs) and th
 | D08 | Issue severity filter on Analysis Playground page                  | feature | 3        | done   | Section 16.6   | D05        |
 | D09 | Report text export (copy formatReport output to clipboard)         | feature | 4        | done   | Section 16.6   | D05        |
 | D10 | Rule catalog search and filter (filter rules by name or severity)  | feature | 3        | done   | Section 16.6   | D03        |
-| D11 | Metrics bar display (visual metric bars for PerformanceResult)     | feature | 4        | ready  | Section 16.6   | D05        |
+| D11 | Metrics bar display (visual metric bars for PerformanceResult)     | feature | 4        | done   | Section 16.6   | D05        |

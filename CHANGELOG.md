@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [dash-0.6.0] - 2026-04-04
+
+### Added
+- [D11] Metrics bar display: `MetricsBarDisplay` component renders 4 horizontal bars (renderCount, layoutShifts, fpsDrop, memoryUsage); bar width proportional to per-metric max; colour-coded green/amber/red by threshold proximity; numeric value shown next to each bar; `aria-label` on region and each bar row; integrated into `ResultDetailView` replacing the plain metrics table
+
 ## [0.15.0] - 2026-04-04
 
 ### Added
