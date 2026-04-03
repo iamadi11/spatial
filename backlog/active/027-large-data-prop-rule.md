@@ -3,7 +3,7 @@ id: "027"
 title: "Large data prop detection rule (flag props carrying oversized serialised data)"
 type: rule
 priority: 3
-status: ready
+status: active
 created: 2026-04-03
 sot-section: "Section 4.2.2, 12 (measurement accuracy)"
 depends-on: "005, 006"
