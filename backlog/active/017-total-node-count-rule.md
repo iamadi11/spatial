@@ -58,3 +58,16 @@ Test file: `tests/unit/rules/total-node-count.test.ts`
 | 10 | Edge | 500 nodes, threshold 100 | triggered, message contains "500" |
 | 11 | Failure | default threshold, single root | null |
 | 12 | Unknown | same tree called twice | identical results |
+
+## Validation Report
+
+Date: 2026-04-03
+
+| Gate | Status | Notes |
+|------|--------|-------|
+| PM Validation | PASS | Problem, scope, non-goals, expected behavior defined |
+| QA Validation | PASS | 3 happy, 4 edge, 1 failure, 1 unknown test cases (12 total) |
+| Dev Validation | PASS | Pure functions, no DOM, no randomness, no `any`, O(n) DFS |
+| Test Coverage | PASS | 12/12 tests pass, 126/126 total suite passes |
+
+Overall: PASS
