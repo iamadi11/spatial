@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.0] - 2026-04-03
+
+### Added
+- [026] Duplicate component type rule: `createDuplicateComponentTypeRule(threshold=30)` — tree-level rule that flags Pascal-cased component types appearing more than threshold times; HTML tags ignored; O(n) single-pass traversal
+
 ## [0.11.0] - 2026-04-03
 
 ### Added
