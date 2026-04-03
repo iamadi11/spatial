@@ -3,7 +3,7 @@ id: "026"
 title: "Duplicate component type detection rule (flag component types repeated excessively)"
 type: rule
 priority: 3
-status: ready
+status: active
 created: 2026-04-03
 sot-section: "Section 4.2.2, 7"
 depends-on: "005, 006"
