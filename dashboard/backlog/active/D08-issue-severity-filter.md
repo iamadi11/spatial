@@ -50,3 +50,16 @@ depends-on: "D05"
 
 1. `dashboard/src/components/SeverityFilter.tsx` — new component; renders three buttons (All/Errors/Warnings) with count badges; uses `aria-pressed` for active state
 2. `dashboard/src/components/ResultDetailView.tsx` — adds `useState<'all'|'error'|'warning'>('all')` filter state; computes `filteredIssues` and `counts`; renders `SeverityFilter` + "N of M issues" heading above list; filter hidden when no issues
+
+## Validation Report
+
+Date: 2026-04-03
+
+| Gate | Status | Notes |
+|------|--------|-------|
+| PM Validation | PASS | Problem, scope, non-goals, done-when all defined |
+| QA Validation | PASS | 6 happy, 3 edge, 1 failure, 1 unknown tests |
+| Dev Validation | PASS | Isolated components, typed props, no `any`, engine calls only in `src/lib/` |
+| Test Coverage | PASS | 81/81 tests passing, no skips |
+
+Overall: PASS
