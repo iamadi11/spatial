@@ -3,7 +3,7 @@ id: "D09"
 title: "Report text export — copy formatReport() output to clipboard"
 type: feature
 priority: 4
-status: active
+status: done
 created: 2026-04-03
 sot-section: "dashboard/SourceOfTruth.md Section 7 (additional display formats for PerformanceResult)"
 depends-on: "D05"
