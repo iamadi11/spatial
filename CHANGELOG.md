@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-04-03
+
+### Added
+- [016] Nesting depth detection rule: `computeMaxDepth(root)` + `createNestingDepthRule(threshold?)` — flags deeply nested component trees per SOT Section 4.2.2; tree-level checker preserves O(n) traversal
+
 ## [0.5.0] - 2026-04-03
 
 ### Added
