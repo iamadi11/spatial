@@ -3,7 +3,7 @@ id: "027"
 title: "Large data prop detection rule (flag props carrying oversized serialised data)"
 type: rule
 priority: 3
-status: active
+status: done
 created: 2026-04-03
 sot-section: "Section 4.2.2, 12 (measurement accuracy)"
 depends-on: "005, 006"
@@ -39,3 +39,25 @@ depends-on: "005, 006"
 | F2 | Failure | empty props object | does not trigger |
 | U1 | Unknown | circular reference in props | no throw; triggered:false |
 | U2 | Unknown | rule.name | 'large-data-prop' |
+
+## Implementation Plan
+
+**Function**: `createLargeDataPropRule(thresholdBytes=10_000): Rule`
+- Iterates `Object.keys(node.props)`, skips functions
+- For each non-function value: `JSON.stringify(val)?.length` wrapped in try/catch (circular = 0)
+- Sums all lengths; triggers if sum > threshold
+
+**Files touched**: `src/rules/large-data-prop.ts` (new)
+
+## Validation Report
+
+Date: 2026-04-03
+
+| Gate | Status | Notes |
+|------|--------|-------|
+| PM Gate | PASS | Problem, scope, non-goals, done-when present |
+| QA Gate | PASS | 10 tests: 2 happy, 4 edge, 2 failure, 2 unknown |
+| Dev Gate | PASS | Pure function; no DOM; circular refs handled safely; O(n) props scan |
+| Test Gate | PASS | 211/211 pass; no skips |
+
+Overall: PASS
