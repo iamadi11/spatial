@@ -3,7 +3,7 @@ id: "023"
 title: "Metrics adapter (src/adapters/metrics.ts — collect PerformanceMetrics from browser APIs)"
 type: infra
 priority: 1
-status: ready
+status: active
 created: 2026-04-03
 sot-section: "CLAUDE.md Integration Adapters; SOT Section 5.2"
 depends-on: "022"
