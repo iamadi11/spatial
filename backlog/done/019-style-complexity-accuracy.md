@@ -3,7 +3,7 @@ id: "019"
 title: "Expand style-complexity expensive property set (improved measurement accuracy)"
 type: perf
 priority: 4
-status: active
+status: done
 created: 2026-04-03
 sot-section: "Section 12 (improved measurement accuracy), Section 4.2.3"
 depends-on: "015"

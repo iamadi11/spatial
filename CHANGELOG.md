@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.1] - 2026-04-03
+
+### Changed
+- [019] `style-complexity` rule: expanded expensive property detection to include `animation`, `transition`, and `willChange` (improved measurement accuracy per SOT Section 12)
+
 ## [0.8.0] - 2026-04-03
 
 ### Added
