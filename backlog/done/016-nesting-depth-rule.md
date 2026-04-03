@@ -3,7 +3,7 @@ id: "016"
 title: "Nesting depth detection rule (flag deeply nested component trees)"
 type: rule
 priority: 4
-status: active
+status: done
 created: 2026-04-03
 sot-section: "Section 4.2.2, Section 7"
 depends-on: "005, 006"

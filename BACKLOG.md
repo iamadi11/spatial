@@ -17,4 +17,4 @@
 | 013 | Child count detection rule (flag oversized component children)      | rule    | 3        | done   | Section 4.2.2, 7     | 005, 006            |
 | 014 | Prop count detection rule (flag prop-heavy components)              | rule    | 3        | done   | Section 4.2.2, 7     | 005, 006            |
 | 015 | Style complexity detection rule (flag expensive CSS properties)     | rule    | 3        | done   | Section 4.2.3, 7     | 005, 006            |
-| 016 | Nesting depth detection rule (flag deeply nested trees)             | rule    | 4        | active | Section 4.2.2, 7     | 005, 006            |
+| 016 | Nesting depth detection rule (flag deeply nested trees)             | rule    | 4        | done   | Section 4.2.2, 7     | 005, 006            |
