@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.13.0] - 2026-04-03
+
+### Added
+- [027] Large data prop rule: `createLargeDataPropRule(thresholdBytes=10_000)` — flags nodes whose non-function props serialise to more than threshold bytes; circular references handled safely; function props excluded
+
 ## [0.12.0] - 2026-04-03
 
 ### Added
