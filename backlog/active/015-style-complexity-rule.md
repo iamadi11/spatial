@@ -22,3 +22,32 @@ depends-on: "005, 006"
 **Expected behavior**:
 - `styles` contains one or more expensive properties → triggered, severity `warning`, lists which properties
 - `styles` absent or contains no expensive properties → not triggered
+
+## Implementation Plan
+
+**File**: `src/rules/style-complexity.ts`
+
+**Expensive properties set** (static, deterministic):
+`boxShadow`, `filter`, `backdropFilter`, `transform`, `clipPath`
+
+**Function**: `createStyleComplexityRule(): Rule`
+- Reads `Object.keys(node.styles ?? {})`
+- Intersects with the expensive set
+- Returns triggered + issue listing the found expensive keys when intersection is non-empty
+- Does not use metrics
+
+## QA Test Plan
+
+Test file: `tests/unit/rules/style-complexity.test.ts`
+
+| # | Type | Input | Expected |
+|---|------|-------|----------|
+| 1 | Happy | safe props (color, fontSize, margin) | not triggered |
+| 2 | Happy | `boxShadow` present | triggered, warning, message contains "boxShadow" |
+| 3 | Happy | `filter` + `backdropFilter` + safe | triggered, both listed in message |
+| 4 | Edge | no `styles` property | not triggered |
+| 5 | Edge | empty `styles: {}` | not triggered |
+| 6 | Edge | `transform` property | triggered |
+| 7 | Edge | `clipPath` property | triggered |
+| 8 | Failure | styles with no matching expensive keys | not triggered |
+| 9 | Unknown | varying metrics, same node | result identical |
