@@ -3,7 +3,7 @@ id: "D10"
 title: "Rule catalog search and filter (filter rules by name or severity)"
 type: feature
 priority: 3
-status: ready
+status: active
 created: 2026-04-04
 sot-section: "Section 16.6"
 depends-on: "D03"
