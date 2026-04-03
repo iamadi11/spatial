@@ -67,3 +67,16 @@ Test file: `tests/unit/rules/nesting-depth.test.ts`
 | 11 | Edge | threshold 1, tree with 1 child | triggered |
 | 12 | Failure | default threshold, single root | null |
 | 13 | Unknown | same tree called twice | identical results |
+
+## Validation Report
+
+Date: 2026-04-03
+
+| Gate | Status | Notes |
+|------|--------|-------|
+| PM Validation | PASS | Problem, scope, non-goals, architecture decision documented |
+| QA Validation | PASS | 3 happy, 5 edge, 1 failure, 1 unknown cases (13 total) |
+| Dev Validation | PASS | Pure functions, no DOM, no randomness, no `any`, O(n) DFS |
+| Test Coverage | PASS | 13/13 tests pass, 114/114 total suite passes |
+
+Overall: PASS

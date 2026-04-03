@@ -83,7 +83,7 @@ describe('createNestingDepthRule', () => {
     expect(result).not.toBeNull()
     expect(result?.rule).toBe('nesting-depth')
     expect(result?.severity).toBe('warning')
-    expect(result?.nodeId).toBe('root')
+    expect(result?.nodeId).toBe('n0')
     expect(result?.message).toContain('6')
   })
 
