@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.15.0] - 2026-04-04
+
+### Added
+- [029] Anonymous component rule: `createAnonymousComponentRule()` — flags components whose `type` is empty, equals `"Anonymous"` or `"Component"`, or is ≤ 2 characters (minified names); HTML elements (lowercase) are never flagged; pure structural check, metrics unused
+
 ## [dash-0.5.0] - 2026-04-04
 
 ### Added
