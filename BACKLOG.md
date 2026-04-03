@@ -45,5 +45,5 @@ This is the unified backlog for both the **spatial engine** (numeric IDs) and th
 | D05 | Result detail view (status badge + metrics table + issue cards)    | feature | 3        | done   | Section 16.3   | D04        |
 | D06 | Navigation shell (sidebar linking all pages)                       | feature | 3        | done   | Section 16.3   | D03, D05   |
 | D07 | Live analysis page (/live — reads window.__SPATIAL__ bridge)       | feature | 2        | done   | Section 16.3   | D06        |
-| D08 | Issue severity filter on Analysis Playground page                  | feature | 3        | active  | Section 16.6   | D05        |
+| D08 | Issue severity filter on Analysis Playground page                  | feature | 3        | done   | Section 16.6   | D05        |
 | D09 | Report text export (copy formatReport output to clipboard)         | feature | 4        | ready  | Section 16.6   | D05        |

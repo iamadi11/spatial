@@ -3,7 +3,7 @@ id: "D08"
 title: "Issue severity filter on Analysis Playground page"
 type: feature
 priority: 3
-status: active
+status: done
 created: 2026-04-03
 sot-section: "dashboard/SourceOfTruth.md Section 7 (UI improvements to existing pages)"
 depends-on: "D05"
