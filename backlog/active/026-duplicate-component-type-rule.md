@@ -24,3 +24,18 @@ depends-on: "005, 006"
 **Non-goals**: Do not attempt to detect React.memo usage. Do not flag HTML tag types (only component names — first char uppercase). Do not suggest specific virtualisation libraries.
 
 **Done when**: `createDuplicateComponentTypeRule()` detects trees where one component type appears more than 30 times, returns a single warning issue, and all tests pass.
+
+## QA Test Plan
+
+| # | Type | Input | Expected |
+|---|------|-------|----------|
+| H1 | Happy | 31 ListItem children, threshold=30 | warning with "ListItem" and "31" in message |
+| H2 | Happy | 5 ListItem children, threshold=30 | null |
+| E1 | Edge | exactly 10 nodes, threshold=10 | null (> not >=) |
+| E2 | Edge | custom threshold=5, 6 Row nodes | triggers |
+| E3 | Edge | 100 `div` nodes (lowercase) | null — HTML tags ignored |
+| E4 | Edge | 6 Row + 3 Card, threshold=5 | flags Row only |
+| F1 | Failure | root with no children | null |
+| F2 | Failure | all unique types | null |
+| U1 | Unknown | rule.name | 'duplicate-component-type' |
+| U2 | Unknown | 6 Row nodes across nested levels | still detected (full O(n) traversal) |
