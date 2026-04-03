@@ -33,6 +33,8 @@ This is the unified backlog for both the **spatial engine** (numeric IDs) and th
 | 025 | Event handler count detection rule (flag excessive event bindings) | rule    | 3        | done   | Section 4.2.2, 7    | 005, 006            |
 | 026 | Duplicate component type detection rule (flag repeated types)      | rule    | 3        | done    | Section 4.2.2, 7    | 005, 006            |
 | 027 | Large data prop detection rule (flag oversized prop payloads)      | rule    | 3        | done    | Section 4.2.2, 12   | 005, 006            |
+| 028 | Unvirtualized list detection rule (flag large same-type sibling groups) | rule | 3    | done   | Section 4.2.2, 7, 12 | 005, 006           |
+| 029 | Anonymous component detection rule (flag unnamed component types)  | rule    | 4        | ready  | Section 4.2.2, 7, 12 | 005, 006           |
 
 ## Dashboard Items
 
@@ -47,3 +49,5 @@ This is the unified backlog for both the **spatial engine** (numeric IDs) and th
 | D07 | Live analysis page (/live — reads window.__SPATIAL__ bridge)       | feature | 2        | done   | Section 16.3   | D06        |
 | D08 | Issue severity filter on Analysis Playground page                  | feature | 3        | done   | Section 16.6   | D05        |
 | D09 | Report text export (copy formatReport output to clipboard)         | feature | 4        | done   | Section 16.6   | D05        |
+| D10 | Rule catalog search and filter (filter rules by name or severity)  | feature | 3        | ready  | Section 16.6   | D03        |
+| D11 | Metrics bar display (visual metric bars for PerformanceResult)     | feature | 4        | ready  | Section 16.6   | D05        |

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.14.0] - 2026-04-04
+
+### Added
+- [028] Unvirtualized list rule: `createUnvirtualizedListRule(threshold=50)` — flags nodes whose immediate children contain more than threshold siblings of the same component type, indicating a likely unvirtualized list; O(n) via type-count map; metrics unused (structural check only)
+
 ## [dash-0.4.0] - 2026-04-03
 
 ### Added

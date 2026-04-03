@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spatial — Code Review Graph</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", monospace;
+      background: #0d1117;
+      color: #e6edf3;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 12px 20px;
+      background: #161b22;
+      border-bottom: 1px solid #30363d;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+    header h1 { font-size: 15px; font-weight: 600; color: #e6edf3; }
+    header p { font-size: 12px; color: #8b949e; }
+
+    .legend {
+      display: flex;
+      gap: 16px;
+      margin-left: auto;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #8b949e;
+    }
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    #controls {
+      padding: 8px 20px;
+      background: #161b22;
+      border-bottom: 1px solid #30363d;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .filter-btn {
+      padding: 4px 10px;
+      border-radius: 4px;
+      border: 1px solid #30363d;
+      background: #21262d;
+      color: #8b949e;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: #388bfd22;
+      border-color: #388bfd;
+      color: #58a6ff;
+    }
+    #controls span { font-size: 11px; color: #8b949e; margin-right: 4px; }
+
+    #tooltip {
+      position: fixed;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 12px;
+      pointer-events: none;
+      display: none;
+      z-index: 100;
+      max-width: 280px;
+    }
+    #tooltip .tt-file { font-weight: 600; color: #e6edf3; margin-bottom: 6px; font-size: 13px; }
+    #tooltip .tt-layer { font-size: 10px; color: #8b949e; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+    #tooltip .tt-section { font-size: 11px; color: #8b949e; margin-bottom: 3px; }
+    #tooltip .tt-list { list-style: none; }
+    #tooltip .tt-list li { font-size: 11px; color: #58a6ff; padding: 1px 0; }
+    #tooltip .tt-list li::before { content: "→ "; color: #30363d; }
+
+    svg { flex: 1; }
+
+    .node circle {
+      stroke-width: 1.5px;
+      cursor: pointer;
+      transition: r 0.15s;
+    }
+    .node circle:hover { stroke-width: 2.5px; }
+    .node text {
+      font-size: 10px;
+      fill: #c9d1d9;
+      pointer-events: none;
+      dominant-baseline: middle;
+    }
+
+    .link {
+      stroke-opacity: 0.45;
+      stroke-width: 1.5px;
+      fill: none;
+    }
+    .link.highlighted { stroke-opacity: 1; stroke-width: 2.5px; }
+    .link.dimmed { stroke-opacity: 0.08; }
+
+    .node.dimmed circle { opacity: 0.2; }
+    .node.dimmed text { opacity: 0.15; }
+    .node.highlighted circle { stroke-width: 3px; }
+
+    marker path { fill-opacity: 0.6; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Spatial — Code Review Graph</h1>
+    <p>Module dependency map &middot; click a node to trace imports</p>
+  </div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#58a6ff"></div>Engine Core</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#3fb950"></div>Rules</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f78166"></div>Adapters</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#d2a8ff"></div>Dashboard Lib</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ffa657"></div>Components</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ff7b72"></div>Pages / App</div>
+  </div>
+</header>
+
+<div id="controls">
+  <span>Filter:</span>
+  <button class="filter-btn active" data-layer="all">All</button>
+  <button class="filter-btn" data-layer="engine">Engine Core</button>
+  <button class="filter-btn" data-layer="rules">Rules</button>
+  <button class="filter-btn" data-layer="adapters">Adapters</button>
+  <button class="filter-btn" data-layer="dash-lib">Dashboard Lib</button>
+  <button class="filter-btn" data-layer="components">Components</button>
+  <button class="filter-btn" data-layer="pages">Pages</button>
+</div>
+
+<div id="tooltip">
+  <div class="tt-file" id="tt-name"></div>
+  <div class="tt-layer" id="tt-layer"></div>
+  <div class="tt-section" id="tt-imports-label"></div>
+  <ul class="tt-list" id="tt-imports"></ul>
+  <div class="tt-section" id="tt-used-label"></div>
+  <ul class="tt-list" id="tt-used"></ul>
+</div>
+
+<svg id="graph"></svg>
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+
+const LAYERS = {
+  engine:     { color: "#58a6ff", label: "Engine Core" },
+  rules:      { color: "#3fb950", label: "Rules" },
+  adapters:   { color: "#f78166", label: "Adapters" },
+  "dash-lib": { color: "#d2a8ff", label: "Dashboard Lib" },
+  components: { color: "#ffa657", label: "Components" },
+  pages:      { color: "#ff7b72", label: "Pages / App" },
+};
+
+const nodes = [
+  // Engine Core
+  { id: "types",          label: "types.ts",            layer: "engine",     path: "src/types.ts" },
+  { id: "traversal",      label: "traversal.ts",         layer: "engine",     path: "src/traversal.ts" },
+  { id: "rule-registry",  label: "rule-registry.ts",     layer: "engine",     path: "src/rule-registry.ts" },
+  { id: "engine",         label: "engine.ts",            layer: "engine",     path: "src/engine.ts" },
+  { id: "report-summary", label: "report-summary.ts",    layer: "engine",     path: "src/report-summary.ts" },
+
+  // Rules
+  { id: "r-child-count",      label: "child-count",          layer: "rules", path: "src/rules/child-count.ts" },
+  { id: "r-dup-component",    label: "duplicate-component",  layer: "rules", path: "src/rules/duplicate-component-type.ts" },
+  { id: "r-event-handler",    label: "event-handler-count",  layer: "rules", path: "src/rules/event-handler-count.ts" },
+  { id: "r-fps-drop",         label: "fps-drop",             layer: "rules", path: "src/rules/fps-drop.ts" },
+  { id: "r-inline-style",     label: "inline-style-count",   layer: "rules", path: "src/rules/inline-style-count.ts" },
+  { id: "r-large-data-prop",  label: "large-data-prop",      layer: "rules", path: "src/rules/large-data-prop.ts" },
+  { id: "r-layout-shift",     label: "layout-shift",         layer: "rules", path: "src/rules/layout-shift.ts" },
+  { id: "r-memory-usage",     label: "memory-usage",         layer: "rules", path: "src/rules/memory-usage.ts" },
+  { id: "r-nesting-depth",    label: "nesting-depth",        layer: "rules", path: "src/rules/nesting-depth.ts" },
+  { id: "r-prop-count",       label: "prop-count",           layer: "rules", path: "src/rules/prop-count.ts" },
+  { id: "r-render-count",     label: "render-count",         layer: "rules", path: "src/rules/render-count.ts" },
+  { id: "r-style-complexity", label: "style-complexity",     layer: "rules", path: "src/rules/style-complexity.ts" },
+  { id: "r-total-node-count", label: "total-node-count",     layer: "rules", path: "src/rules/total-node-count.ts" },
+
+  // Adapters
+  { id: "a-react",    label: "adapters/react.ts",     layer: "adapters", path: "src/adapters/react.ts" },
+  { id: "a-metrics",  label: "adapters/metrics.ts",   layer: "adapters", path: "src/adapters/metrics.ts" },
+  { id: "a-index",    label: "SpatialProvider",        layer: "adapters", path: "src/adapters/index.ts" },
+
+  // Dashboard Lib
+  { id: "d-engine", label: "lib/engine.ts",  layer: "dash-lib", path: "dashboard/src/lib/engine.ts" },
+  { id: "d-live",   label: "lib/live.ts",    layer: "dash-lib", path: "dashboard/src/lib/live.ts" },
+
+  // Dashboard Components
+  { id: "c-issue-card",       label: "IssueCard",         layer: "components", path: "dashboard/src/components/IssueCard.tsx" },
+  { id: "c-result-detail",    label: "ResultDetailView",  layer: "components", path: "dashboard/src/components/ResultDetailView.tsx" },
+  { id: "c-rule-card",        label: "RuleCard",          layer: "components", path: "dashboard/src/components/RuleCard.tsx" },
+  { id: "c-node-tree-input",  label: "NodeTreeInput",     layer: "components", path: "dashboard/src/components/NodeTreeInput.tsx" },
+  { id: "c-analysis-result",  label: "AnalysisResult",    layer: "components", path: "dashboard/src/components/AnalysisResult.tsx" },
+  { id: "c-app-shell",        label: "AppShell",          layer: "components", path: "dashboard/src/components/AppShell.tsx" },
+  { id: "c-metrics-input",    label: "MetricsInput",      layer: "components", path: "dashboard/src/components/MetricsInput.tsx" },
+  { id: "c-copy-report",      label: "CopyReportButton",  layer: "components", path: "dashboard/src/components/CopyReportButton.tsx" },
+  { id: "c-severity-filter",  label: "SeverityFilter",    layer: "components", path: "dashboard/src/components/SeverityFilter.tsx" },
+  { id: "c-sidebar",          label: "Sidebar",           layer: "components", path: "dashboard/src/components/Sidebar.tsx" },
+
+  // Pages / App
+  { id: "p-playground", label: "AnalysisPlaygroundPage", layer: "pages", path: "dashboard/src/pages/AnalysisPlaygroundPage.tsx" },
+  { id: "p-catalog",    label: "RuleCatalogPage",         layer: "pages", path: "dashboard/src/pages/RuleCatalogPage.tsx" },
+  { id: "p-live",       label: "LiveAnalysisPage",        layer: "pages", path: "dashboard/src/pages/LiveAnalysisPage.tsx" },
+  { id: "p-app",        label: "App.tsx",                 layer: "pages", path: "dashboard/src/App.tsx" },
+  { id: "p-main",       label: "main.tsx",                layer: "pages", path: "dashboard/src/main.tsx" },
+];
+
+// edges: source imports target
+const edges = [
+  // Engine core internals
+  { source: "traversal",      target: "types" },
+  { source: "rule-registry",  target: "types" },
+  { source: "engine",         target: "types" },
+  { source: "engine",         target: "rule-registry" },
+  { source: "engine",         target: "traversal" },
+  { source: "report-summary", target: "types" },
+
+  // Rules → rule-registry / types
+  { source: "r-child-count",      target: "rule-registry" },
+  { source: "r-fps-drop",         target: "rule-registry" },
+  { source: "r-inline-style",     target: "rule-registry" },
+  { source: "r-layout-shift",     target: "rule-registry" },
+  { source: "r-memory-usage",     target: "rule-registry" },
+  { source: "r-prop-count",       target: "rule-registry" },
+  { source: "r-render-count",     target: "rule-registry" },
+  { source: "r-style-complexity", target: "rule-registry" },
+  { source: "r-event-handler",    target: "rule-registry" },
+  { source: "r-event-handler",    target: "types" },
+  { source: "r-large-data-prop",  target: "rule-registry" },
+  { source: "r-large-data-prop",  target: "types" },
+  { source: "r-dup-component",    target: "types" },
+  { source: "r-nesting-depth",    target: "types" },
+  { source: "r-total-node-count", target: "types" },
+
+  // Adapters → engine + rules + adapters
+  { source: "a-react",   target: "types" },
+  { source: "a-metrics", target: "types" },
+  { source: "a-index",   target: "types" },
+  { source: "a-index",   target: "engine" },
+  { source: "a-index",   target: "rule-registry" },
+  { source: "a-index",   target: "a-react" },
+  { source: "a-index",   target: "a-metrics" },
+  { source: "a-index",   target: "r-render-count" },
+  { source: "a-index",   target: "r-layout-shift" },
+  { source: "a-index",   target: "r-fps-drop" },
+  { source: "a-index",   target: "r-memory-usage" },
+  { source: "a-index",   target: "r-child-count" },
+  { source: "a-index",   target: "r-prop-count" },
+  { source: "a-index",   target: "r-style-complexity" },
+  { source: "a-index",   target: "r-inline-style" },
+
+  // Dashboard lib → engine (@engine alias)
+  { source: "d-engine", target: "types",          label: "@engine" },
+  { source: "d-engine", target: "engine",         label: "@engine" },
+  { source: "d-engine", target: "report-summary", label: "@engine" },
+  { source: "d-engine", target: "rule-registry",  label: "@engine" },
+  { source: "d-engine", target: "r-child-count",      label: "@engine" },
+  { source: "d-engine", target: "r-fps-drop",         label: "@engine" },
+  { source: "d-engine", target: "r-inline-style",     label: "@engine" },
+  { source: "d-engine", target: "r-layout-shift",     label: "@engine" },
+  { source: "d-engine", target: "r-memory-usage",     label: "@engine" },
+  { source: "d-engine", target: "r-nesting-depth",    label: "@engine" },
+  { source: "d-engine", target: "r-prop-count",       label: "@engine" },
+  { source: "d-engine", target: "r-render-count",     label: "@engine" },
+  { source: "d-engine", target: "r-style-complexity", label: "@engine" },
+  { source: "d-engine", target: "r-total-node-count", label: "@engine" },
+  { source: "d-live",   target: "d-engine" },
+
+  // Components → lib/engine
+  { source: "c-issue-card",      target: "d-engine" },
+  { source: "c-result-detail",   target: "d-engine" },
+  { source: "c-rule-card",       target: "d-engine" },
+  { source: "c-analysis-result", target: "d-engine" },
+  { source: "c-metrics-input",   target: "d-engine" },
+  { source: "c-copy-report",     target: "d-engine" },
+
+  // Components → components
+  { source: "c-result-detail",  target: "c-issue-card" },
+  { source: "c-result-detail",  target: "c-severity-filter" },
+  { source: "c-result-detail",  target: "c-copy-report" },
+  { source: "c-app-shell",      target: "c-sidebar" },
+
+  // Pages → lib + components
+  { source: "p-playground", target: "d-engine" },
+  { source: "p-playground", target: "c-node-tree-input" },
+  { source: "p-playground", target: "c-metrics-input" },
+  { source: "p-playground", target: "c-analysis-result" },
+
+  { source: "p-catalog", target: "d-engine" },
+  { source: "p-catalog", target: "c-rule-card" },
+
+  { source: "p-live", target: "d-live" },
+  { source: "p-live", target: "c-result-detail" },
+
+  // App → pages + shell
+  { source: "p-app",  target: "c-app-shell" },
+  { source: "p-app",  target: "p-playground" },
+  { source: "p-app",  target: "p-catalog" },
+  { source: "p-app",  target: "p-live" },
+  { source: "p-main", target: "p-app" },
+];
+
+// ─── BUILD LOOKUP ─────────────────────────────────────────────────────────────
+
+const nodeById = {};
+nodes.forEach(n => { nodeById[n.id] = n; });
+
+// Compute import lists per node
+nodes.forEach(n => {
+  n.imports = edges.filter(e => e.source === n.id).map(e => nodeById[e.target]?.path || e.target);
+  n.usedBy  = edges.filter(e => e.target === n.id).map(e => nodeById[e.source]?.path || e.source);
+});
+
+// ─── D3 SETUP ─────────────────────────────────────────────────────────────────
+
+const svg = d3.select("#graph");
+const width = () => svg.node().clientWidth;
+const height = () => svg.node().clientHeight;
+
+// Arrow markers per layer
+const defs = svg.append("defs");
+Object.entries(LAYERS).forEach(([key, val]) => {
+  defs.append("marker")
+    .attr("id", `arrow-${key}`)
+    .attr("viewBox", "0 -4 8 8")
+    .attr("refX", 18)
+    .attr("refY", 0)
+    .attr("markerWidth", 6)
+    .attr("markerHeight", 6)
+    .attr("orient", "auto")
+    .append("path")
+      .attr("d", "M0,-4L8,0L0,4")
+      .attr("fill", val.color);
+});
+
+const g = svg.append("g");
+
+// Zoom
+svg.call(d3.zoom().scaleExtent([0.2, 3]).on("zoom", e => g.attr("transform", e.transform)));
+
+// ─── SIMULATION ───────────────────────────────────────────────────────────────
+
+const LAYER_ORDER = ["engine", "rules", "adapters", "dash-lib", "components", "pages"];
+
+// Assign x seed by layer
+const layerX = {};
+LAYER_ORDER.forEach((l, i) => {
+  layerX[l] = (i + 0.5) / LAYER_ORDER.length;
+});
+
+const sim = d3.forceSimulation(nodes)
+  .force("link", d3.forceLink(edges).id(d => d.id).distance(90).strength(0.6))
+  .force("charge", d3.forceManyBody().strength(-320))
+  .force("x", d3.forceX(d => width() * layerX[d.layer]).strength(0.35))
+  .force("y", d3.forceY(d => height() / 2).strength(0.08))
+  .force("collide", d3.forceCollide(28));
+
+// ─── RENDER LINKS ─────────────────────────────────────────────────────────────
+
+const link = g.append("g").attr("class", "links")
+  .selectAll("line")
+  .data(edges)
+  .join("line")
+    .attr("class", "link")
+    .attr("stroke", d => LAYERS[nodeById[d.source.id || d.source]?.layer]?.color || "#58a6ff")
+    .attr("marker-end", d => {
+      const layer = nodeById[d.source.id || d.source]?.layer;
+      return `url(#arrow-${layer || "engine"})`;
+    });
+
+// ─── RENDER NODES ─────────────────────────────────────────────────────────────
+
+const node = g.append("g").attr("class", "nodes")
+  .selectAll("g")
+  .data(nodes)
+  .join("g")
+    .attr("class", "node")
+    .call(d3.drag()
+      .on("start", (event, d) => { if (!event.active) sim.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
+      .on("drag",  (event, d) => { d.fx = event.x; d.fy = event.y; })
+      .on("end",   (event, d) => { if (!event.active) sim.alphaTarget(0); d.fx = null; d.fy = null; })
+    );
+
+node.append("circle")
+  .attr("r", d => d.layer === "engine" ? 14 : (d.layer === "adapters" || d.layer === "dash-lib") ? 12 : 10)
+  .attr("fill", d => LAYERS[d.layer].color + "33")
+  .attr("stroke", d => LAYERS[d.layer].color);
+
+node.append("text")
+  .attr("x", 16)
+  .attr("y", 0)
+  .text(d => d.label);
+
+// ─── TOOLTIP ──────────────────────────────────────────────────────────────────
+
+const tooltip = document.getElementById("tooltip");
+const ttName  = document.getElementById("tt-name");
+const ttLayer = document.getElementById("tt-layer");
+const ttImportsLabel = document.getElementById("tt-imports-label");
+const ttImports = document.getElementById("tt-imports");
+const ttUsedLabel   = document.getElementById("tt-used-label");
+const ttUsed    = document.getElementById("tt-used");
+
+node.on("mousemove", (event, d) => {
+  tooltip.style.display = "block";
+  tooltip.style.left = (event.clientX + 16) + "px";
+  tooltip.style.top  = (event.clientY - 10) + "px";
+  ttName.textContent  = d.path;
+  ttLayer.textContent = LAYERS[d.layer].label;
+
+  if (d.imports.length) {
+    ttImportsLabel.textContent = `Imports (${d.imports.length}):`;
+    ttImports.innerHTML = d.imports.map(p => `<li>${p}</li>`).join("");
+  } else {
+    ttImportsLabel.textContent = "";
+    ttImports.innerHTML = "";
+  }
+
+  if (d.usedBy.length) {
+    ttUsedLabel.textContent = `Used by (${d.usedBy.length}):`;
+    ttUsed.innerHTML = d.usedBy.map(p => `<li>${p}</li>`).join("");
+  } else {
+    ttUsedLabel.textContent = "";
+    ttUsed.innerHTML = "";
+  }
+})
+.on("mouseleave", () => { tooltip.style.display = "none"; });
+
+// ─── CLICK: HIGHLIGHT NEIGHBORS ───────────────────────────────────────────────
+
+let selected = null;
+
+node.on("click", (event, d) => {
+  event.stopPropagation();
+
+  if (selected === d.id) {
+    // Deselect
+    selected = null;
+    node.classed("dimmed", false).classed("highlighted", false);
+    link.classed("dimmed", false).classed("highlighted", false);
+    return;
+  }
+
+  selected = d.id;
+
+  const connectedIds = new Set([d.id]);
+  edges.forEach(e => {
+    const src = e.source.id || e.source;
+    const tgt = e.target.id || e.target;
+    if (src === d.id || tgt === d.id) {
+      connectedIds.add(src);
+      connectedIds.add(tgt);
+    }
+  });
+
+  node.classed("dimmed", n => !connectedIds.has(n.id));
+  node.classed("highlighted", n => n.id === d.id);
+  link.classed("dimmed", e => {
+    const src = e.source.id || e.source;
+    const tgt = e.target.id || e.target;
+    return src !== d.id && tgt !== d.id;
+  });
+  link.classed("highlighted", e => {
+    const src = e.source.id || e.source;
+    const tgt = e.target.id || e.target;
+    return src === d.id || tgt === d.id;
+  });
+});
+
+svg.on("click", () => {
+  selected = null;
+  node.classed("dimmed", false).classed("highlighted", false);
+  link.classed("dimmed", false).classed("highlighted", false);
+});
+
+// ─── FILTER BUTTONS ───────────────────────────────────────────────────────────
+
+document.querySelectorAll(".filter-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const layer = btn.dataset.layer;
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    if (layer === "all") {
+      node.classed("dimmed", false);
+      link.classed("dimmed", false);
+    } else {
+      const visibleIds = new Set(nodes.filter(n => n.layer === layer).map(n => n.id));
+      // Also show their direct neighbors
+      edges.forEach(e => {
+        const src = e.source.id || e.source;
+        const tgt = e.target.id || e.target;
+        if (visibleIds.has(src)) visibleIds.add(tgt);
+        if (visibleIds.has(tgt)) visibleIds.add(src);
+      });
+      node.classed("dimmed", n => !visibleIds.has(n.id));
+      link.classed("dimmed", e => {
+        const src = e.source.id || e.source;
+        const tgt = e.target.id || e.target;
+        return !visibleIds.has(src) || !visibleIds.has(tgt);
+      });
+    }
+  });
+});
+
+// ─── SIMULATION TICK ──────────────────────────────────────────────────────────
+
+sim.on("tick", () => {
+  link
+    .attr("x1", d => d.source.x)
+    .attr("y1", d => d.source.y)
+    .attr("x2", d => d.target.x)
+    .attr("y2", d => d.target.y);
+
+  node.attr("transform", d => `translate(${d.x},${d.y})`);
+});
+
+// Initial size fix
+sim.force("x").x(d => width() * layerX[d.layer]);
+sim.force("y").y(() => height() / 2);
+sim.alpha(1).restart();
+</script>
+</body>
+</html>

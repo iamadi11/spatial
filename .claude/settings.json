@@ -33,15 +33,23 @@
     "PATH": "/Users/adityaraj/.nvm/versions/node/v20.14.0/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin"
   },
   "hooks": {
-    "Stop": [
+    "PostToolUse": [
       {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash -c 'cd \"/Users/adityaraj/Desktop/My Projects/spatial\" && git status --short 2>/dev/null | grep -q . && echo \"[STOP-CHECK] Uncommitted changes detected. Stage and commit before stopping.\" || echo \"[STOP-CHECK] Working tree clean.\"'"
-          }
-        ]
+        "matcher": "Edit|Write|Bash",
+        "command": "code-review-graph update --quiet",
+        "timeout": 5000
+      }
+    ],
+    "SessionStart": [
+      {
+        "command": "code-review-graph status --json",
+        "timeout": 3000
+      }
+    ],
+    "PreCommit": [
+      {
+        "command": "code-review-graph detect-changes --brief",
+        "timeout": 10000
       }
     ]
   }
