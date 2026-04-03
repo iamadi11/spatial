@@ -43,3 +43,22 @@ depends-on: "D05"
 
 **Unknown cases:**
 - U1: Copies report correctly for result with `status: "unknown"`
+
+## Implementation Plan
+
+1. `dashboard/src/lib/engine.ts` — added `formatReport(result)` re-export wrapping `@engine/report-summary`
+2. `dashboard/src/components/CopyReportButton.tsx` — new component; `useState(false)` for copied state; calls `navigator.clipboard.writeText(formatReport(result))`; shows "Copied!" for 1.5s; `aria-label` for accessibility; clipboard errors silently swallowed
+3. `dashboard/src/components/ResultDetailView.tsx` — imports and renders `<CopyReportButton result={result} />` in the status banner row
+
+## Validation Report
+
+Date: 2026-04-03
+
+| Gate | Status | Notes |
+|------|--------|-------|
+| PM Validation | PASS | Problem, scope, non-goals, done-when all defined |
+| QA Validation | PASS | 5 happy, 2 edge, 1 failure, 1 unknown tests |
+| Dev Validation | PASS | Isolated component, typed props, no `any`, engine call via `src/lib/engine.ts` |
+| Test Coverage | PASS | 90/90 tests passing, no skips |
+
+Overall: PASS
