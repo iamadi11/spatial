@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-04-03
+
+### Added
+- [024] SpatialProvider: `createSpatialHandler()` + `useSpatial()` in `src/adapters/index.ts` — wires fiber adapter, metrics adapter, and engine together; posts `PerformanceResult` to `globalThis.__SPATIAL__` after every render; dev-only, zero prod overhead
+
 ## [0.9.2] - 2026-04-03
 
 ### Added
