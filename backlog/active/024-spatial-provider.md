@@ -3,7 +3,7 @@ id: "024"
 title: "SpatialProvider (src/adapters/index.ts — React component wiring fiber + metrics + engine)"
 type: infra
 priority: 1
-status: ready
+status: active
 created: 2026-04-03
 sot-section: "CLAUDE.md Integration Adapters; SOT Section 4"
 depends-on: "022, 023"
