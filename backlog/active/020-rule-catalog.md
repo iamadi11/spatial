@@ -25,3 +25,37 @@ depends-on: "004"
 - The catalog is a pure value — same output every call
 - Covers all 8 current rules: render-count, layout-shift, fps-drop, memory-usage, child-count, prop-count, style-complexity, inline-style-count
   - Plus the 2 tree-level rules: nesting-depth, total-node-count
+
+## Implementation Plan
+
+**File**: `src/rule-catalog.ts`
+
+**Types**:
+```ts
+type RuleMetadata = {
+  name: string
+  description: string
+  severity: 'warning' | 'error'
+  defaultThreshold?: number   // absent for style-complexity (uses property set)
+}
+```
+
+**Function**: `createRuleCatalog(): RuleMetadata[]`
+- Returns a static array of 10 entries — one per rule
+- Pure value, no computation
+
+## QA Test Plan
+
+Test file: `tests/unit/rule-catalog.test.ts`
+
+| # | Type | Input | Expected |
+|---|------|-------|----------|
+| 1 | Happy | call | returns non-empty array |
+| 2 | Happy | call | length === 10 |
+| 3 | Happy | each entry | name + description + severity all present |
+| 4 | Happy | names | all 10 rule names present |
+| 5 | Edge | threshold rules (9) | defaultThreshold is a positive number |
+| 6 | Edge | style-complexity | defaultThreshold is undefined |
+| 7 | Edge | all names | no duplicates |
+| 8 | Failure | two calls | output is identical (deterministic) |
+| 9 | Unknown | entry shapes | plain objects, no functions |
