@@ -117,24 +117,66 @@ See `.claude/rules/quality-gates.md` for detailed checklists.
 ## Project Structure
 
 ```
-src/
-  engine.ts          ← core analyze() — pure function
-  types.ts           ← shared types
-  rule-registry.ts   ← registry factory — pure
-  traversal.ts       ← O(n) tree walker — pure
-  rules/             ← individual rule implementations — pure, no DOM
-  adapters/          ← real-world bridge — browser APIs allowed, dev-only
-    react.ts         ← React Profiler + fiber tree → ComponentNode
-    metrics.ts       ← PerformanceObserver → PerformanceMetrics
-    index.ts         ← SpatialProvider, useSpatial hook
-tests/unit/          ← vitest unit tests (pure functions only)
-tests/integration/   ← integration tests (jsdom or real browser)
-backlog/ready/       ← work items waiting
-backlog/active/      ← currently being worked on (max 1)
-backlog/done/        ← completed and released
-releases/            ← release notes per version
-BACKLOG.md           ← work item index
-VERSION              ← current semver version
-CHANGELOG.md         ← Keep-a-Changelog format
-SourceOfTruth.md     ← [IMMUTABLE] product governance
+src/                    ← engine (pure TypeScript, no DOM)
+  engine.ts
+  types.ts
+  rule-registry.ts
+  traversal.ts
+  rules/
+  adapters/             ← browser APIs allowed, dev-only
+tests/unit/             ← engine unit tests (vitest)
+backlog/ready|active|done/  ← engine work items
+releases/               ← engine release notes
+BACKLOG.md              ← unified index (engine + dashboard items)
+VERSION                 ← engine semver
+CHANGELOG.md            ← engine changelog
+SourceOfTruth.md        ← [IMMUTABLE] single SOT for all layers
+
+dashboard/              ← dev-time visualisation app
+  src/
+    lib/                ← engine adapter (only place engine is called)
+      engine.ts         ← runAnalysis(), getRuleCatalog()
+      live.ts           ← readBridge() for window.__SPATIAL__
+    components/         ← display-only React components
+    pages/              ← page-level views
+  backlog/ready|active|done/  ← dashboard work items
+  tests/                ← vitest + React Testing Library
+  package.json          ← dashboard deps
+  vite.config.ts        ← @engine alias → ../src/
 ```
+
+---
+
+## Dashboard Technical Constraints
+
+- **Framework**: React 18 + TypeScript strict mode + Tailwind + Vite
+- **No `any` types** — strict TypeScript throughout
+- **Engine calls only in `dashboard/src/lib/`** — never in components directly
+- **No detection logic** — all rules live in `src/rules/`, never in the dashboard
+- **Read-only bridge** — `window.__SPATIAL__` is written by the engine adapter, read-only in the dashboard
+- **Accessible** — all interactive elements have ARIA labels
+
+## Dashboard Conventions
+
+### Branch Naming
+- Dashboard features: `feat/dash-{id}-{short-name}`
+- Dashboard fixes: `fix/dash-{id}-{short-name}`
+
+### Commit Messages
+```
+[{type}] dash-{id}: {description}
+```
+Types: `feat`, `fix`, `style`, `refactor`, `test`
+
+---
+
+## Documentation Update Policy
+
+**After every feature release** (engine or dashboard), update:
+1. **`BACKLOG.md`** — mark item as `done`, confirm all rows are accurate
+2. **`CHANGELOG.md`** — add release entry under the correct version header
+3. **`SourceOfTruth.md` Section 17 file structure** — if new files were added
+4. **`releases/{version}.md`** — engine release notes (create if not exists)
+5. **`dashboard/package.json` version** — bump on every dashboard release
+
+This keeps governance docs accurate and avoids drift between code and documentation.

@@ -13,17 +13,17 @@ Each project has its own SOT, its own backlog, and its own expansion policy. Tre
 
 ---
 
-## GUARD: Read Both SOTs First
+## GUARD: Read the Single SOT First
 
-Before proposing anything, read:
-- `SourceOfTruth.md` Section 12 — engine expansion policy
-- `dashboard/SourceOfTruth.md` Section 7 — dashboard expansion policy
+Before proposing anything, read `SourceOfTruth.md`:
+- **Section 12** — engine expansion policy
+- **Section 16.6** — dashboard expansion policy
 
-**Engine SOT 12 allows:**
+**Engine (Section 12) allows:**
 - New rules for additional performance patterns
 - Improved measurement accuracy of existing rules
 
-**Dashboard SOT 7 allows:**
+**Dashboard (Section 16.6) allows:**
 - New views/pages that display engine output
 - UI improvements to existing pages
 - Additional display formats for `PerformanceResult`
@@ -44,6 +44,7 @@ Anything not explicitly allowed is rejected.
 1. Read `dashboard/backlog/done/` — completed dashboard items
 2. Read `dashboard/backlog/ready/` and `dashboard/backlog/active/` — pending dashboard items
 3. Read `dashboard/src/` — understand existing pages and components
+4. Read `BACKLOG.md` dashboard section — verify D-item IDs for next available ID
 
 ---
 
@@ -93,8 +94,8 @@ Discard any proposal where:
 
 **For dashboard items:**
 - Create file in `dashboard/backlog/ready/D{id}-{slug}.md`
-- Assign the next available dashboard ID (check highest D-prefixed ID)
-- Update `dashboard/BACKLOG.md`
+- Assign the next available dashboard ID (check `BACKLOG.md` dashboard section for highest D-prefixed ID)
+- Update `BACKLOG.md` dashboard section (the unified backlog — `dashboard/BACKLOG.md` no longer exists)
 
 Use the standard backlog item template:
 

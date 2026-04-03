@@ -452,7 +452,64 @@ NOT:
 
 ---
 
-# 16. File Structure
+# 16. Dashboard (dev-time visualisation layer)
+
+The dashboard is a **consumer** of the engine — it never contains detection logic.
+
+## 16.1 Dashboard Product Definition
+
+> A development-time web dashboard that makes the `spatial` engine's rules, analysis results, and issue reports human-readable and explorable — for both manual JSON experiments and live analysis of real React projects.
+
+## 16.2 Dashboard Non-Negotiable Constraints
+
+- Detection logic lives ONLY in `src/` (engine). The dashboard NEVER reimplements rules, thresholds, or detection.
+- The dashboard reads engine output (`PerformanceResult`) and renders it. It NEVER writes back to the engine or mutates results.
+- No telemetry, no remote data collection, no user tracking.
+- Framework: React 18 + TypeScript + Vite + Tailwind. No backend — runs entirely in the browser.
+- Engine accessed exclusively through `dashboard/src/lib/engine.ts` — never imported directly in components.
+
+## 16.3 Dashboard Pages
+
+| Route | Purpose |
+|-------|---------|
+| `/rules` | Rule catalog — all rules, descriptions, severities, thresholds |
+| `/analyze` | Analysis playground — JSON tree input → engine result |
+| `/live` | Live analysis — polls `window.__SPATIAL__` bridge every 500ms |
+
+## 16.4 Dashboard Data Flow
+
+```
+Manual path:  user JSON + metrics → src/lib/engine.ts → PerformanceResult → render
+Live path:    SpatialProvider → window.__SPATIAL__ → dashboard polls → render
+```
+
+No server. No API. All local (same browser tab).
+
+## 16.5 Dashboard Quality Gates
+
+1. **PM Gate**: Problem defined, scope limited, non-goals listed
+2. **Component Gate**: Isolated component, typed props, no deep prop drilling
+3. **Dev Gate**: Engine calls only in `src/lib/`, no `any`, strict TypeScript
+4. **Visual Gate**: Renders at 1280px, no overflow, accessible labels
+
+## 16.6 Dashboard Expansion Policy
+
+**Allowed:**
+- New views/pages that display engine output
+- UI improvements to existing pages
+- Additional display formats for `PerformanceResult`
+- Live analysis features consuming the `window.__SPATIAL__` bridge
+
+**Not allowed:**
+- Adding detection rules to the dashboard (belongs in `src/`)
+- Any backend, API calls, or data persistence
+- Auto-fix or code suggestion features
+- User authentication or accounts
+- Communicating with external servers
+
+---
+
+# 17. File Structure
 
 ```
 src/
@@ -467,4 +524,18 @@ src/
     index.ts         ← SpatialProvider, useSpatial hook
 tests/unit/          ← vitest unit tests
 tests/integration/   ← integration tests (jsdom or real browser)
+backlog/             ← engine work items (ready/active/done)
+BACKLOG.md           ← unified work item index (engine + dashboard)
+SourceOfTruth.md     ← [IMMUTABLE] single governance document for all layers
+CLAUDE.md            ← single AI development instructions for all layers
+
+dashboard/           ← dev-time visualisation app
+  src/
+    lib/             ← engine adapter + live bridge (only place engine is called)
+    components/      ← React display components
+    pages/           ← page-level components
+  backlog/           ← dashboard work items (ready/active/done)
+  tests/             ← vitest + React Testing Library
+  package.json       ← dashboard dependencies (React, Vite, Tailwind)
+  vite.config.ts     ← @engine alias → ../src/
 ```

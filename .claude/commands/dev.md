@@ -91,7 +91,17 @@ Write Validation Report to item file, commit.
 
 ### release logic:
 - **Engine items**: bump VERSION (patch for infra/perf/fix, minor for rule/feature), update `CHANGELOG.md`, commit, tag `v{version}`, merge to main, move item to `backlog/done/`, update `BACKLOG.md`
-- **Dashboard items**: bump `dashboard/package.json` version (patch for infra/fix, minor for feature), update `dashboard/CHANGELOG.md` if it exists, commit, tag `dash-v{version}`, merge to main, move item to `dashboard/backlog/done/`, update `dashboard/BACKLOG.md`
+- **Dashboard items**: bump `dashboard/package.json` version (patch for infra/fix, minor for feature), commit, tag `dash-v{version}`, merge to main, move item to `dashboard/backlog/done/`, update `BACKLOG.md` (dashboard section)
+
+### documentation update (mandatory after every release):
+After every release — engine or dashboard — update the following before the final commit:
+1. **`BACKLOG.md`** — mark the released item as `done` in both engine and dashboard sections
+2. **`CHANGELOG.md`** — add the release entry under the correct version header
+3. **`SourceOfTruth.md` Section 17** — update the file structure listing if new files were added
+4. **`CLAUDE.md`** — update project structure section if new directories/patterns were introduced
+5. **`releases/{version}.md`** (engine only) — create release notes file if it doesn't exist
+
+This runs as the last step before tagging. No release is complete without it.
 
 ## Stopping Conditions
 
