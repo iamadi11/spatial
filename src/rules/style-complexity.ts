@@ -11,6 +11,10 @@ const EXPENSIVE_PROPERTIES = new Set([
   'backdropFilter',
   'transform',
   'clipPath',
+  // [019] Expanded for improved measurement accuracy — SOT Section 12
+  'animation',
+  'transition',
+  'willChange',
 ])
 
 /**
