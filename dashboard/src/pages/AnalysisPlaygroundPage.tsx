@@ -33,6 +33,48 @@ const DEFAULT_METRICS: PerformanceMetrics = {
   memoryUsage: 0,
 }
 
+// Preset: a clean tree with low metrics — should pass all rules
+const PASSING_PRESET_TREE: ComponentNode = {
+  id: 'root',
+  type: 'App',
+  children: [
+    { id: 'nav', type: 'Nav', props: { title: 'Home' } },
+    { id: 'main', type: 'Main', props: { content: 'Hello world' } },
+  ],
+}
+const PASSING_PRESET_METRICS: PerformanceMetrics = {
+  renderCount: 1,
+  layoutShifts: 0,
+  fpsDrop: 0,
+  memoryUsage: 10,
+}
+
+// Preset: a tree with violations — triggers render-count and boolean-prop-overload
+const FAILING_PRESET_TREE: ComponentNode = {
+  id: 'root',
+  type: 'Dashboard',
+  children: [
+    {
+      id: 'widget',
+      type: 'Widget',
+      props: {
+        isActive: true,
+        isDisabled: false,
+        isLoading: true,
+        isReadOnly: false,
+        isExpanded: true,
+        isSelected: false,
+      },
+    },
+  ],
+}
+const FAILING_PRESET_METRICS: PerformanceMetrics = {
+  renderCount: 50,
+  layoutShifts: 0,
+  fpsDrop: 0,
+  memoryUsage: 10,
+}
+
 export function AnalysisPlaygroundPage() {
   const [jsonInput, setJsonInput] = useState(JSON.stringify(EXAMPLE_TREE, null, 2))
   const [metrics, setMetrics] = useState<PerformanceMetrics>(DEFAULT_METRICS)
@@ -52,12 +94,43 @@ export function AnalysisPlaygroundPage() {
     setResult(analysisResult)
   }
 
+  function loadPassingExample() {
+    setJsonInput(JSON.stringify(PASSING_PRESET_TREE, null, 2))
+    setMetrics(PASSING_PRESET_METRICS)
+    setResult(null)
+    setParseError(null)
+  }
+
+  function loadFailingExample() {
+    setJsonInput(JSON.stringify(FAILING_PRESET_TREE, null, 2))
+    setMetrics(FAILING_PRESET_METRICS)
+    setResult(null)
+    setParseError(null)
+  }
+
   return (
     <main className="p-6 max-w-4xl mx-auto space-y-6">
       <h1 className="text-2xl font-bold text-gray-100 tracking-tight">Analysis Playground</h1>
       <p className="text-sm text-gray-400">
         Paste a component tree, set metrics, and run the spatial engine.
       </p>
+
+      <div className="flex gap-2">
+        <button
+          onClick={loadPassingExample}
+          className="rounded-md bg-gray-700 px-3 py-1.5 text-xs font-medium text-gray-200 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
+          aria-label="Load passing example"
+        >
+          Load passing example
+        </button>
+        <button
+          onClick={loadFailingExample}
+          className="rounded-md bg-gray-700 px-3 py-1.5 text-xs font-medium text-gray-200 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
+          aria-label="Load failing example"
+        >
+          Load failing example
+        </button>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-4">
