@@ -136,9 +136,15 @@ dashboard/              ← dev-time visualisation app
   src/
     lib/                ← engine adapter (only place engine is called)
       engine.ts         ← runAnalysis(), getRuleCatalog()
-      live.ts           ← readBridge() for window.__SPATIAL__
     components/         ← display-only React components
+      examples/         ← bad/good pattern example components
+        CodeBlock.tsx         ← read-only code display
+        ExampleSection.tsx    ← two-column bad vs good layout
+        LiveAnalysisCard.tsx  ← runs runAnalysis(), shows status + issues
+        sections/             ← one file per pattern section (5 total)
     pages/              ← page-level views
+      ExamplesPage.tsx  ← /examples — section nav + pattern explorer
+      RuleCatalogPage.tsx
   backlog/ready|active|done/  ← dashboard work items
   tests/                ← vitest + React Testing Library
   package.json          ← dashboard deps
@@ -153,8 +159,8 @@ dashboard/              ← dev-time visualisation app
 - **No `any` types** — strict TypeScript throughout
 - **Engine calls only in `dashboard/src/lib/`** — never in components directly
 - **No detection logic** — all rules live in `src/rules/`, never in the dashboard
-- **Read-only bridge** — `window.__SPATIAL__` is written by the engine adapter, read-only in the dashboard
 - **Accessible** — all interactive elements have ARIA labels
+- **No bridge dependency in dashboard UI** — `window.__SPATIAL__` is for engine adapter use only; the dashboard does not read it directly
 
 ## Dashboard Conventions
 
