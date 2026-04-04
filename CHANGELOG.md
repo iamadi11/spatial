@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.18.0] - 2026-04-04
+
+### Added
+- [032] Single-child chain rule: `createSingleChildChainRule(threshold)` — tree-level rule that detects consecutive single-child wrapper nodes (wrapper hell); chain includes wrappers + leaf, resets at 2+-child nodes; default threshold 4 (chain of 5+ triggers); O(n), pure
+
 ## [dash-0.10.0] - 2026-04-04
 
 ### Added
