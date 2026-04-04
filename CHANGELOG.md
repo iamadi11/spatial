@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [dash-0.8.0] - 2026-04-04
+
+### Added
+- [D13] Playground preset examples: "Load passing example" and "Load failing example" buttons populate both component tree and metrics inputs; failing preset triggers render-count + boolean-prop-overload (at least 2 rules); buttons have `aria-label` attributes
+
 ## [0.16.0] - 2026-04-04
 
 ### Added

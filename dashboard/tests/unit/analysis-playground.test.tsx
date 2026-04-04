@@ -113,12 +113,61 @@ describe('D04: AnalysisPlaygroundPage', () => {
   it('shows a result after clicking Run Analysis', () => {
     render(<AnalysisPlaygroundPage />)
     fireEvent.click(screen.getByRole('button', { name: /run analysis/i }))
-    expect(screen.getByText(/pass|fail|unknown/i)).toBeInTheDocument()
+    const section = screen.getByRole('region', { name: /analysis result/i })
+    expect(section).toBeInTheDocument()
   })
 
   // Unknown case: page has a heading
   it('has a page heading', () => {
     render(<AnalysisPlaygroundPage />)
     expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument()
+  })
+})
+
+describe('D13: Playground preset buttons', () => {
+  // Happy path 1: renders "Load passing example" button with aria-label
+  it('renders a Load passing example button', () => {
+    render(<AnalysisPlaygroundPage />)
+    expect(screen.getByRole('button', { name: /load passing example/i })).toBeInTheDocument()
+  })
+
+  // Happy path 2: renders "Load failing example" button with aria-label
+  it('renders a Load failing example button', () => {
+    render(<AnalysisPlaygroundPage />)
+    expect(screen.getByRole('button', { name: /load failing example/i })).toBeInTheDocument()
+  })
+
+  // Edge case 1: clicking "Load passing example" populates textarea with valid JSON
+  it('populates textarea with valid JSON when passing example is loaded', () => {
+    render(<AnalysisPlaygroundPage />)
+    fireEvent.click(screen.getByRole('button', { name: /load passing example/i }))
+    const textarea = screen.getByRole('textbox')
+    expect(() => JSON.parse((textarea as HTMLTextAreaElement).value)).not.toThrow()
+  })
+
+  // Edge case 2: clicking "Load failing example" populates textarea with valid JSON
+  it('populates textarea with valid JSON when failing example is loaded', () => {
+    render(<AnalysisPlaygroundPage />)
+    fireEvent.click(screen.getByRole('button', { name: /load failing example/i }))
+    const textarea = screen.getByRole('textbox')
+    expect(() => JSON.parse((textarea as HTMLTextAreaElement).value)).not.toThrow()
+  })
+
+  // Failure case: running analysis after loading failing example produces a fail result
+  it('produces a fail result when failing example is run', () => {
+    render(<AnalysisPlaygroundPage />)
+    fireEvent.click(screen.getByRole('button', { name: /load failing example/i }))
+    fireEvent.click(screen.getByRole('button', { name: /run analysis/i }))
+    // The status badge text is exactly "fail"
+    expect(screen.getByText('fail')).toBeInTheDocument()
+  })
+
+  // Unknown case: running analysis after loading passing example produces a pass result
+  it('produces a pass result when passing example is run', () => {
+    render(<AnalysisPlaygroundPage />)
+    fireEvent.click(screen.getByRole('button', { name: /load passing example/i }))
+    fireEvent.click(screen.getByRole('button', { name: /run analysis/i }))
+    // The status badge text is exactly "pass"
+    expect(screen.getByText('pass')).toBeInTheDocument()
   })
 })
