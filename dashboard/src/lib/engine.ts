@@ -16,6 +16,11 @@ import { createPropCountRule } from '@engine/rules/prop-count'
 import { createRenderCountRule } from '@engine/rules/render-count'
 import { createStyleComplexityRule } from '@engine/rules/style-complexity'
 import { createTotalNodeCountRule } from '@engine/rules/total-node-count'
+import { createEventHandlerCountRule } from '@engine/rules/event-handler-count'
+import { createDuplicateComponentTypeRule } from '@engine/rules/duplicate-component-type'
+import { createLargeDataPropRule } from '@engine/rules/large-data-prop'
+import { createUnvirtualizedListRule } from '@engine/rules/unvirtualized-list'
+import { createAnonymousComponentRule } from '@engine/rules/anonymous-component'
 
 // Re-export engine types for components to use
 export type { ComponentNode, PerformanceResult, PerformanceIssue, PerformanceMetrics } from '@engine/types'
@@ -45,6 +50,10 @@ export type RuleOptions = {
   propCountThreshold?: number
   inlineStyleCountThreshold?: number
   totalNodeCountThreshold?: number
+  eventHandlerCountThreshold?: number
+  largeDataPropThreshold?: number
+  unvirtualizedListThreshold?: number
+  duplicateComponentTypeThreshold?: number
 }
 
 const RULE_CATALOG: RuleMetadata[] = [
@@ -108,10 +117,40 @@ const RULE_CATALOG: RuleMetadata[] = [
     severity: 'warning',
     defaultThreshold: 200,
   },
+  {
+    name: 'event-handler-count',
+    description: 'Flags nodes with too many event handler props — each handler is a new re-render trigger.',
+    severity: 'warning',
+    defaultThreshold: 5,
+  },
+  {
+    name: 'duplicate-component-type',
+    description: 'Flags trees where a single component type appears too many times — indicates unvirtualized lists.',
+    severity: 'warning',
+    defaultThreshold: 30,
+  },
+  {
+    name: 'large-data-prop',
+    description: 'Flags components with oversized prop payloads — large props increase serialization and diffing cost.',
+    severity: 'warning',
+    defaultThreshold: 10000,
+  },
+  {
+    name: 'unvirtualized-list',
+    description: 'Flags nodes with many same-type children — should use a virtualizer like react-window.',
+    severity: 'warning',
+    defaultThreshold: 50,
+  },
+  {
+    name: 'anonymous-component',
+    description: 'Flags components with empty or generic type names — prevents meaningful profiling and debugging.',
+    severity: 'warning',
+    defaultThreshold: 0,
+  },
 ]
 
 /**
- * Returns metadata for all 10 registered rules.
+ * Returns metadata for all 15 registered rules.
  * Pure — same output every call.
  */
 export function getRuleCatalog(): RuleMetadata[] {
@@ -138,6 +177,10 @@ export function runAnalysis(
   registry.register(createPropCountRule(options.propCountThreshold))
   registry.register(createInlineStyleCountRule(options.inlineStyleCountThreshold))
   registry.register(createStyleComplexityRule())
+  registry.register(createEventHandlerCountRule(options.eventHandlerCountThreshold))
+  registry.register(createLargeDataPropRule(options.largeDataPropThreshold))
+  registry.register(createUnvirtualizedListRule(options.unvirtualizedListThreshold))
+  registry.register(createAnonymousComponentRule())
 
   const baseResult = analyze(root, metrics, registry)
 
@@ -148,6 +191,9 @@ export function runAnalysis(
 
   const nodeCountIssue = createTotalNodeCountRule(options.totalNodeCountThreshold).check(root)
   if (nodeCountIssue !== null) treeIssues.push(nodeCountIssue)
+
+  const duplicateTypeIssue = createDuplicateComponentTypeRule(options.duplicateComponentTypeThreshold).check(root)
+  if (duplicateTypeIssue !== null) treeIssues.push(duplicateTypeIssue)
 
   if (treeIssues.length === 0) return baseResult
 
