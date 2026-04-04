@@ -14,10 +14,10 @@ const baseMetrics: PerformanceMetrics = {
 }
 
 describe('D02: getRuleCatalog', () => {
-  // Happy path 1: returns all 10 rules
-  it('returns exactly 10 rules', () => {
+  // Happy path 1: returns all 15 rules
+  it('returns exactly 15 rules', () => {
     const catalog = getRuleCatalog()
-    expect(catalog).toHaveLength(10)
+    expect(catalog).toHaveLength(15)
   })
 
   // Happy path 2: each rule has required metadata fields
@@ -47,6 +47,12 @@ describe('D02: getRuleCatalog', () => {
     expect(names).toContain('render-count')
     expect(names).toContain('style-complexity')
     expect(names).toContain('total-node-count')
+    // Rules added in 025–029
+    expect(names).toContain('event-handler-count')
+    expect(names).toContain('duplicate-component-type')
+    expect(names).toContain('large-data-prop')
+    expect(names).toContain('unvirtualized-list')
+    expect(names).toContain('anonymous-component')
   })
 
   // Edge case 2: result is deterministic
@@ -104,6 +110,48 @@ describe('D02: runAnalysis', () => {
     const issue = result.issues.find((i) => i.rule === 'style-complexity')
     expect(issue).toBeDefined()
     expect(issue?.severity).toBe('warning')
+  })
+
+  // D12: detects event-handler-count violation
+  it('detects event handler count violation', () => {
+    const node: ComponentNode = {
+      id: 'root',
+      type: 'Button',
+      props: {
+        onClick: () => {},
+        onMouseEnter: () => {},
+        onMouseLeave: () => {},
+        onFocus: () => {},
+        onBlur: () => {},
+        onKeyDown: () => {},
+      },
+    }
+    const result = runAnalysis(node, baseMetrics)
+    expect(result.status).toBe('fail')
+    const issue = result.issues.find((i) => i.rule === 'event-handler-count')
+    expect(issue).toBeDefined()
+  })
+
+  // D12: detects anonymous component
+  it('detects anonymous component type', () => {
+    const node: ComponentNode = { id: 'root', type: '' }
+    const result = runAnalysis(node, baseMetrics)
+    expect(result.status).toBe('fail')
+    const issue = result.issues.find((i) => i.rule === 'anonymous-component')
+    expect(issue).toBeDefined()
+  })
+
+  // D12: detects large data prop
+  it('detects large data prop', () => {
+    const node: ComponentNode = {
+      id: 'root',
+      type: 'List',
+      props: { data: 'x'.repeat(50_000) },
+    }
+    const result = runAnalysis(node, baseMetrics)
+    expect(result.status).toBe('fail')
+    const issue = result.issues.find((i) => i.rule === 'large-data-prop')
+    expect(issue).toBeDefined()
   })
 
   // Unknown case: result always includes metrics
