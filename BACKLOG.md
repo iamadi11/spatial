@@ -58,4 +58,4 @@ This is the unified backlog for both the **spatial engine** (numeric IDs) and th
 | D13 | Playground preset examples (one-click load passing/failing trees)  | feature | 3        | done   | Section 16.6   | D04        |
 | D14 | Live page last-updated indicator (timestamp + pulse on new data)   | feature | 4        | done   | Section 16.6   | D07        |
 | D15 | Playground threshold editor (per-rule overrides on /analyze)        | feature | 3        | done   | Section 16.6   | D04, D12   |
-| D16 | Rule detail panel (expandable details + Try in Playground on /rules) | feature | 4        | ready  | Section 16.6   | D03, D04, D15 |
+| D16 | Rule detail panel (expandable details + Try in Playground on /rules) | feature | 4        | done   | Section 16.6   | D03, D04, D15 |

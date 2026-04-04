@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [dash-0.11.0] - 2026-04-04
+
+### Added
+- [D16] Rule detail panel: `RuleCard` gains a "Show details" / "Hide details" toggle button with `aria-expanded`; expanded panel shows severity explanation ("warning = investigate" / "error = critical") and a "Try in Playground →" link to `/analyze`; toggle state is local (`useState`), no new props, all content from existing `RuleMetadata`
+
 ## [0.18.0] - 2026-04-04
 
 ### Added
