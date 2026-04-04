@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [dash-0.10.0] - 2026-04-04
+
+### Added
+- [D15] Playground threshold editor: `ThresholdEditor` collapsible panel on `/analyze` with a numeric input per `RuleOptions` key; empty inputs revert to engine default; `runAnalysis()` receives overrides as third arg; all inputs have `aria-label`
+
 ## [0.17.0] - 2026-04-04
 
 ### Added

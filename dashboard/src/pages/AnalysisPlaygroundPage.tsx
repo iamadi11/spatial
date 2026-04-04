@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { runAnalysis } from '../lib/engine'
-import type { ComponentNode, PerformanceMetrics, PerformanceResult } from '../lib/engine'
+import type { ComponentNode, PerformanceMetrics, PerformanceResult, RuleOptions } from '../lib/engine'
 import { NodeTreeInput } from '../components/NodeTreeInput'
 import { MetricsInput } from '../components/MetricsInput'
 import { AnalysisResult } from '../components/AnalysisResult'
+import { ThresholdEditor } from '../components/ThresholdEditor'
 
 const EXAMPLE_TREE: ComponentNode = {
   id: 'app',
@@ -78,6 +79,7 @@ const FAILING_PRESET_METRICS: PerformanceMetrics = {
 export function AnalysisPlaygroundPage() {
   const [jsonInput, setJsonInput] = useState(JSON.stringify(EXAMPLE_TREE, null, 2))
   const [metrics, setMetrics] = useState<PerformanceMetrics>(DEFAULT_METRICS)
+  const [thresholds, setThresholds] = useState<RuleOptions>({})
   const [result, setResult] = useState<PerformanceResult | null>(null)
   const [parseError, setParseError] = useState<string | null>(null)
 
@@ -90,7 +92,7 @@ export function AnalysisPlaygroundPage() {
       setParseError('Invalid JSON — cannot run analysis.')
       return
     }
-    const analysisResult = runAnalysis(node, metrics)
+    const analysisResult = runAnalysis(node, metrics, thresholds)
     setResult(analysisResult)
   }
 
@@ -136,6 +138,7 @@ export function AnalysisPlaygroundPage() {
         <div className="space-y-4">
           <NodeTreeInput value={jsonInput} onChange={setJsonInput} />
           <MetricsInput metrics={metrics} onChange={setMetrics} />
+          <ThresholdEditor options={thresholds} onChange={setThresholds} />
           {parseError && (
             <p className="text-xs text-red-400">{parseError}</p>
           )}
