@@ -54,4 +54,4 @@ This is the unified backlog for both the **spatial engine** (numeric IDs) and th
 | D11 | Metrics bar display (visual metric bars for PerformanceResult)     | feature | 4        | done   | Section 16.6   | D05        |
 | D12 | Rule catalog sync — register 5 missing engine rules in dashboard   | feature | 2        | done   | Section 16.6   | D02        |
 | D13 | Playground preset examples (one-click load passing/failing trees)  | feature | 3        | done   | Section 16.6   | D04        |
-| D14 | Live page last-updated indicator (timestamp + pulse on new data)   | feature | 4        | ready  | Section 16.6   | D07        |
+| D14 | Live page last-updated indicator (timestamp + pulse on new data)   | feature | 4        | done   | Section 16.6   | D07        |
