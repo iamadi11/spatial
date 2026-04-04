@@ -58,7 +58,7 @@ export function RuleCard({ rule }: Props) {
             {SEVERITY_EXPLANATION[rule.severity] ?? `severity: ${rule.severity}`}
           </p>
           <Link
-            to="/analyze"
+            to="/examples"
             aria-label="Try in Playground"
             className="inline-flex items-center gap-1 text-xs text-indigo-400 hover:text-indigo-300 underline"
           >

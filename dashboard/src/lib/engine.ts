@@ -21,6 +21,9 @@ import { createDuplicateComponentTypeRule } from '@engine/rules/duplicate-compon
 import { createLargeDataPropRule } from '@engine/rules/large-data-prop'
 import { createUnvirtualizedListRule } from '@engine/rules/unvirtualized-list'
 import { createAnonymousComponentRule } from '@engine/rules/anonymous-component'
+import { createBooleanPropOverloadRule } from '@engine/rules/boolean-prop-overload'
+import { createSingleChildChainRule } from '@engine/rules/single-child-chain'
+import { createMemoCandidateRule } from '@engine/rules/memo-candidate'
 
 // Re-export engine types for components to use
 export type { ComponentNode, PerformanceResult, PerformanceIssue, PerformanceMetrics } from '@engine/types'
@@ -147,6 +150,24 @@ const RULE_CATALOG: RuleMetadata[] = [
     severity: 'warning',
     defaultThreshold: 0,
   },
+  {
+    name: 'boolean-prop-overload',
+    description: 'Flags components with too many boolean props — indicates a component doing too many things.',
+    severity: 'warning',
+    defaultThreshold: 5,
+  },
+  {
+    name: 'single-child-chain',
+    description: 'Flags long chains of single-child wrapper components — wrapper hell that bloats reconciliation.',
+    severity: 'warning',
+    defaultThreshold: 4,
+  },
+  {
+    name: 'memo-candidate',
+    description: 'Flags components with high render counts and many children — strong candidate for React.memo.',
+    severity: 'warning',
+    defaultThreshold: 3,
+  },
 ]
 
 /**
@@ -181,6 +202,8 @@ export function runAnalysis(
   registry.register(createLargeDataPropRule(options.largeDataPropThreshold))
   registry.register(createUnvirtualizedListRule(options.unvirtualizedListThreshold))
   registry.register(createAnonymousComponentRule())
+  registry.register(createBooleanPropOverloadRule())
+  registry.register(createMemoCandidateRule())
 
   const baseResult = analyze(root, metrics, registry)
 
@@ -194,6 +217,9 @@ export function runAnalysis(
 
   const duplicateTypeIssue = createDuplicateComponentTypeRule(options.duplicateComponentTypeThreshold).check(root)
   if (duplicateTypeIssue !== null) treeIssues.push(duplicateTypeIssue)
+
+  const singleChildChainIssue = createSingleChildChainRule().check(root)
+  if (singleChildChainIssue !== null) treeIssues.push(singleChildChainIssue)
 
   if (treeIssues.length === 0) return baseResult
 

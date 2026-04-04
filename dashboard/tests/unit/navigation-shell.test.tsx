@@ -21,14 +21,14 @@ describe('D06: Sidebar', () => {
   })
 
   // Happy path 2: renders both nav links
-  it('renders Rules and Analyze nav links', () => {
+  it('renders Rules and Examples nav links', () => {
     render(
       <MemoryRouter>
         <Sidebar />
       </MemoryRouter>
     )
     expect(screen.getByRole('link', { name: /rules/i })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /analyze/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /examples/i })).toBeInTheDocument()
   })
 
   // Edge case 1: Rules link points to /rules
@@ -42,15 +42,15 @@ describe('D06: Sidebar', () => {
     expect(link).toHaveAttribute('href', '/rules')
   })
 
-  // Edge case 2: Analyze link points to /analyze
-  it('Analyze link points to /analyze', () => {
+  // Edge case 2: Examples link points to /examples
+  it('Examples link points to /examples', () => {
     render(
       <MemoryRouter>
         <Sidebar />
       </MemoryRouter>
     )
-    const link = screen.getByRole('link', { name: /analyze/i })
-    expect(link).toHaveAttribute('href', '/analyze')
+    const link = screen.getByRole('link', { name: /examples/i })
+    expect(link).toHaveAttribute('href', '/examples')
   })
 
   // Failure case: shows engine version in footer
@@ -110,13 +110,13 @@ describe('D06: App routing', () => {
     expect(screen.getByRole('heading', { name: /rule catalog/i })).toBeInTheDocument()
   })
 
-  // Edge case: /analyze shows Analysis Playground page
-  it('/analyze renders Analysis Playground page', () => {
+  // Edge case: /examples shows Examples page
+  it('/examples renders Examples page', () => {
     render(
-      <MemoryRouter initialEntries={['/analyze']}>
+      <MemoryRouter initialEntries={['/examples']}>
         <App />
       </MemoryRouter>
     )
-    expect(screen.getByRole('heading', { name: /analysis playground/i })).toBeInTheDocument()
+    expect(screen.getByText('Performance Patterns')).toBeInTheDocument()
   })
 })
