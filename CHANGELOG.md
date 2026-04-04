@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.17.0] - 2026-04-04
+
+### Added
+- [031] Memo candidate rule: `createMemoCandidateRule(renderCountThreshold, childrenThreshold)` — flags nodes where BOTH `renderCount > threshold` (default 3) AND `children.length > threshold` (default 3); compound signal for React.memo candidates; pure, O(1)
+
 ## [dash-0.9.0] - 2026-04-04
 
 ### Added
