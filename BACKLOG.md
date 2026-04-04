@@ -35,7 +35,7 @@ This is the unified backlog for both the **spatial engine** (numeric IDs) and th
 | 027 | Large data prop detection rule (flag oversized prop payloads)      | rule    | 3        | done    | Section 4.2.2, 12   | 005, 006            |
 | 028 | Unvirtualized list detection rule (flag large same-type sibling groups) | rule | 3    | done   | Section 4.2.2, 7, 12 | 005, 006           |
 | 029 | Anonymous component detection rule (flag unnamed component types)  | rule    | 4        | done   | Section 4.2.2, 7, 12 | 005, 006           |
-| 030 | Boolean prop overload detection rule (flag do-it-all components)   | rule    | 3        | ready  | Section 4.2.2, 7, 12 | 005, 006           |
+| 030 | Boolean prop overload detection rule (flag do-it-all components)   | rule    | 3        | done   | Section 4.2.2, 7, 12 | 005, 006           |
 
 ## Dashboard Items
 

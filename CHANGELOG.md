@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.16.0] - 2026-04-04
+
+### Added
+- [030] Boolean prop overload rule: `createBooleanPropOverloadRule()` — flags components with more boolean props than the threshold (default 5); counts `typeof val === 'boolean'` at top level only; pure structural check, metrics unused; warns with count in message
+
 ## [dash-0.7.0] - 2026-04-04
 
 ### Changed
