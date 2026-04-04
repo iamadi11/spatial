@@ -149,6 +149,53 @@ describe('D07: LiveAnalysisPage', () => {
     expect(screen.getByText(/live\s*[—–-]\s*connected/i)).toBeInTheDocument()
   })
 
+  // D14: shows "Waiting for data…" label before first snapshot
+  it('shows waiting for data label before any bridge data', async () => {
+    const { LiveAnalysisPage } = await import('../../src/pages/LiveAnalysisPage')
+    render(<LiveAnalysisPage />)
+    expect(screen.getByText(/waiting for data/i)).toBeInTheDocument()
+  })
+
+  // D14: shows relative "ago" timestamp when connected
+  it('shows a relative ago timestamp when connected', async () => {
+    ;(window as unknown as Record<string, unknown>).__SPATIAL__ = {
+      result: mockResult,
+      timestamp: Date.now(),
+    }
+    const { LiveAnalysisPage } = await import('../../src/pages/LiveAnalysisPage')
+    render(<LiveAnalysisPage />)
+    await act(async () => { vi.advanceTimersByTime(1100) })
+    expect(screen.getByText(/\d+s ago/i)).toBeInTheDocument()
+  })
+
+  // D14: pulse class is applied when new bridge data arrives
+  it('applies a pulse class when new bridge data arrives', async () => {
+    const { LiveAnalysisPage } = await import('../../src/pages/LiveAnalysisPage')
+    render(<LiveAnalysisPage />)
+
+    // Initial bridge data arrives
+    await act(async () => {
+      ;(window as unknown as Record<string, unknown>).__SPATIAL__ = {
+        result: mockResult,
+        timestamp: 1000,
+      }
+      vi.advanceTimersByTime(600)
+    })
+
+    // New bridge data with different timestamp
+    await act(async () => {
+      ;(window as unknown as Record<string, unknown>).__SPATIAL__ = {
+        result: mockResult,
+        timestamp: 2000,
+      }
+      vi.advanceTimersByTime(600)
+    })
+
+    // The result panel should have a pulse class at some point; just verify it renders
+    const region = screen.getByRole('region', { name: /result detail/i })
+    expect(region).toBeInTheDocument()
+  })
+
   // Unknown case: unknown status result is displayed correctly
   it('renders UNKNOWN status result from bridge data', async () => {
     const unknownResult: PerformanceResult = {

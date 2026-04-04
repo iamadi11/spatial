@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [dash-0.9.0] - 2026-04-04
+
+### Added
+- [D14] Live page last-updated indicator: tracks `lastUpdatedAt` state, shows "Last updated Xs ago" relative label updating every 1s; applies `animate-pulse` for 600ms when bridge timestamp changes; "Waiting for data…" shown before first snapshot
+
 ## [dash-0.8.0] - 2026-04-04
 
 ### Added
