@@ -59,3 +59,4 @@ This is the unified backlog for both the **spatial engine** (numeric IDs) and th
 | D14 | Live page last-updated indicator (timestamp + pulse on new data)   | feature | 4        | done   | Section 16.6   | D07        |
 | D15 | Playground threshold editor (per-rule overrides on /analyze)        | feature | 3        | done   | Section 16.6   | D04, D12   |
 | D16 | Rule detail panel (expandable details + Try in Playground on /rules) | feature | 4        | done   | Section 16.6   | D03, D04, D15 |
+| D17 | Examples page — bad vs good React patterns with live engine analysis  | feature | 2        | done   | Section 16.3, 16.6 | D03, D04, D07, D16 |

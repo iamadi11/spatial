@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [dash-0.12.0] - 2026-04-04
+
+### Added
+- [D17] Examples page (`/examples`): replaces `/analyze` and `/live` with a 5-section bad-vs-good pattern explorer — Excessive Re-renders, Wrapper Hell, Prop Explosion, Unvirtualized List, Deep Nesting; each section has a left-nav, interactive demo, real code snippet, and live engine analysis card running directly in the browser
+- Engine adapter now registers `boolean-prop-overload`, `single-child-chain`, `memo-candidate` rules (3 previously missing rules added to dashboard)
+
+### Removed
+- `/analyze` Analysis Playground page (JSON input UX removed)
+- `/live` Live Analysis page (bridge-dependent page removed)
+- `ThresholdEditor`, `NodeTreeInput`, `MetricsInput`, `AnalysisResult` components
+- `live.ts` bridge reader (no longer needed)
+
 ## [dash-0.11.0] - 2026-04-04
 
 ### Added

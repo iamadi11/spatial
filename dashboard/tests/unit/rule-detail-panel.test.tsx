@@ -52,12 +52,12 @@ describe('D16: RuleCard detail panel', () => {
     expect(screen.queryByRole('link', { name: /try in playground/i })).not.toBeInTheDocument()
   })
 
-  // Edge case 2: playground link points to /analyze
-  it('Try in Playground link navigates to /analyze', () => {
+  // Edge case 2: playground link points to /examples
+  it('Try in Playground link navigates to /examples', () => {
     renderInRouter(<RuleCard rule={warningRule} />)
     fireEvent.click(screen.getByRole('button', { name: /show details/i }))
     const link = screen.getByRole('link', { name: /try in playground/i })
-    expect(link).toHaveAttribute('href', '/analyze')
+    expect(link).toHaveAttribute('href', '/examples')
   })
 
   // Failure case: error-severity rule shows "error = critical" explanation
