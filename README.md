@@ -1,14 +1,26 @@
-# Client-Side UI Performance Optimizer
+# Spatial — UI performance detection engine
 
-A deterministic, development-time UI performance detection engine that identifies potential performance bottlenecks before code ships.
+Deterministic, development-time analysis of component trees against configurable performance rules. Same inputs always yield the same `PerformanceResult` — no DOM access in the core engine.
 
-**Version**: 0.2.0 | **Tests**: 74 passing | **Language**: TypeScript (strict)
+| | |
+|--|--|
+| **Engine version** | `0.18.0` (see `VERSION`) |
+| **Engine tests** | 260 passing (Vitest) |
+| **Dashboard** | React 18 + Vite app in `dashboard/` (`spatial-dashboard` **v0.12.0**, 105 tests) |
+| **Language** | TypeScript strict (`tsconfig.json`) |
+
+---
+
+## Repository layout
+
+- **Root** — pure engine (`src/`), shared `npm test` / `npm run typecheck`
+- **`dashboard/`** — visualization, examples, and rule catalog UI; run `npm install` and `npm run dev` inside that folder
 
 ---
 
 ## What it does
 
-Analyzes a component tree against a set of configurable performance rules and returns a structured result — deterministically, with no DOM access and no guessing.
+Analyzes a component tree with a rule registry and returns a structured result.
 
 ```ts
 import { analyze } from './src/engine'
@@ -18,8 +30,8 @@ import { createFpsDropRule } from './src/rules/fps-drop'
 import { formatIssues } from './src/issue-formatter'
 
 const registry = createRegistry()
-registry.register(createRenderCountRule())   // flag > 5 renders
-registry.register(createFpsDropRule())       // flag > 10 fps drop
+registry.register(createRenderCountRule()) // default: > 5 renders
+registry.register(createFpsDropRule()) // default: > 10 fps drop
 
 const result = analyze(
   { id: 'root', type: 'View', children: [{ id: 'btn', type: 'Button' }] },
@@ -27,7 +39,7 @@ const result = analyze(
   registry,
 )
 
-console.log(result.status)          // "fail"
+console.log(result.status) // "fail"
 console.log(formatIssues(result.issues))
 // "[warning] render-count: Render count 8 exceeds threshold of 5 (node: root)"
 ```
@@ -36,115 +48,117 @@ console.log(formatIssues(result.issues))
 
 ## Architecture
 
+**Core** (`src/` — no browser APIs, pure functions):
+
 ```
 src/
 ├── types.ts            — ComponentNode, PerformanceMetrics, PerformanceIssue, PerformanceResult
 ├── engine.ts           — analyze(root, metrics, registry) → PerformanceResult
-├── traversal.ts        — walkTree, collectNodes (O(n) depth-first)
-├── rule-registry.ts    — createRegistry() — register + runAll
-├── unknown.ts          — unknownResult(reason) — SOT-compliant UNKNOWN builder
-├── metrics-cache.ts    — createMetricsCache(), buildCacheKey() — per-run memoization
-├── issue-formatter.ts  — formatIssue(), formatIssues() — structured text output
-└── rules/
-    ├── render-count.ts — createRenderCountRule(threshold?) — default: 5
-    ├── layout-shift.ts — createLayoutShiftRule(threshold?) — default: 3
-    ├── fps-drop.ts     — createFpsDropRule(threshold?)     — default: 10
-    └── memory-usage.ts — createMemoryUsageRule(threshold?) — default: 100 MB
+├── traversal.ts        — collectNodes (O(n) depth-first)
+├── rule-registry.ts    — createRegistry(), register, runAll
+├── unknown.ts          — unknownResult(reason)
+├── metrics-cache.ts    — per-run memoization helpers
+├── issue-formatter.ts  — formatIssue, formatIssues
+├── report-summary.ts   — formatReport(result) — full text report
+├── rule-catalog.ts     — createRuleCatalog() — rule metadata for docs/UI
+└── rules/              — one factory per rule (createXxxRule)
 ```
+
+**Adapters** (`src/adapters/` — browser/React allowed, **dev-only**; guarded with `process.env.NODE_ENV !== 'production'`):
+
+- `react.ts` — fiber → `ComponentNode` extraction (`extractTree`)
+- `metrics.ts` — metric collection (`collectMetrics`)
+- `index.ts` — `createSpatialHandler()`, `useSpatial()`, default registry wiring and `globalThis.__SPATIAL__`
 
 ### Data flow
 
 ```
 ComponentNode (tree)
        │
-  collectNodes()          ← O(n) traversal
+  collectNodes()
        │
-  [node, node, ...]
-       │
-  registry.runAll(node, metrics)   ← per node, all rules
+  registry.runAll(node, metrics)   ← per node, all registered rules
        │
   PerformanceIssue[]
        │
-  analyze() → PerformanceResult { status, metrics, issues }
+  analyze() → PerformanceResult { status, metrics, issues, reason? }
        │
-  formatIssues() → string
+  formatIssues() / formatReport()
 ```
 
 ---
 
-## API Reference
+## API reference
 
 ### `analyze(root, metrics, registry)`
 
-Walks the component tree, runs all registered rules against every node, and aggregates issues.
+Walks the tree, runs every registered rule on each node, aggregates issues.
 
 | Param | Type | Description |
 |-------|------|-------------|
 | `root` | `ComponentNode` | Root of the component tree |
-| `metrics` | `PerformanceMetrics` | Measured values (renderCount, layoutShifts, fpsDrop, memoryUsage) |
-| `registry` | `Registry` | Rule registry with rules pre-registered |
+| `metrics` | `PerformanceMetrics` | `renderCount`, `layoutShifts`, `fpsDrop`, `memoryUsage` (MB) |
+| `registry` | `Registry` | Rules registered via `createRegistry()` |
 
 Returns `PerformanceResult`:
+
 ```ts
 {
   status: 'pass' | 'fail' | 'unknown'
   metrics: PerformanceMetrics
   issues: PerformanceIssue[]
-  reason?: string   // present when status is 'unknown'
+  reason?: string // when status is 'unknown'
 }
 ```
 
-Returns `status: 'unknown'` if any metric value is negative (SOT §2.3 — never guess).
+Invalid metrics (e.g. negative values) yield `status: 'unknown'` per product rules — the engine does not guess.
 
----
+### Detection rules
 
-### Detection Rules
+Factories live in `src/rules/`. Thresholds use strict `>` unless noted. Rules that only inspect structure may ignore metrics.
 
-All rules follow the factory pattern: `createXxxRule(threshold?)` → `Rule`.
-Rules return `{ triggered: false }` for zero or negative metric values.
-All thresholds use strictly-greater-than (`>`).
+| Rule | Factory | Default | Severity |
+|------|---------|---------|----------|
+| render-count | `createRenderCountRule(n?)` | 5 | warning |
+| layout-shift | `createLayoutShiftRule(n?)` | 3 | warning |
+| fps-drop | `createFpsDropRule(n?)` | 10 | error |
+| memory-usage | `createMemoryUsageRule(n?)` | 100 MB | error |
+| child-count | `createChildCountRule(n?)` | 20 | warning |
+| prop-count | `createPropCountRule(n?)` | 15 | warning |
+| inline-style-count | `createInlineStyleCountRule(n?)` | 15 | warning |
+| nesting-depth | `createNestingDepthRule(n?)` | 10 | warning |
+| total-node-count | `createTotalNodeCountRule(n?)` | 200 | warning |
+| style-complexity | `createStyleComplexityRule()` | fixed CSS property set | warning |
+| memo-candidate | `createMemoCandidateRule(render?, children?)` | 3 renders, 3 children | warning |
+| anonymous-component | `createAnonymousComponentRule()` | — | warning |
+| boolean-prop-overload | `createBooleanPropOverloadRule(n?)` | 5 | warning |
+| event-handler-count | `createEventHandlerCountRule(n?)` | 5 | warning |
+| duplicate-component-type | `createDuplicateComponentTypeRule(n?)` | 30 | warning |
+| unvirtualized-list | `createUnvirtualizedListRule(n?)` | 50 | warning |
+| single-child-chain | `createSingleChildChainRule(n?)` | 4 | warning |
+| large-data-prop | `createLargeDataPropRule(bytes?)` | 10_000 bytes | warning |
 
-| Rule | Factory | Default threshold | Severity |
-|------|---------|-------------------|----------|
-| Render count | `createRenderCountRule(n?)` | 5 renders | `warning` |
-| Layout shift | `createLayoutShiftRule(n?)` | 3 shifts | `warning` |
-| FPS drop | `createFpsDropRule(n?)` | 10 frames | `error` |
-| Memory usage | `createMemoryUsageRule(n?)` | 100 MB | `error` |
-
----
+`createRuleCatalog()` in `rule-catalog.ts` returns descriptive metadata for a curated subset (used by tooling and the dashboard); new rule files may exist before catalog entries are extended.
 
 ### `createRegistry()`
 
 ```ts
 const registry = createRegistry()
-registry.register(rule)                         // add a rule
-registry.runAll(node, metrics)                  // → PerformanceIssue[]
+registry.register(rule)
+registry.runAll(node, metrics) // → PerformanceIssue[]
 ```
-
----
 
 ### `createMetricsCache()` / `buildCacheKey()`
 
 Per-run cache to avoid re-evaluating the same `(node, metrics)` pair.
 
-```ts
-const cache = createMetricsCache()
-const key = buildCacheKey(node.id, metrics)
-if (!cache.has(key)) {
-  cache.set(key, analyze(node, metrics, registry))
-}
-const result = cache.get(key)
-cache.clear()   // reset between analysis runs
-```
-
----
-
-### `formatIssues(issues)` / `formatIssue(issue)`
+### `formatIssues` / `formatIssue` / `formatReport`
 
 ```ts
-formatIssue(issue)   // "[warning] render-count: Too many renders (node: btn)"
-formatIssues([])     // "No issues found."
-formatIssues(issues) // newline-joined formatted issues
+formatIssue(issue)
+formatIssues([]) // "No issues found."
+formatIssues(issues) // newline-separated
+formatReport(result) // status, metrics, reason, issues block
 ```
 
 ---
@@ -164,7 +178,7 @@ type PerformanceMetrics = {
   renderCount: number
   layoutShifts: number
   fpsDrop: number
-  memoryUsage: number   // in MB
+  memoryUsage: number // MB
 }
 
 type PerformanceIssue = {
@@ -186,30 +200,36 @@ type PerformanceResult = {
 
 ## Development
 
+**Engine (repository root)**
+
 ```bash
 npm install
-npm test               # run all tests (vitest)
-npm run test:watch     # watch mode
+npm test               # vitest
+npm run test:watch
 npm run typecheck      # tsc --noEmit
 ```
 
-### Autonomous development loop
+**Dashboard**
+
+```bash
+cd dashboard
+npm install
+npm test -- --run
+npm run dev            # Vite dev server
+```
+
+### Autonomous workflow (see `CLAUDE.md`)
 
 ```bash
 /kickoff   # one-time: decompose SourceOfTruth.md into backlog items
-/dev       # full autonomous loop: pick → plan → test → implement → validate → release
+/dev       # full loop: pick → plan → test → implement → validate → release
 ```
-
-See `CLAUDE.md` for the full command reference.
 
 ---
 
-## Constraints (SOT)
+## Constraints (SourceOfTruth)
 
-- **No DOM** — no `document`, `window`, or `navigator`
-- **No randomness** — fully deterministic; same input always produces same output
-- **Pure functions** — no side effects, no mutations, no global state
-- **O(n) traversal** — no nested loops over the same node set
-- **Unknown over guessing** — if metrics are invalid, returns `status: 'unknown'`
+- **Core engine** — no `document`, `window`, or `navigator`; no `Math.random()`; pure functions; O(n) tree work; invalid input → `unknown`, not guessed values
+- **Adapters** — browser APIs only under `src/adapters/`, dev-only guards, no patching React internals (public Profiler APIs only)
 
-Governance: `SourceOfTruth.md` is immutable and takes precedence over all other instructions.
+`SourceOfTruth.md` is the immutable product contract for this repo.
