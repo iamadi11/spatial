@@ -1,0 +1,38 @@
+---
+description: Keep work items small, testable, and independently releasable
+alwaysApply: true
+---
+
+# Small Increments Rule
+
+## Principle: Break Everything Into the Smallest Possible Pieces
+
+Large changes are the enemy of quality. Every piece of work must be small enough to fully understand, test, and validate.
+
+## Size Constraints
+
+- Each work item should touch **3-5 files maximum** (excluding test files and backlog updates)
+- Each implementation should add **no more than 200 lines** of new code
+- Each item must be **independently testable** — it works on its own
+- Each item must be **independently releasable** — it can ship without other items
+
+## When Decomposing Work
+
+- Prefer **many small items** over one large item
+- Each item should implement **one concept** (one rule, one type, one utility)
+- If an item feels large → split it before starting
+- Dependencies between items are fine — use the `depends-on` field in backlog items
+
+## During Implementation
+
+- Implement one function at a time
+- Test each function before moving to the next
+- Commit frequently with small, focused commits
+- If scope creep is detected → create a NEW backlog item for the additional work, do not expand the current item
+
+## Red Flags That an Item is Too Large
+
+- More than 5 source files being created/modified
+- More than 10 test cases for a single item
+- Implementation plan has more than 4 functions
+- You find yourself saying "while I'm here, I should also..."

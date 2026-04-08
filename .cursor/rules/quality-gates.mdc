@@ -1,0 +1,95 @@
+---
+description: Four mandatory quality gates for every backlog item before release
+globs: backlog/**/*.md
+alwaysApply: false
+---
+
+# Quality Gates Rule
+
+## Every item must pass ALL 4 gates before release. No exceptions.
+
+---
+
+## Gate 1: PM Validation
+
+Check the backlog item's `## PM Plan` section:
+
+- [ ] Problem is clearly defined (what problem, why it matters)
+- [ ] Scope is explicitly limited (what IS in scope)
+- [ ] Non-goals are listed (what is OUT of scope)
+- [ ] Expected behavior is described with input/output examples
+- [ ] SOT section traceability is present
+
+**If any checkbox fails → STOP. Run `/plan-feature` to fix.**
+
+---
+
+## Gate 2: QA Validation
+
+Check the backlog item's `## QA Test Plan` section:
+
+- [ ] At least 2 happy path test cases defined
+- [ ] At least 2 edge case test cases defined
+- [ ] At least 1 failure case test case defined
+- [ ] At least 1 unknown case test case defined (returns `status: "unknown"`)
+- [ ] All test cases have explicit input AND expected output
+- [ ] Test files exist in `tests/` and are executable
+
+**If any checkbox fails → STOP. Run `/write-tests` to fix.**
+
+---
+
+## Gate 3: Dev Validation
+
+Inspect the source code in `src/`:
+
+- [ ] All functions are pure (no side effects, no mutations)
+- [ ] No DOM or browser API usage (`document`, `window`, `navigator`) in engine core
+- [ ] No randomness (`Math.random`, `crypto.random`)
+- [ ] All types are explicit (no `any`)
+- [ ] No external dependencies added without justification
+- [ ] Algorithm complexity is O(n) or better
+- [ ] Deterministic: same input always produces same output
+
+**If any checkbox fails → STOP. Fix the implementation.**
+
+---
+
+## Gate 4: Test Coverage
+
+Run the test suite and verify:
+
+- [ ] All defined test cases have corresponding test implementations
+- [ ] `npx vitest --run` exits with code 0 (all tests pass)
+- [ ] No skipped or pending tests
+- [ ] Every `src/` file has at least one corresponding test file
+
+**If any checkbox fails → STOP. Fix tests or implementation.**
+
+---
+
+## Running Gates
+
+Gates are checked:
+1. **Individually** — each command (`/plan-feature`, `/write-tests`, `/implement`) checks its relevant gate
+2. **Collectively** — `/validate` runs ALL 4 gates in sequence
+3. **Before release** — `/release` refuses to proceed if `/validate` hasn't passed
+
+## Validation Report Format
+
+After running all gates, append to the backlog item:
+
+```
+## Validation Report
+
+Date: YYYY-MM-DD
+
+| Gate | Status | Notes |
+|------|--------|-------|
+| PM Validation | PASS/FAIL | ... |
+| QA Validation | PASS/FAIL | ... |
+| Dev Validation | PASS/FAIL | ... |
+| Test Coverage | PASS/FAIL | ... |
+
+Overall: PASS/FAIL
+```

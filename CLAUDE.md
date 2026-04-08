@@ -20,6 +20,8 @@
 
 This runs the **entire development loop** — pick-next → plan → write-tests → implement → validate → release — continuously until all backlog items are done. No other input required.
 
+**Cursor:** the same slash commands live under `.cursor/commands/`. Use **`/start`** to run Kickoff automatically when the engine backlog is empty, then the same autonomous loop in **one** session (no need to type each step).
+
 ### Bootstrap (first time only)
 
 ```
@@ -27,10 +29,13 @@ This runs the **entire development loop** — pick-next → plan → write-tests
 /dev       ← builds everything from there
 ```
 
+**Cursor one-shot:** `/start` = conditional `/kickoff` + `/dev`.
+
 ### All Commands
 
 | Command | Role | Purpose |
 |---------|------|---------|
+| `/start` | **Cursor: full flow** | **Kickoff if engine backlog empty, then autonomous loop until done** |
 | `/dev` | **Autonomous loop** | **Full cycle, runs until all items done** |
 | `/kickoff` | Bootstrap | One-time: decompose SOT into backlog items |
 | `/pick-next` | Orchestrator | Select next item (chains into plan automatically) |

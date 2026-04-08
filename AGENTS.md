@@ -36,3 +36,18 @@ Fall back to Grep/Glob/Read **only** when the graph doesn't cover what you need.
 2. Use `detect_changes` for code review.
 3. Use `get_affected_flows` to understand impact.
 4. Use `query_graph` pattern="tests_for" to check coverage.
+
+---
+
+## Cursor slash commands
+
+Spatial defines the same workflow as **Claude Code** (see `CLAUDE.md`) using project commands in **`.cursor/commands/`**.
+
+| Command | Use |
+|---------|-----|
+| **`/start`** | **Preferred one-shot:** runs **Kickoff** only when `backlog/ready/`, `backlog/active/`, and `backlog/done/` have no engine `*.md` items, then runs the full **`/dev`** autonomous loop (engine + dashboard) without stopping between steps. |
+| `/dev` | Autonomous loop only (assumes backlog already exists). |
+| `/kickoff`, `/pick-next`, `/plan-feature`, `/write-tests`, `/implement`, `/validate`, `/release` | Individual steps (same behavior as `.claude/commands/`). |
+| `/status`, `/brainstorm`, `/detect-bugs` | Health, new work, regression scan. |
+
+**Project rules** for Cursor are in **`.cursor/rules/`** (`.mdc`). **Project skills** are in **`.cursor/skills/`** (mirrors `.claude/skills/`).
