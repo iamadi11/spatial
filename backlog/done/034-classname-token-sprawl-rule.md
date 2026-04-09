@@ -3,7 +3,7 @@ id: "034"
 title: "className token sprawl detection rule (flag oversized utility-class strings)"
 type: rule
 priority: 4
-status: ready
+status: done
 created: 2026-04-09
 sot-section: "Section 4.2.2, 7, 12"
 depends-on: "005, 006"
@@ -28,3 +28,29 @@ depends-on: "005, 006"
 - Does not replace `inline-style-count` or `prop-count`
 
 **Done when**: Rule is registered, tests pass, `npx vitest --run` green, and dashboard catalog lists the rule with documented defaults.
+
+## QA Test Plan
+
+- No `className`, non-string `className`, short strings — no trigger
+- Token count and length thresholds exceeded — trigger with descriptive message
+- Whitespace-only `className` — no trigger
+- Metrics ignored for structural branch
+
+## Implementation Plan
+
+- `src/rules/classname-token-sprawl.ts` — defaults maxTokens 30, maxLength 400
+- `dashboard/src/lib/engine.ts` — register + catalog + `RuleOptions`
+- Tests: `tests/unit/rules/classname-token-sprawl.test.ts`, adapter catalog count 20
+
+## Validation Report
+
+Date: 2026-04-09
+
+| Gate | Status |
+|------|--------|
+| PM | PASS |
+| QA | PASS |
+| Dev | PASS |
+| Tests | PASS |
+
+Overall: PASS

@@ -39,7 +39,7 @@ This is the unified backlog for both the **spatial engine** (numeric IDs) and th
 | 031 | Memo candidate detection rule (high-render nodes with children)     | rule    | 3        | done   | Section 4.2.2, 6.3, 7 | 005, 006          |
 | 032 | Single-child chain detection rule (wrapper-hell trees)              | rule    | 4        | done   | Section 4.2.2, 7, 11  | 003, 005, 006     |
 | 033 | Multi-type sibling fan-out detection rule (kitchen-sink parent renders) | rule | 4        | done   | Section 4.2.2, 7, 12  | 005, 006          |
-| 034 | className token sprawl detection rule (oversized utility-class strings) | rule | 4        | ready  | Section 4.2.2, 7, 12  | 005, 006          |
+| 034 | className token sprawl detection rule (oversized utility-class strings) | rule | 4        | done   | Section 4.2.2, 7, 12  | 005, 006          |
 
 ## Dashboard Items
 

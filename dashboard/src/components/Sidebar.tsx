@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom'
 
-const ENGINE_VERSION = '0.19.0'
+const ENGINE_VERSION = '0.20.0'
 
 const NAV_LINKS: { to: string; label: string; end?: boolean }[] = [
   { to: '/', label: 'Home', end: true },

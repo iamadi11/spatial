@@ -25,6 +25,7 @@ import { createBooleanPropOverloadRule } from '@engine/rules/boolean-prop-overlo
 import { createSingleChildChainRule } from '@engine/rules/single-child-chain'
 import { createMemoCandidateRule } from '@engine/rules/memo-candidate'
 import { createMultiTypeSiblingFanoutRule } from '@engine/rules/multi-type-sibling-fanout'
+import { createClassnameTokenSprawlRule } from '@engine/rules/classname-token-sprawl'
 
 // Re-export engine types for components to use
 export type { ComponentNode, PerformanceResult, PerformanceIssue, PerformanceMetrics } from '@engine/types'
@@ -70,6 +71,10 @@ export type RuleOptions = {
   multiTypeSiblingFanoutMinChildren?: number
   /** Minimum distinct child types for multi-type-sibling-fanout (default 6). */
   multiTypeSiblingFanoutMinDistinctTypes?: number
+  /** Max whitespace-separated tokens in `className` string before classname-token-sprawl triggers (default 30). */
+  classnameTokenSprawlMaxTokens?: number
+  /** Max trimmed character length of `className` before classname-token-sprawl triggers (default 400). */
+  classnameTokenSprawlMaxLength?: number
 }
 
 const RULE_CATALOG: RuleMetadata[] = [
@@ -90,6 +95,13 @@ const RULE_CATALOG: RuleMetadata[] = [
     description: 'Flags nodes with too many inline styles — inline styles bypass CSS optimizations.',
     severity: 'warning',
     defaultThreshold: 15,
+  },
+  {
+    name: 'classname-token-sprawl',
+    description:
+      'Flags oversized string `className` props — many utility tokens or very long class strings increase parse cost. Non-string className values are ignored.',
+    severity: 'warning',
+    defaultThreshold: 30,
   },
   {
     name: 'layout-shift',
@@ -217,6 +229,12 @@ export function runAnalysis(
   registry.register(createChildCountRule(options.childCountThreshold))
   registry.register(createPropCountRule(options.propCountThreshold))
   registry.register(createInlineStyleCountRule(options.inlineStyleCountThreshold))
+  registry.register(
+    createClassnameTokenSprawlRule({
+      maxTokens: options.classnameTokenSprawlMaxTokens,
+      maxLength: options.classnameTokenSprawlMaxLength,
+    }),
+  )
   registry.register(createStyleComplexityRule())
   registry.register(createEventHandlerCountRule(options.eventHandlerCountThreshold))
   registry.register(createLargeDataPropRule(options.largeDataPropThreshold))

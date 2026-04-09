@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.20.0] - 2026-04-09
+
+### Added
+- [034] `classname-token-sprawl` rule — flags string `props.className` when whitespace-separated token count exceeds 30 or trimmed length exceeds 400 (configurable); non-string `className` ignored; registered in dashboard adapter with `classnameTokenSprawlMaxTokens` / `classnameTokenSprawlMaxLength` overrides
+
 ## [dash-0.14.0] - 2026-04-09
 
 ### Added
