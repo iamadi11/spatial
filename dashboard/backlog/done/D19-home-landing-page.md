@@ -3,7 +3,7 @@ id: "D19"
 title: "Home landing page at / (Spatial overview + links to Rules and Examples)"
 type: feature
 priority: 4
-status: ready
+status: done
 created: 2026-04-09
 sot-section: "Section 16.3, 16.6"
 depends-on: "D01, D06"
@@ -27,3 +27,27 @@ depends-on: "D01, D06"
 - No redesign of `/rules` or `/examples`
 
 **Done when**: Visiting `/` shows the landing content; sidebar includes entry to home; navigation to Rules and Examples works; dashboard tests pass and `tsc` passes.
+
+## QA Test Plan
+
+- HomePage renders `main` with `aria-label`, heading "Spatial", two `Link`s with `aria-label`s
+- App at `/` shows HomePage, not Rule Catalog
+- Sidebar lists Home (with `end` match for `/`), Rules, Examples
+
+## Implementation Plan
+
+- `dashboard/src/pages/HomePage.tsx`, `App.tsx` route `/`, `Sidebar.tsx` nav + engine version string
+- Tests: `home-page.test.tsx`, updates to `navigation-shell.test.tsx`
+
+## Validation Report
+
+Date: 2026-04-09
+
+| Gate | Status |
+|------|--------|
+| PM | PASS |
+| Component | PASS |
+| Dev | PASS (no engine in components) |
+| Visual | PASS |
+
+Overall: PASS

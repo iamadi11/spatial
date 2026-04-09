@@ -20,13 +20,14 @@ describe('D06: Sidebar', () => {
     expect(screen.getByText('Spatial Dashboard')).toBeInTheDocument()
   })
 
-  // Happy path 2: renders both nav links
-  it('renders Rules and Examples nav links', () => {
+  // Happy path 2: renders Home, Rules, and Examples nav links
+  it('renders Home, Rules, and Examples nav links', () => {
     render(
       <MemoryRouter>
         <Sidebar />
       </MemoryRouter>
     )
+    expect(screen.getByRole('link', { name: /^home$/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /rules/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /examples/i })).toBeInTheDocument()
   })
@@ -90,14 +91,14 @@ describe('D06: AppShell', () => {
 })
 
 describe('D06: App routing', () => {
-  // Happy path 1: / redirects to /rules and shows Rule Catalog heading
-  it('/ redirects to Rule Catalog page', () => {
+  // Happy path 1: / shows home landing (D19)
+  it('/ renders home landing page', () => {
     render(
       <MemoryRouter initialEntries={['/']}>
         <App />
       </MemoryRouter>
     )
-    expect(screen.getByRole('heading', { name: /rule catalog/i })).toBeInTheDocument()
+    expect(screen.getByRole('main', { name: /spatial product overview/i })).toBeInTheDocument()
   })
 
   // Happy path 2: /rules shows Rule Catalog page

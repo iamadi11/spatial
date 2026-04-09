@@ -63,4 +63,4 @@ This is the unified backlog for both the **spatial engine** (numeric IDs) and th
 | D16 | Rule detail panel (expandable details + Try in Playground on /rules) | feature | 4        | done   | Section 16.6   | D03, D04, D15 |
 | D17 | Examples page — bad vs good React patterns with live engine analysis  | feature | 2        | done   | Section 16.3, 16.6 | D03, D04, D07, D16 |
 | D18 | PerformanceResult JSON copy and download (structured export)           | feature | 3        | done   | Section 16.3, 16.6 | D02, D17           |
-| D19 | Home landing page at / (Spatial overview + links to Rules and Examples) | feature | 4        | ready  | Section 16.3, 16.6 | D01, D06           |
+| D19 | Home landing page at / (Spatial overview + links to Rules and Examples) | feature | 4        | done   | Section 16.3, 16.6 | D01, D06           |

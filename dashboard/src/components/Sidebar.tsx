@@ -1,8 +1,9 @@
 import { NavLink } from 'react-router-dom'
 
-const ENGINE_VERSION = '0.8.1'
+const ENGINE_VERSION = '0.19.0'
 
-const NAV_LINKS = [
+const NAV_LINKS: { to: string; label: string; end?: boolean }[] = [
+  { to: '/', label: 'Home', end: true },
   { to: '/rules', label: 'Rules' },
   { to: '/examples', label: 'Examples' },
 ]
@@ -18,10 +19,11 @@ export function Sidebar() {
       </div>
 
       <ul className="flex-1 space-y-1">
-        {NAV_LINKS.map(({ to, label }) => (
+        {NAV_LINKS.map(({ to, label, end }) => (
           <li key={to}>
             <NavLink
               to={to}
+              end={end === true}
               className={({ isActive }) =>
                 `block rounded-md px-3 py-2 text-sm font-medium transition-colors ${
                   isActive
