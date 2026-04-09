@@ -4,9 +4,9 @@ Deterministic, development-time analysis of component trees against configurable
 
 | | |
 |--|--|
-| **Engine version** | `0.18.0` (see `VERSION`) |
-| **Engine tests** | 260 passing (Vitest) |
-| **Dashboard** | React 18 + Vite app in `dashboard/` (`spatial-dashboard` **v0.12.0**, 105 tests) |
+| **Engine version** | See `VERSION` |
+| **Engine tests** | Vitest (`npm test` at repo root) |
+| **Dashboard** | React 18 + Vite app in `dashboard/` (`spatial-dashboard`; `npm run dev` in `dashboard/`) |
 | **Language** | TypeScript strict (`tsconfig.json`) |
 
 ---
@@ -15,6 +15,16 @@ Deterministic, development-time analysis of component trees against configurable
 
 - **Root** — pure engine (`src/`), shared `npm test` / `npm run typecheck`
 - **`dashboard/`** — visualization, examples, and rule catalog UI; run `npm install` and `npm run dev` inside that folder
+
+### Deploying to Vercel
+
+The dashboard is a static Vite build. This repo includes `vercel.json` at the **repository root** so you can import the Git repo and deploy without extra configuration:
+
+- **Install / build** — `npm ci` + `npm run build` run in `dashboard/` (the build resolves `@engine` to `../src`).
+- **Output** — `dashboard/dist`.
+- **Client routing** — rewrites send unknown paths to `index.html` for React Router (`/`, `/rules`, `/examples`).
+
+**Alternative:** In the Vercel project, set **Root Directory** to `dashboard` and use `dashboard/vercel.json` (rewrites only). The default Vite build output is `dist` inside that directory.
 
 ---
 
