@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [dash-0.13.0] - 2026-04-09
+
+### Added
+- [D18] PerformanceResult JSON export: `formatPerformanceResultJson()` in `dashboard/src/lib/engine.ts`; `PerformanceResultJsonActions` (Copy analysis JSON / Download JSON) on every `LiveAnalysisCard` on `/examples`; tests in `dashboard/tests/unit/performance-result-json-export.test.tsx`
+
+### Fixed
+- `RerenderSection` demo components: remove unused destructured props so `tsc --noEmit` passes
+
 ## [dash-0.12.0] - 2026-04-04
 
 ### Added

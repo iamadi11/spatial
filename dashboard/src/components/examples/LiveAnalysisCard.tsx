@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { runAnalysis } from '../../lib/engine'
 import type { ComponentNode, PerformanceMetrics } from '../../lib/engine'
+import { PerformanceResultJsonActions } from '../PerformanceResultJsonActions'
 
 type Props = {
   tree: ComponentNode
@@ -53,6 +54,8 @@ export function LiveAnalysisCard({ tree, metrics, label }: Props) {
       {result.status === 'pass' && (
         <p className="text-xs text-emerald-400">No issues detected — this pattern is clean.</p>
       )}
+
+      <PerformanceResultJsonActions result={result} />
     </section>
   )
 }

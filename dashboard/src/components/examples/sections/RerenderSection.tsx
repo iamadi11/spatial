@@ -80,7 +80,7 @@ const UserCard = memo(function UserCard({ user }) {
 
 const NAMES = ['Alice', 'Bob', 'Carol', 'Dan']
 
-function BadUserCard({ name, tick }: { name: string; tick: number }) {
+function BadUserCard({ name }: { name: string; tick: number }) {
   const renders = useRef(0)
   renders.current++
   return (
@@ -91,8 +91,7 @@ function BadUserCard({ name, tick }: { name: string; tick: number }) {
   )
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const GoodUserCard = memo(function GoodUserCard({ name, _tick }: { name: string; _tick?: number }) {
+const GoodUserCard = memo(function GoodUserCard({ name }: { name: string }) {
   const renders = useRef(0)
   renders.current++
   return (

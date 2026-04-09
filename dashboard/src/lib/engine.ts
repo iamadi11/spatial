@@ -36,6 +36,14 @@ export function formatReport(result: PerformanceResult): string {
   return _formatReport(result)
 }
 
+/**
+ * Pretty-prints a PerformanceResult as JSON for copy/download (D18).
+ * Pure — deterministic for the same result object.
+ */
+export function formatPerformanceResultJson(result: PerformanceResult): string {
+  return JSON.stringify(result, null, 2)
+}
+
 export type RuleMetadata = {
   name: string
   description: string
