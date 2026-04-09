@@ -14,10 +14,10 @@ const baseMetrics: PerformanceMetrics = {
 }
 
 describe('D02: getRuleCatalog', () => {
-  // Happy path 1: returns all 18 rules
-  it('returns exactly 18 rules', () => {
+  // Happy path 1: returns all registered rules
+  it('returns exactly 19 rules', () => {
     const catalog = getRuleCatalog()
-    expect(catalog).toHaveLength(18)
+    expect(catalog).toHaveLength(19)
   })
 
   // Happy path 2: each rule has required metadata fields
@@ -53,6 +53,7 @@ describe('D02: getRuleCatalog', () => {
     expect(names).toContain('large-data-prop')
     expect(names).toContain('unvirtualized-list')
     expect(names).toContain('anonymous-component')
+    expect(names).toContain('multi-type-sibling-fanout')
   })
 
   // Edge case 2: result is deterministic

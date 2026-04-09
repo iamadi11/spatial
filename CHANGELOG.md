@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.19.0] - 2026-04-09
+
+### Added
+- [033] `multi-type-sibling-fanout` rule — flags parents with ≥10 direct children and ≥6 distinct child component types (kitchen-sink renders); `createMultiTypeSiblingFanoutRule({ minDirectChildren, minDistinctTypes })`; registered in dashboard `runAnalysis` with optional `RuleOptions` overrides; tests in `tests/unit/rules/multi-type-sibling-fanout.test.ts`
+
 ## [dash-0.13.0] - 2026-04-09
 
 ### Added

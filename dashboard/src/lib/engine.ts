@@ -24,6 +24,7 @@ import { createAnonymousComponentRule } from '@engine/rules/anonymous-component'
 import { createBooleanPropOverloadRule } from '@engine/rules/boolean-prop-overload'
 import { createSingleChildChainRule } from '@engine/rules/single-child-chain'
 import { createMemoCandidateRule } from '@engine/rules/memo-candidate'
+import { createMultiTypeSiblingFanoutRule } from '@engine/rules/multi-type-sibling-fanout'
 
 // Re-export engine types for components to use
 export type { ComponentNode, PerformanceResult, PerformanceIssue, PerformanceMetrics } from '@engine/types'
@@ -65,6 +66,10 @@ export type RuleOptions = {
   largeDataPropThreshold?: number
   unvirtualizedListThreshold?: number
   duplicateComponentTypeThreshold?: number
+  /** Minimum direct children for multi-type-sibling-fanout (default 10). */
+  multiTypeSiblingFanoutMinChildren?: number
+  /** Minimum distinct child types for multi-type-sibling-fanout (default 6). */
+  multiTypeSiblingFanoutMinDistinctTypes?: number
 }
 
 const RULE_CATALOG: RuleMetadata[] = [
@@ -176,10 +181,17 @@ const RULE_CATALOG: RuleMetadata[] = [
     severity: 'warning',
     defaultThreshold: 3,
   },
+  {
+    name: 'multi-type-sibling-fanout',
+    description:
+      'Flags parents with many direct children of many different component types — kitchen-sink renders. Requires ≥10 children and ≥6 distinct types by default.',
+    severity: 'warning',
+    defaultThreshold: 10,
+  },
 ]
 
 /**
- * Returns metadata for all 15 registered rules.
+ * Returns metadata for all registered node- and tree-level rules exposed by this adapter.
  * Pure — same output every call.
  */
 export function getRuleCatalog(): RuleMetadata[] {
@@ -212,6 +224,12 @@ export function runAnalysis(
   registry.register(createAnonymousComponentRule())
   registry.register(createBooleanPropOverloadRule())
   registry.register(createMemoCandidateRule())
+  registry.register(
+    createMultiTypeSiblingFanoutRule({
+      minDirectChildren: options.multiTypeSiblingFanoutMinChildren,
+      minDistinctTypes: options.multiTypeSiblingFanoutMinDistinctTypes,
+    }),
+  )
 
   const baseResult = analyze(root, metrics, registry)
 
