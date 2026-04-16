@@ -2,11 +2,13 @@
 
 ## Project Identity
 
-**Product**: A real-time, dev-only UI performance detector for React. Add `<SpatialProvider>` (3 lines) → open the dashboard → see performance problems live as your app renders. Zero production overhead. Deterministic core engine, lightweight adapters, low memory footprint.
+**Product**: A real-time, dev-time performance pattern detector — a **pure JavaScript/TypeScript library** with zero framework dependency at the core. Add `<SpatialProvider>` (3 lines) to a React app → open the dashboard → see performance anti-patterns surface live as your app renders. Zero production overhead. The core engine is framework-agnostic; React is the first adapter. Vue, Svelte, Angular can follow the same adapter contract.
+
+**Dashboard**: React 19 + Vite + Tailwind — a consumer of the engine, never a detector.
 
 **Governance**: `SourceOfTruth.md` is the product governance document. Always comply with it.
 
-**Reuse**: To adapt this system for a different project, replace `SourceOfTruth.md` and update this "Project Identity" section. Everything else adapts automatically.
+**Reuse**: To adapt this system for a different framework, write a new adapter in `src/adapters/`. The core engine never changes.
 
 ---
 
@@ -55,19 +57,21 @@ This runs the **entire development loop** — pick-next → plan → write-tests
 ### Core Engine (`src/` — excluding `src/adapters/`)
 
 - **Language**: TypeScript with strict mode (`"strict": true`)
+- **Zero framework imports**: no React, Vue, or any framework in `src/` — pure JavaScript/TypeScript only
 - **Functions**: Pure only — no side effects, no mutations, no global state
-- **Testing**: vitest — tests MUST exist before implementation
+- **Testing**: vitest — tests MUST exist before implementation; runnable with no browser, no framework
 - **No DOM**: No `document`, `window`, `navigator`, or browser APIs
 - **No randomness**: No `Math.random()` — engine must be deterministic
 - **Performance**: O(n) max traversal, caching where needed
 - **Unknown handling**: If uncertain, return `{ status: "unknown", reason: "..." }`
 - **Bundle target**: ≤ 5 KB gzipped
 
-### Integration Adapters (`src/adapters/`)
+### Framework Adapters (`src/adapters/`)
 
-- **Browser APIs allowed**: `PerformanceObserver`, `performance.memory`, React Profiler
+- **One adapter per framework**: `react.ts` is the React adapter; future: `vue.ts`, `svelte.ts`, etc.
+- **Browser APIs allowed**: `PerformanceObserver`, `performance.memory`; framework-specific APIs per adapter
 - **Dev-only guard required**: every adapter must check `process.env.NODE_ENV !== 'production'`
-- **No React internals patching**: only public APIs (`React.Profiler`, fiber read-only access)
+- **No framework internals patching**: only public APIs (`React.Profiler`, fiber read-only access)
 - **Tree-shakeable**: each adapter exported independently — unused adapters must not appear in consumer bundles
 - **Bundle target**: full integration bundle ≤ 20 KB gzipped
 
@@ -160,7 +164,7 @@ dashboard/              ← dev-time visualisation app
 
 ## Dashboard Technical Constraints
 
-- **Framework**: React 18 + TypeScript strict mode + Tailwind + Vite
+- **Framework**: React 19 + TypeScript strict mode + Tailwind + Vite
 - **No `any` types** — strict TypeScript throughout
 - **Engine calls only in `dashboard/src/lib/`** — never in components directly
 - **No detection logic** — all rules live in `src/rules/`, never in the dashboard

@@ -19,31 +19,63 @@ AI must:
 
 We are building:
 
-> A real-time, development-time UI performance detector that surfaces performance problems in your running React app as you develop — visible on a live dashboard with ≤ 3 lines of setup code. Zero impact on production.
+> A real-time, development-time performance pattern detector — a **pure JavaScript/TypeScript library** that surfaces performance anti-patterns in your running React app as you develop, visible on a live dashboard with ≤ 3 lines of setup code. Zero impact on production.
+
+**Core principle**: The engine is a **framework-agnostic JavaScript library**. It has no React dependency. React is just the first adapter. The same core can later power Vue, Svelte, Angular, or any other framework by writing a new adapter.
 
 **Primary experience:**
 1. Developer adds `<SpatialProvider>` to their React app (3 lines)
-2. Spatial detects performance problems in real-time as components render
-3. Problems appear on the dashboard immediately — no manual input, no build step
+2. The React adapter watches the live component tree and feeds data into the JS engine
+3. The engine detects performance anti-patterns in real-time
+4. Problems appear on the dashboard immediately — no manual input, no build step
 
-**Two-layer architecture:**
+**Three-layer architecture:**
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│  Layer 2: Integration Adapters  (src/adapters/)         │
-│  - Watches real React trees live via React Profiler     │
-│  - Collects real browser metrics → PerformanceMetrics   │
-│  - Pushes results to window.__SPATIAL__ bridge          │
-│  - Dev-only: stripped from production builds            │
-├─────────────────────────────────────────────────────────┤
-│  Layer 1: Core Engine  (src/)                           │
-│  - Pure functions, no DOM, deterministic                │
-│  - analyze(root, metrics, registry) → PerformanceResult │
-│  - Rules, traversal, registry — same input = same output│
-└─────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│  Layer 3: Dashboard  (dashboard/)                           │
+│  - React 19 + Vite + Tailwind — consumer only               │
+│  - Reads window.__SPATIAL__ bridge, renders results live    │
+│  - Contains ZERO detection logic                            │
+├─────────────────────────────────────────────────────────────┤
+│  Layer 2: Framework Adapters  (src/adapters/)               │
+│  - react.ts: watches live React trees via React Profiler    │
+│  - metrics.ts: collects browser metrics → PerformanceMetrics│
+│  - Pushes results to window.__SPATIAL__ bridge              │
+│  - Dev-only: stripped from production builds                │
+│  - Future: vue.ts, svelte.ts, angular.ts follow same contract│
+├─────────────────────────────────────────────────────────────┤
+│  Layer 1: Core Engine  (src/)                               │
+│  - Pure JavaScript/TypeScript — zero framework dependency   │
+│  - analyze(root, metrics, registry) → PerformanceResult     │
+│  - Rules, traversal, registry — same input = same output    │
+│  - Fully testable without a browser or framework            │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-The core engine is deterministic and testable in isolation. The adapter layer connects it to live React apps. The dashboard consumes results in real-time.
+The core engine is deterministic and testable in isolation. The adapter layer connects it to live framework trees. The dashboard consumes results in real-time.
+
+---
+
+# 1.5 How Spatial Differs from React Profiler
+
+React Profiler and Spatial solve different problems:
+
+| | React Profiler | Spatial |
+|--|--|--|
+| **Output** | Raw timing numbers (ms per render) | Detected anti-patterns with severity |
+| **Insight type** | "Button rendered in 12ms" | "Button has 47 boolean props — split this component" |
+| **Cross-component analysis** | No | Yes (nesting depth, single-child chains, fanout) |
+| **Signals used** | Render timing only | Render count + layout shifts + FPS + memory + tree structure |
+| **Rules engine** | No | Yes — extensible, deterministic, independently testable |
+| **Works without DevTools** | No | Yes — any browser |
+| **Framework agnostic core** | React-only, always | Yes — same JS core, different adapter per framework |
+| **Setup** | Install React DevTools | 3 lines of code |
+| **Dashboard** | Inside DevTools only | Separate tab alongside your app |
+
+React Profiler tells you **what happened**. Spatial tells you **what's wrong and why**.
+
+Spatial does NOT replace React Profiler. Use both. React Profiler for deep render-timing investigation; Spatial for pattern detection and anti-pattern surfacing during active development.
 
 ---
 
@@ -55,16 +87,18 @@ AI must NOT:
 
 * modify runtime behavior in production
 * auto-fix code without human review
-* add new frameworks beyond React (unless explicitly instructed)
+* add new framework adapters unless explicitly instructed
 
 ---
 
-## 2.2 Deterministic Core Engine
+## 2.2 Deterministic Core Engine (Framework-Agnostic)
 
-* Core engine (`src/`) produces **repeatable results** given the same input
+* Core engine (`src/`) is **pure JavaScript/TypeScript with zero framework imports**
+* Produces **repeatable results** given the same input
 * No randomness in detection
 * No production browser assumptions
 * No DOM or browser API in `src/` (core only)
+* Must be fully unit-testable with no browser, no React, no framework
 
 ---
 
@@ -72,17 +106,18 @@ AI must NOT:
 
 The integration layer **is allowed to**:
 
-* Use `React.Profiler` API to collect render timings
+* Use `React.Profiler` API to collect render timings (React adapter only)
 * Use `PerformanceObserver` to collect layout shifts and FPS
 * Use `performance.memory` for memory usage
-* Read the React fiber tree to extract component structure
+* Read the React fiber tree to extract component structure (React adapter only)
 
 The integration layer **must NOT**:
 
-* Modify or patch React internals
+* Modify or patch React internals or any framework internals
 * Run in production (guard with `process.env.NODE_ENV !== 'production'`)
 * Add measurable runtime overhead to production builds
 * Collect any data that leaves the user's machine
+* Import framework code into the core engine (`src/`)
 
 ---
 
@@ -91,7 +126,7 @@ The integration layer **must NOT**:
 A developer must be able to integrate spatial with **≤ 3 lines of new code**:
 
 ```tsx
-// main.tsx — only change needed
+// main.tsx — only change needed in a React app
 import { SpatialProvider } from 'spatial/react'
 
 root.render(
@@ -222,8 +257,8 @@ Define functions/modules, data flow — without writing code yet.
 
 Rules:
 
-* Core (`src/`): pure functions, no DOM, deterministic, TypeScript strict
-* Adapters (`src/adapters/`): may use browser APIs; must be dev-only; must be tree-shakeable
+* Core (`src/`): pure functions, no DOM, no framework imports, deterministic, TypeScript strict
+* Adapters (`src/adapters/`): may use browser APIs and framework APIs; must be dev-only; must be tree-shakeable
 
 ## Step 6: Validation Against Tests
 
@@ -273,12 +308,14 @@ type PerformanceIssue = {
 }
 ```
 
-## 5.3 Integration Adapter Contract (src/adapters/)
+## 5.3 Adapter Contract (src/adapters/)
+
+Each framework adapter must implement this contract:
 
 ```ts
-// React adapter — converts a React root to ComponentNode
-type ReactAdapter = {
-  extractTree(rootFiber: unknown): ComponentNode
+// Framework adapter — converts a live framework tree to ComponentNode
+type FrameworkAdapter = {
+  extractTree(root: unknown): ComponentNode
 }
 
 // Metrics collector — collects real browser metrics
@@ -288,13 +325,15 @@ type MetricsCollector = {
   reset(): void
 }
 
-// Developer-facing React API
+// React-specific developer-facing API (React adapter only)
 type SpatialProviderProps = {
   children: ReactNode
   onResult?: (result: PerformanceResult) => void
   rules?: RuleOptions
 }
 ```
+
+The contract must be implemented independently per framework. The core engine knows nothing about frameworks.
 
 ---
 
@@ -314,7 +353,7 @@ If missing → return UNKNOWN
 
 All computations must be based on:
 
-* provided component tree (or extracted from real app)
+* provided component tree (or extracted from real app via adapter)
 * measured or provided metrics
 
 ## 6.3 Deterministic Rules
@@ -352,8 +391,9 @@ AI must NEVER:
 ❌ Auto-optimize code without human review
 ❌ Assume browser-specific defaults
 ❌ Expand to non-UI performance metrics
-❌ Patch or monkey-patch React internals
+❌ Patch or monkey-patch React internals or any framework internals
 ❌ Ship adapter code in production bundles (must be dev-only)
+❌ Import React or any framework into the core engine (`src/`)
 
 ---
 
@@ -382,8 +422,8 @@ If system cannot compute:
 
 ## Gate 3: Dev Validation
 
-* Core: pure functions, no DOM, deterministic
-* Adapters: dev-only guard present, tree-shakeable, no React internals patched
+* Core: pure JS/TS functions, no DOM, no framework imports, deterministic
+* Adapters: dev-only guard present, tree-shakeable, no framework internals patched
 
 ## Gate 4: Test Coverage
 
@@ -407,7 +447,7 @@ If system cannot compute:
 **Allowed:**
 
 * New rules for additional performance patterns
-* New framework adapters (Vue, Svelte) following the same adapter contract
+* New framework adapters (Vue, Svelte, Angular) following the same adapter contract
 * Improved measurement accuracy of existing rules
 * CLI tool to run analysis on component files statically
 
@@ -417,6 +457,7 @@ If system cannot compute:
 * Runtime behavior changes in production
 * Sending data off the user's machine
 * Auto-fixing or rewriting user code
+* Adding framework imports to the core engine
 
 ---
 
@@ -452,11 +493,11 @@ A feature is complete ONLY IF:
 
 # 15. Philosophy
 
-> Real-time detection, deterministic core. The adapter watches your running React app and feeds real measurements into a rules engine that always produces the same verdict for the same input.
+> Real-time pattern detection with a framework-agnostic core. The adapter watches your running framework tree and feeds real measurements into a pure JavaScript rules engine that always produces the same verdict for the same input.
 
-* Core: strict, deterministic, fully testable without a browser
-* Adapters: lightweight, dev-only, minimal surface area — observe only, never modify
-* Dashboard: live consumer of results — the developer's window into what Spatial found
+* **Core**: strict, deterministic, fully testable without a browser or framework — plain JavaScript
+* **Adapters**: lightweight, dev-only, minimal surface area — observe only, never modify; one per framework
+* **Dashboard**: live consumer of results — the developer's window into what Spatial found; built on React 19
 
 NOT:
 
@@ -464,6 +505,7 @@ NOT:
 * a heuristic guesser
 * a runtime profiler that ships to production
 * a framework that requires wrapping every component
+* a replacement for React Profiler (they are complementary tools)
 
 ---
 
@@ -473,14 +515,14 @@ The dashboard is a **consumer** of the engine — it never contains detection lo
 
 ## 16.1 Dashboard Product Definition
 
-> A development-time dashboard that shows real-time performance problems detected in your running React app. Open it alongside your app; as you interact and develop, Spatial surfaces issues live — no manual input required.
+> A development-time dashboard that shows real-time performance problems detected in your running app. Open it alongside your app; as you interact and develop, Spatial surfaces issues live — no manual input required.
 
 ## 16.2 Dashboard Non-Negotiable Constraints
 
 - Detection logic lives ONLY in `src/` (engine). The dashboard NEVER reimplements rules, thresholds, or detection.
 - The dashboard reads engine output (`PerformanceResult`) and renders it. It NEVER writes back to the engine or mutates results.
 - No telemetry, no remote data collection, no user tracking.
-- Framework: React 18 + TypeScript + Vite + Tailwind. No backend — runs entirely in the browser.
+- Framework: **React 19** + TypeScript + Vite + Tailwind. No backend — runs entirely in the browser.
 - Engine accessed exclusively through `dashboard/src/lib/engine.ts` — never imported directly in components.
 
 ## 16.3 Dashboard Pages
@@ -498,14 +540,14 @@ The dashboard is a **consumer** of the engine — it never contains detection lo
 ```
 PRIMARY (real-time):
   SpatialProvider (in user's app)
-    → React Profiler + PerformanceObserver (adapter)
-    → analyze() (engine)
+    → Framework Adapter + PerformanceObserver (adapter)
+    → analyze() (core JS engine)
     → window.__SPATIAL__ (bridge)
     → dashboard polls every 500ms
     → PerformanceResult rendered live
 
 SECONDARY (manual testing):
-  user JSON + metrics → src/lib/engine.ts → PerformanceResult → render
+  user JSON + metrics → dashboard/src/lib/engine.ts → PerformanceResult → render
 ```
 
 No server. No API. All local (same browser tab or same machine).
@@ -539,29 +581,29 @@ No server. No API. All local (same browser tab or same machine).
 
 ```
 src/
-  engine.ts          ← core analyze() function (pure)
-  types.ts           ← shared types
+  engine.ts          ← core analyze() function — pure JS, no framework imports
+  types.ts           ← shared types (ComponentNode, PerformanceMetrics, PerformanceResult)
   rule-registry.ts   ← registry factory (pure)
   traversal.ts       ← O(n) tree walker (pure)
-  rules/             ← individual rule implementations (pure)
-  adapters/          ← real-world integration layer (browser APIs allowed)
-    react.ts         ← React Profiler + fiber tree extractor
+  rules/             ← individual rule implementations (pure, no framework)
+  adapters/          ← framework-specific integration layer (browser APIs allowed)
+    react.ts         ← React Profiler + fiber tree extractor (React adapter)
     metrics.ts       ← PerformanceObserver-based metrics collector
-    index.ts         ← SpatialProvider, useSpatial hook
-tests/unit/          ← vitest unit tests
+    index.ts         ← SpatialProvider, useSpatial hook (React-specific)
+tests/unit/          ← vitest unit tests (no browser, no framework required)
 tests/integration/   ← integration tests (jsdom or real browser)
 backlog/             ← engine work items (ready/active/done)
 BACKLOG.md           ← unified work item index (engine + dashboard)
-SourceOfTruth.md     ← [IMMUTABLE] single governance document for all layers
-CLAUDE.md            ← single AI development instructions for all layers
+SourceOfTruth.md     ← single governance document for all layers
+CLAUDE.md            ← AI development instructions for all layers
 
-dashboard/           ← dev-time visualisation app
+dashboard/           ← dev-time visualisation app (React 19 consumer)
   src/
     lib/             ← engine adapter + live bridge (only place engine is called)
     components/      ← React display components
     pages/           ← page-level components
   backlog/           ← dashboard work items (ready/active/done)
   tests/             ← vitest + React Testing Library
-  package.json       ← dashboard dependencies (React, Vite, Tailwind)
+  package.json       ← dashboard dependencies (React 19, Vite, Tailwind)
   vite.config.ts     ← @engine alias → ../src/
 ```

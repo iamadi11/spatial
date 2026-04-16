@@ -1,13 +1,34 @@
-# Spatial — Real-time UI performance detector for React
+# Spatial — Real-time performance pattern detector
 
-Add 3 lines to your React app. Open the dashboard. See performance problems appear in real-time as you develop.
+A **pure JavaScript/TypeScript library** that detects performance anti-patterns in your running app as you develop. Zero framework dependency at the core. React is the first adapter — Vue, Svelte, and Angular can follow the same contract.
+
+Add 3 lines to your React app. Open the dashboard. See performance problems appear in real-time.
 
 | | |
 |--|--|
 | **Engine version** | See `VERSION` |
 | **Engine tests** | Vitest (`npm test` at repo root) |
-| **Dashboard** | React 18 + Vite (`npm run dev` in `dashboard/`) |
-| **Language** | TypeScript strict |
+| **Dashboard** | React 19 + Vite (`npm run dev` in `dashboard/`) |
+| **Language** | TypeScript strict — zero framework imports in core |
+
+---
+
+## Why not React Profiler?
+
+React Profiler and Spatial solve different problems:
+
+| | React Profiler | Spatial |
+|--|--|--|
+| **Output** | Raw timing numbers (ms per render) | Detected anti-patterns with severity |
+| **Insight** | "Button rendered in 12ms" | "Button has 47 boolean props — split this component" |
+| **Cross-component analysis** | No | Yes (nesting depth, single-child chains, fanout) |
+| **Signals used** | Render timing only | Render count + layout shifts + FPS + memory + tree structure |
+| **Rules engine** | No | Yes — extensible, deterministic, independently testable |
+| **Works without DevTools** | No | Yes — any browser |
+| **Framework-agnostic core** | React-only, always | Yes — same JS core, different adapter per framework |
+| **Setup** | Install React DevTools | 3 lines of code |
+
+React Profiler tells you **what happened**. Spatial tells you **what's wrong and why**. Use both — they are complementary.
 
 ---
 
@@ -70,32 +91,28 @@ npm run dev   # opens at http://localhost:5173
 
 ---
 
-## Repository layout
-
-```
-src/                    ← pure engine (no DOM, no browser APIs)
-  engine.ts             ← analyze(root, metrics, registry) → PerformanceResult
-  types.ts              ← ComponentNode, PerformanceMetrics, PerformanceResult
-  rule-registry.ts      ← createRegistry(), register, runAll
-  traversal.ts          ← O(n) depth-first tree walker
-  rules/                ← one factory per detection rule
-  adapters/             ← real-world bridge (browser APIs, dev-only)
-    react.ts            ← React Profiler + fiber → ComponentNode
-    metrics.ts          ← PerformanceObserver → PerformanceMetrics
-    index.ts            ← SpatialProvider, useSpatial, window.__SPATIAL__ bridge
-
-dashboard/              ← dev-time visualisation app
-  src/
-    lib/engine.ts       ← only file that imports from src/
-    components/         ← display-only React components
-    pages/              ← page-level views
-```
-
----
-
 ## Architecture
 
-**Core engine** (`src/` — pure functions, no browser APIs):
+Three layers, cleanly separated:
+
+```
+┌──────────────────────────────────────────────────────────┐
+│  Dashboard  (React 19 + Vite — consumer only)            │
+│  Reads window.__SPATIAL__ → renders PerformanceResult    │
+│  Contains ZERO detection logic                           │
+├──────────────────────────────────────────────────────────┤
+│  Framework Adapter  (src/adapters/ — dev-only)           │
+│  react.ts: React Profiler + fiber → ComponentNode        │
+│  metrics.ts: PerformanceObserver → PerformanceMetrics    │
+│  Future: vue.ts, svelte.ts follow the same contract      │
+├──────────────────────────────────────────────────────────┤
+│  Core Engine  (src/ — pure JavaScript, zero deps)        │
+│  analyze(root, metrics, registry) → PerformanceResult    │
+│  Same input = same output. Testable with no browser.     │
+└──────────────────────────────────────────────────────────┘
+```
+
+**Core engine** (`src/` — pure JS, no framework imports):
 
 ```
 ComponentNode (tree)
@@ -109,7 +126,7 @@ ComponentNode (tree)
   analyze() → PerformanceResult { status, metrics, issues }
 ```
 
-**Integration adapter** (`src/adapters/` — dev-only, browser APIs allowed):
+**React adapter** (`src/adapters/` — dev-only, React APIs allowed):
 
 ```
 React Profiler onRender
@@ -132,9 +149,32 @@ React Profiler onRender
 
 ---
 
+## Repository layout
+
+```
+src/                    ← pure JS engine (no DOM, no framework imports)
+  engine.ts             ← analyze(root, metrics, registry) → PerformanceResult
+  types.ts              ← ComponentNode, PerformanceMetrics, PerformanceResult
+  rule-registry.ts      ← createRegistry(), register, runAll
+  traversal.ts          ← O(n) depth-first tree walker
+  rules/                ← one factory per detection rule
+  adapters/             ← framework-specific bridge (browser APIs, dev-only)
+    react.ts            ← React Profiler + fiber → ComponentNode
+    metrics.ts          ← PerformanceObserver → PerformanceMetrics
+    index.ts            ← SpatialProvider, useSpatial, window.__SPATIAL__ bridge
+
+dashboard/              ← dev-time visualisation app (React 19 consumer)
+  src/
+    lib/engine.ts       ← only file that imports from src/
+    components/         ← display-only React components
+    pages/              ← page-level views
+```
+
+---
+
 ## Testing rules manually
 
-For unit-testing rules or exploring the engine in isolation:
+For unit-testing rules or exploring the engine in isolation (no browser, no React):
 
 ```ts
 import { analyze } from './src/engine'
@@ -187,7 +227,7 @@ npm run dev
 
 ## Constraints
 
-- **Core engine** — no `document`, `window`, `navigator`; no `Math.random()`; pure functions; O(n) traversal; invalid input → `unknown`
-- **Adapters** — browser APIs only in `src/adapters/`; `NODE_ENV !== 'production'` guard required; no patching React internals
+- **Core engine** — no `document`, `window`, `navigator`; no framework imports; no `Math.random()`; pure functions; O(n) traversal; invalid input → `unknown`
+- **Adapters** — browser APIs only in `src/adapters/`; `NODE_ENV !== 'production'` guard required; no patching framework internals
 
 Full governance: `SourceOfTruth.md`.

@@ -2,7 +2,7 @@
 
 Unified backlog for the **spatial engine** (numeric IDs) and the **dashboard** (D-prefixed IDs).
 
-**Product goal**: Add `<SpatialProvider>` to any React app → open the Spatial dashboard → see real-time performance problems as you develop.
+**Product goal**: A pure JavaScript/TypeScript library with zero framework dependency at the core. Add `<SpatialProvider>` to any React app (3 lines) → open the Spatial dashboard → see real-time performance anti-patterns as you develop. The core engine is framework-agnostic; React is the first adapter. Dashboard is React 19.
 
 ## Engine Items
 
