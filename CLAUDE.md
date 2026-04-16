@@ -146,11 +146,13 @@ dashboard/              ← dev-time visualisation app
     lib/                ← engine adapter (only place engine is called)
       engine.ts         ← runAnalysis(), getRuleCatalog()
     components/         ← display-only React components
-      examples/         ← bad/good pattern example components
+      examples/         ← interactive bad/good pattern components
         CodeBlock.tsx         ← read-only code display
-        ExampleSection.tsx    ← two-column bad vs good layout
+        ExampleSection.tsx    ← two-column layout (accepts code + demo only; no static tree/metrics)
         LiveAnalysisCard.tsx  ← runs runAnalysis(), shows status + issues
         sections/             ← one file per pattern section (5 total)
+                              ← PATTERN: each demo builds ComponentNode tree + PerformanceMetrics
+                              ← from live React state; LiveAnalysisCard is embedded inside demo
     pages/              ← page-level views
       ExamplesPage.tsx  ← /examples — section nav + pattern explorer
       RuleCatalogPage.tsx

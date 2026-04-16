@@ -78,7 +78,7 @@ Open it alongside your app while developing.
 | `/` | Setup guide + quick links |
 | `/live` | **Live view** — issues update every 500ms as your app runs |
 | `/rules` | All 18+ rules with descriptions, severities, thresholds |
-| `/examples` | Side-by-side bad vs good patterns with live engine analysis |
+| `/examples` | Interactive bad vs good demos — sliders/buttons drive real engine analysis; issues appear/clear as you cross thresholds |
 | `/analyze` | Manual playground — paste a component tree JSON to test rules |
 
 ### Running the dashboard

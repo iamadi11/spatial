@@ -532,7 +532,7 @@ The dashboard is a **consumer** of the engine — it never contains detection lo
 | `/` | Home — setup instructions + link to live view | primary |
 | `/live` | **Live analysis** — polls `window.__SPATIAL__` every 500ms, shows real-time issues | **primary** |
 | `/rules` | Rule catalog — all rules, descriptions, severities, thresholds | secondary |
-| `/examples` | Bad vs good patterns with live engine analysis | secondary |
+| `/examples` | Interactive bad vs good pattern demos — user-driven sliders/buttons change the real component state; engine re-analyzes live and output updates immediately | secondary |
 | `/analyze` | Manual playground — JSON tree input → engine result (for testing rules) | tertiary |
 
 ## 16.4 Dashboard Data Flow
@@ -548,6 +548,13 @@ PRIMARY (real-time):
 
 SECONDARY (manual testing):
   user JSON + metrics → dashboard/src/lib/engine.ts → PerformanceResult → render
+
+TERTIARY (interactive examples):
+  user interacts with demo (button click / slider)
+    → demo component updates React state
+    → ComponentNode tree + PerformanceMetrics built from live state
+    → runAnalysis() called in LiveAnalysisCard (via useMemo)
+    → PerformanceResult rendered inline — threshold crossings visible in real-time
 ```
 
 No server. No API. All local (same browser tab or same machine).
@@ -566,6 +573,7 @@ No server. No API. All local (same browser tab or same machine).
 - New views/pages that display engine output
 - UI improvements to existing pages
 - Additional display formats for `PerformanceResult`
+- New interactive example sections following the established pattern: demo component owns its `ComponentNode` tree + `PerformanceMetrics` built from React state; `LiveAnalysisCard` embedded inside the demo (never passed static trees)
 
 **Not allowed:**
 - Adding detection rules to the dashboard (belongs in `src/`)
