@@ -15,29 +15,35 @@ AI must:
 
 ---
 
-# 1. Product Definition (Immutable)
+# 1. Product Definition
 
 We are building:
 
-> A deterministic, development-time UI performance detection engine that identifies potential performance bottlenecks before code ships — and integrates into real React projects with minimal changes to existing code.
+> A real-time, development-time UI performance detector that surfaces performance problems in your running React app as you develop — visible on a live dashboard with ≤ 3 lines of setup code. Zero impact on production.
+
+**Primary experience:**
+1. Developer adds `<SpatialProvider>` to their React app (3 lines)
+2. Spatial detects performance problems in real-time as components render
+3. Problems appear on the dashboard immediately — no manual input, no build step
 
 **Two-layer architecture:**
 
 ```
 ┌─────────────────────────────────────────────────────────┐
 │  Layer 2: Integration Adapters  (src/adapters/)         │
-│  - Converts real React trees → ComponentNode            │
+│  - Watches real React trees live via React Profiler     │
 │  - Collects real browser metrics → PerformanceMetrics   │
-│  - May use browser APIs (React Profiler, PerformanceAPI)│
+│  - Pushes results to window.__SPATIAL__ bridge          │
+│  - Dev-only: stripped from production builds            │
 ├─────────────────────────────────────────────────────────┤
 │  Layer 1: Core Engine  (src/)                           │
 │  - Pure functions, no DOM, deterministic                │
 │  - analyze(root, metrics, registry) → PerformanceResult │
-│  - Rules, traversal, registry — unchanged               │
+│  - Rules, traversal, registry — same input = same output│
 └─────────────────────────────────────────────────────────┘
 ```
 
-The core engine never changes. Adapters bridge the real world to it.
+The core engine is deterministic and testable in isolation. The adapter layer connects it to live React apps. The dashboard consumes results in real-time.
 
 ---
 
@@ -106,6 +112,13 @@ No Babel plugins. No webpack config. No instrumentation of existing components.
 * Tree-shakeable ES modules — unused rules must not be bundled
 * O(n) traversal — no nested loops over the same nodes
 * Zero impact on production bundle when `NODE_ENV === 'production'`
+
+**Adapter runtime overhead (in dev):**
+
+* Additional heap usage: ≤ 5 MB
+* Per-render analysis time: ≤ 2 ms (must not cause measurable frame drops)
+* No memory leaks — old results are replaced, not accumulated
+* Polling interval for dashboard bridge: 500 ms (configurable, never < 100 ms)
 
 ---
 
@@ -439,13 +452,15 @@ A feature is complete ONLY IF:
 
 # 15. Philosophy
 
-> This system is like a static analyzer with a thin real-world bridge:
+> Real-time detection, deterministic core. The adapter watches your running React app and feeds real measurements into a rules engine that always produces the same verdict for the same input.
 
-* Core: strict, deterministic, validated before output
-* Adapters: lightweight, dev-only, minimal surface area
+* Core: strict, deterministic, fully testable without a browser
+* Adapters: lightweight, dev-only, minimal surface area — observe only, never modify
+* Dashboard: live consumer of results — the developer's window into what Spatial found
 
 NOT:
 
+* a static linter that runs at build time
 * a heuristic guesser
 * a runtime profiler that ships to production
 * a framework that requires wrapping every component
@@ -458,7 +473,7 @@ The dashboard is a **consumer** of the engine — it never contains detection lo
 
 ## 16.1 Dashboard Product Definition
 
-> A development-time web dashboard that makes the `spatial` engine's rules, analysis results, and issue reports human-readable and explorable — for both manual JSON experiments and live analysis of real React projects.
+> A development-time dashboard that shows real-time performance problems detected in your running React app. Open it alongside your app; as you interact and develop, Spatial surfaces issues live — no manual input required.
 
 ## 16.2 Dashboard Non-Negotiable Constraints
 
@@ -470,20 +485,30 @@ The dashboard is a **consumer** of the engine — it never contains detection lo
 
 ## 16.3 Dashboard Pages
 
-| Route | Purpose |
-|-------|---------|
-| `/rules` | Rule catalog — all rules, descriptions, severities, thresholds |
-| `/analyze` | Analysis playground — JSON tree input → engine result |
-| `/live` | Live analysis — polls `window.__SPATIAL__` bridge every 500ms |
+| Route | Purpose | Priority |
+|-------|---------|---------|
+| `/` | Home — setup instructions + link to live view | primary |
+| `/live` | **Live analysis** — polls `window.__SPATIAL__` every 500ms, shows real-time issues | **primary** |
+| `/rules` | Rule catalog — all rules, descriptions, severities, thresholds | secondary |
+| `/examples` | Bad vs good patterns with live engine analysis | secondary |
+| `/analyze` | Manual playground — JSON tree input → engine result (for testing rules) | tertiary |
 
 ## 16.4 Dashboard Data Flow
 
 ```
-Manual path:  user JSON + metrics → src/lib/engine.ts → PerformanceResult → render
-Live path:    SpatialProvider → window.__SPATIAL__ → dashboard polls → render
+PRIMARY (real-time):
+  SpatialProvider (in user's app)
+    → React Profiler + PerformanceObserver (adapter)
+    → analyze() (engine)
+    → window.__SPATIAL__ (bridge)
+    → dashboard polls every 500ms
+    → PerformanceResult rendered live
+
+SECONDARY (manual testing):
+  user JSON + metrics → src/lib/engine.ts → PerformanceResult → render
 ```
 
-No server. No API. All local (same browser tab).
+No server. No API. All local (same browser tab or same machine).
 
 ## 16.5 Dashboard Quality Gates
 
@@ -495,10 +520,10 @@ No server. No API. All local (same browser tab).
 ## 16.6 Dashboard Expansion Policy
 
 **Allowed:**
+- Improvements to the live analysis view (better issue display, history, grouping)
 - New views/pages that display engine output
 - UI improvements to existing pages
 - Additional display formats for `PerformanceResult`
-- Live analysis features consuming the `window.__SPATIAL__` bridge
 
 **Not allowed:**
 - Adding detection rules to the dashboard (belongs in `src/`)
@@ -506,6 +531,7 @@ No server. No API. All local (same browser tab).
 - Auto-fix or code suggestion features
 - User authentication or accounts
 - Communicating with external servers
+- Moving detection logic out of the engine into the dashboard
 
 ---
 

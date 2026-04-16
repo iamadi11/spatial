@@ -1,47 +1,148 @@
-# Spatial — UI performance detection engine
+# Spatial — Real-time UI performance detector for React
 
-Deterministic, development-time analysis of component trees against configurable performance rules. Same inputs always yield the same `PerformanceResult` — no DOM access in the core engine.
+Add 3 lines to your React app. Open the dashboard. See performance problems appear in real-time as you develop.
 
 | | |
 |--|--|
 | **Engine version** | See `VERSION` |
 | **Engine tests** | Vitest (`npm test` at repo root) |
-| **Dashboard** | React 18 + Vite app in `dashboard/` (`spatial-dashboard`; `npm run dev` in `dashboard/`) |
-| **Language** | TypeScript strict (`tsconfig.json`) |
+| **Dashboard** | React 18 + Vite (`npm run dev` in `dashboard/`) |
+| **Language** | TypeScript strict |
+
+---
+
+## How it works
+
+```tsx
+// main.tsx — only change needed in your app
+import { SpatialProvider } from './src/adapters'
+
+root.render(
+  <SpatialProvider>   {/* ← add this */}
+    <App />
+  </SpatialProvider>
+)
+```
+
+Then open the Spatial dashboard (`cd dashboard && npm run dev`) in a separate browser tab. As you use your app, detected problems show up live — excessive re-renders, layout shifts, oversized trees, memory spikes, and more.
+
+No Babel plugins. No webpack config. No instrumentation of existing components. Zero overhead in production builds.
+
+---
+
+## What it detects
+
+Spatial runs 18 performance rules on every render cycle:
+
+| Category | Rules |
+|----------|-------|
+| **Re-renders** | render-count, memo-candidate |
+| **Layout** | layout-shift, nesting-depth, single-child-chain |
+| **Memory** | memory-usage, large-data-prop |
+| **Tree structure** | child-count, total-node-count, duplicate-component-type, unvirtualized-list, multi-type-sibling-fanout |
+| **Component quality** | prop-count, anonymous-component, boolean-prop-overload, event-handler-count |
+| **Styling** | inline-style-count, style-complexity, classname-token-sprawl |
+| **Frames** | fps-drop |
+
+Each rule produces a `warning` or `error` with the affected component ID and a human-readable message.
+
+---
+
+## Dashboard
+
+Open it alongside your app while developing.
+
+| Page | Purpose |
+|------|---------|
+| `/` | Setup guide + quick links |
+| `/live` | **Live view** — issues update every 500ms as your app runs |
+| `/rules` | All 18+ rules with descriptions, severities, thresholds |
+| `/examples` | Side-by-side bad vs good patterns with live engine analysis |
+| `/analyze` | Manual playground — paste a component tree JSON to test rules |
+
+### Running the dashboard
+
+```bash
+cd dashboard
+npm install
+npm run dev   # opens at http://localhost:5173
+```
 
 ---
 
 ## Repository layout
 
-- **Root** — pure engine (`src/`), shared `npm test` / `npm run typecheck`
-- **`dashboard/`** — visualization, examples, and rule catalog UI; run `npm install` and `npm run dev` inside that folder
+```
+src/                    ← pure engine (no DOM, no browser APIs)
+  engine.ts             ← analyze(root, metrics, registry) → PerformanceResult
+  types.ts              ← ComponentNode, PerformanceMetrics, PerformanceResult
+  rule-registry.ts      ← createRegistry(), register, runAll
+  traversal.ts          ← O(n) depth-first tree walker
+  rules/                ← one factory per detection rule
+  adapters/             ← real-world bridge (browser APIs, dev-only)
+    react.ts            ← React Profiler + fiber → ComponentNode
+    metrics.ts          ← PerformanceObserver → PerformanceMetrics
+    index.ts            ← SpatialProvider, useSpatial, window.__SPATIAL__ bridge
 
-### Deploying to Vercel
-
-The dashboard is a static Vite build. This repo includes `vercel.json` at the **repository root** so you can import the Git repo and deploy without extra configuration:
-
-- **Install / build** — `npm ci` + `npm run build` run in `dashboard/` (the build resolves `@engine` to `../src`).
-- **Output** — `dashboard/dist`.
-- **Client routing** — rewrites send unknown paths to `index.html` for React Router (`/`, `/rules`, `/examples`).
-
-**Alternative:** In the Vercel project, set **Root Directory** to `dashboard` and use `dashboard/vercel.json` (rewrites only). The default Vite build output is `dist` inside that directory.
+dashboard/              ← dev-time visualisation app
+  src/
+    lib/engine.ts       ← only file that imports from src/
+    components/         ← display-only React components
+    pages/              ← page-level views
+```
 
 ---
 
-## What it does
+## Architecture
 
-Analyzes a component tree with a rule registry and returns a structured result.
+**Core engine** (`src/` — pure functions, no browser APIs):
+
+```
+ComponentNode (tree)
+       │
+  collectNodes()          ← O(n) traversal
+       │
+  registry.runAll(node, metrics)   ← all rules, per node
+       │
+  PerformanceIssue[]
+       │
+  analyze() → PerformanceResult { status, metrics, issues }
+```
+
+**Integration adapter** (`src/adapters/` — dev-only, browser APIs allowed):
+
+```
+React Profiler onRender
+       │
+  extractTree(fiber)      ← ComponentNode from live fiber tree
+  collectMetrics()        ← PerformanceObserver + performance.memory
+       │
+  analyze(tree, metrics, registry)
+       │
+  window.__SPATIAL__ = { result, timestamp }
+       │
+  dashboard polls every 500ms → live view updates
+```
+
+**Performance budget:**
+- Core engine bundle: ≤ 5 KB gzipped
+- Full integration bundle: ≤ 20 KB gzipped
+- Adapter heap overhead: ≤ 5 MB
+- Per-render analysis time: ≤ 2 ms
+
+---
+
+## Testing rules manually
+
+For unit-testing rules or exploring the engine in isolation:
 
 ```ts
 import { analyze } from './src/engine'
 import { createRegistry } from './src/rule-registry'
 import { createRenderCountRule } from './src/rules/render-count'
-import { createFpsDropRule } from './src/rules/fps-drop'
-import { formatIssues } from './src/issue-formatter'
 
 const registry = createRegistry()
-registry.register(createRenderCountRule()) // default: > 5 renders
-registry.register(createFpsDropRule()) // default: > 10 fps drop
+registry.register(createRenderCountRule()) // threshold: 5 renders
 
 const result = analyze(
   { id: 'root', type: 'View', children: [{ id: 'btn', type: 'Button' }] },
@@ -50,167 +151,17 @@ const result = analyze(
 )
 
 console.log(result.status) // "fail"
-console.log(formatIssues(result.issues))
-// "[warning] render-count: Render count 8 exceeds threshold of 5 (node: root)"
+console.log(result.issues[0].message)
+// "Render count 8 exceeds threshold of 5 (node: root)"
 ```
 
----
-
-## Architecture
-
-**Core** (`src/` — no browser APIs, pure functions):
-
-```
-src/
-├── types.ts            — ComponentNode, PerformanceMetrics, PerformanceIssue, PerformanceResult
-├── engine.ts           — analyze(root, metrics, registry) → PerformanceResult
-├── traversal.ts        — collectNodes (O(n) depth-first)
-├── rule-registry.ts    — createRegistry(), register, runAll
-├── unknown.ts          — unknownResult(reason)
-├── metrics-cache.ts    — per-run memoization helpers
-├── issue-formatter.ts  — formatIssue, formatIssues
-├── report-summary.ts   — formatReport(result) — full text report
-├── rule-catalog.ts     — createRuleCatalog() — rule metadata for docs/UI
-└── rules/              — one factory per rule (createXxxRule)
-```
-
-**Adapters** (`src/adapters/` — browser/React allowed, **dev-only**; guarded with `process.env.NODE_ENV !== 'production'`):
-
-- `react.ts` — fiber → `ComponentNode` extraction (`extractTree`)
-- `metrics.ts` — metric collection (`collectMetrics`)
-- `index.ts` — `createSpatialHandler()`, `useSpatial()`, default registry wiring and `globalThis.__SPATIAL__`
-
-### Data flow
-
-```
-ComponentNode (tree)
-       │
-  collectNodes()
-       │
-  registry.runAll(node, metrics)   ← per node, all registered rules
-       │
-  PerformanceIssue[]
-       │
-  analyze() → PerformanceResult { status, metrics, issues, reason? }
-       │
-  formatIssues() / formatReport()
-```
-
----
-
-## API reference
-
-### `analyze(root, metrics, registry)`
-
-Walks the tree, runs every registered rule on each node, aggregates issues.
-
-| Param | Type | Description |
-|-------|------|-------------|
-| `root` | `ComponentNode` | Root of the component tree |
-| `metrics` | `PerformanceMetrics` | `renderCount`, `layoutShifts`, `fpsDrop`, `memoryUsage` (MB) |
-| `registry` | `Registry` | Rules registered via `createRegistry()` |
-
-Returns `PerformanceResult`:
-
-```ts
-{
-  status: 'pass' | 'fail' | 'unknown'
-  metrics: PerformanceMetrics
-  issues: PerformanceIssue[]
-  reason?: string // when status is 'unknown'
-}
-```
-
-Invalid metrics (e.g. negative values) yield `status: 'unknown'` per product rules — the engine does not guess.
-
-### Detection rules
-
-Factories live in `src/rules/`. Thresholds use strict `>` unless noted. Rules that only inspect structure may ignore metrics.
-
-| Rule | Factory | Default | Severity |
-|------|---------|---------|----------|
-| render-count | `createRenderCountRule(n?)` | 5 | warning |
-| layout-shift | `createLayoutShiftRule(n?)` | 3 | warning |
-| fps-drop | `createFpsDropRule(n?)` | 10 | error |
-| memory-usage | `createMemoryUsageRule(n?)` | 100 MB | error |
-| child-count | `createChildCountRule(n?)` | 20 | warning |
-| prop-count | `createPropCountRule(n?)` | 15 | warning |
-| inline-style-count | `createInlineStyleCountRule(n?)` | 15 | warning |
-| nesting-depth | `createNestingDepthRule(n?)` | 10 | warning |
-| total-node-count | `createTotalNodeCountRule(n?)` | 200 | warning |
-| style-complexity | `createStyleComplexityRule()` | fixed CSS property set | warning |
-| memo-candidate | `createMemoCandidateRule(render?, children?)` | 3 renders, 3 children | warning |
-| anonymous-component | `createAnonymousComponentRule()` | — | warning |
-| boolean-prop-overload | `createBooleanPropOverloadRule(n?)` | 5 | warning |
-| event-handler-count | `createEventHandlerCountRule(n?)` | 5 | warning |
-| duplicate-component-type | `createDuplicateComponentTypeRule(n?)` | 30 | warning |
-| unvirtualized-list | `createUnvirtualizedListRule(n?)` | 50 | warning |
-| single-child-chain | `createSingleChildChainRule(n?)` | 4 | warning |
-| large-data-prop | `createLargeDataPropRule(bytes?)` | 10_000 bytes | warning |
-
-`createRuleCatalog()` in `rule-catalog.ts` returns descriptive metadata for a curated subset (used by tooling and the dashboard); new rule files may exist before catalog entries are extended.
-
-### `createRegistry()`
-
-```ts
-const registry = createRegistry()
-registry.register(rule)
-registry.runAll(node, metrics) // → PerformanceIssue[]
-```
-
-### `createMetricsCache()` / `buildCacheKey()`
-
-Per-run cache to avoid re-evaluating the same `(node, metrics)` pair.
-
-### `formatIssues` / `formatIssue` / `formatReport`
-
-```ts
-formatIssue(issue)
-formatIssues([]) // "No issues found."
-formatIssues(issues) // newline-separated
-formatReport(result) // status, metrics, reason, issues block
-```
-
----
-
-## Types
-
-```ts
-type ComponentNode = {
-  id: string
-  type: string
-  props?: Record<string, unknown>
-  children?: ComponentNode[]
-  styles?: Record<string, string>
-}
-
-type PerformanceMetrics = {
-  renderCount: number
-  layoutShifts: number
-  fpsDrop: number
-  memoryUsage: number // MB
-}
-
-type PerformanceIssue = {
-  rule: string
-  severity: 'warning' | 'error'
-  message: string
-  nodeId: string
-}
-
-type PerformanceResult = {
-  status: 'pass' | 'fail' | 'unknown'
-  metrics: PerformanceMetrics
-  issues: PerformanceIssue[]
-  reason?: string
-}
-```
+Invalid or negative metrics return `status: 'unknown'` — the engine never guesses.
 
 ---
 
 ## Development
 
-**Engine (repository root)**
+**Engine (repo root)**
 
 ```bash
 npm install
@@ -225,21 +176,18 @@ npm run typecheck      # tsc --noEmit
 cd dashboard
 npm install
 npm test -- --run
-npm run dev            # Vite dev server
+npm run dev
 ```
 
-### Autonomous workflow (see `CLAUDE.md`)
+### Deploying the dashboard to Vercel
 
-```bash
-/kickoff   # one-time: decompose SourceOfTruth.md into backlog items
-/dev       # full loop: pick → plan → test → implement → validate → release
-```
+`vercel.json` at the repo root deploys the dashboard. Build runs `npm ci` + `npm run build` in `dashboard/`. Output is `dashboard/dist`. Client-side routing rewrites unknown paths to `index.html`.
 
 ---
 
-## Constraints (SourceOfTruth)
+## Constraints
 
-- **Core engine** — no `document`, `window`, or `navigator`; no `Math.random()`; pure functions; O(n) tree work; invalid input → `unknown`, not guessed values
-- **Adapters** — browser APIs only under `src/adapters/`, dev-only guards, no patching React internals (public Profiler APIs only)
+- **Core engine** — no `document`, `window`, `navigator`; no `Math.random()`; pure functions; O(n) traversal; invalid input → `unknown`
+- **Adapters** — browser APIs only in `src/adapters/`; `NODE_ENV !== 'production'` guard required; no patching React internals
 
-`SourceOfTruth.md` is the immutable product contract for this repo.
+Full governance: `SourceOfTruth.md`.

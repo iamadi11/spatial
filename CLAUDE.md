@@ -2,9 +2,9 @@
 
 ## Project Identity
 
-**Product**: A deterministic dev-time UI performance detection engine that integrates into real React projects with ≤ 3 lines of setup code.
+**Product**: A real-time, dev-only UI performance detector for React. Add `<SpatialProvider>` (3 lines) → open the dashboard → see performance problems live as your app renders. Zero production overhead. Deterministic core engine, lightweight adapters, low memory footprint.
 
-**Governance**: `SourceOfTruth.md` is the IMMUTABLE product governance document. Never modify it. Always comply with it.
+**Governance**: `SourceOfTruth.md` is the product governance document. Always comply with it.
 
 **Reuse**: To adapt this system for a different project, replace `SourceOfTruth.md` and update this "Project Identity" section. Everything else adapts automatically.
 
@@ -165,7 +165,7 @@ dashboard/              ← dev-time visualisation app
 - **Engine calls only in `dashboard/src/lib/`** — never in components directly
 - **No detection logic** — all rules live in `src/rules/`, never in the dashboard
 - **Accessible** — all interactive elements have ARIA labels
-- **No bridge dependency in dashboard UI** — `window.__SPATIAL__` is for engine adapter use only; the dashboard does not read it directly
+- **Bridge access only through lib/** — `window.__SPATIAL__` is read exclusively in `dashboard/src/lib/engine.ts`, never directly in components or pages
 
 ## Dashboard Conventions
 
