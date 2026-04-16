@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [dash-0.15.0] - 2026-04-17
+
+### Changed
+- [D23] Examples page — all 5 sections now use live, interactive analysis. Each demo builds its `ComponentNode` tree and `PerformanceMetrics` from actual React state; the engine re-analyzes on every interaction and the output updates in real-time.
+  - **RerenderSection**: `useRef` render counter drives `renderCount` metric — engine flags `render-count` after 6 button clicks
+  - **WrapperHellSection**: slider (1–12) controls nesting depth — `single-child-chain` fires when depth > 4
+  - **PropExplosionSection**: slider (0–15) controls boolean prop count — `boolean-prop-overload` fires at > 5, `prop-count` fires at > 15 total
+  - **UnvirtualizedListSection**: slider (5–300) controls item count — `child-count` fires at > 20, `unvirtualized-list` fires at > 50
+  - **DeepNestingSection**: slider (1–15) controls tree depth — `nesting-depth` fires when > 10
+- `ExampleSection` no longer accepts static `tree`/`metrics` props — analysis is owned by each demo component
+
 ## [0.20.0] - 2026-04-09
 
 ### Added

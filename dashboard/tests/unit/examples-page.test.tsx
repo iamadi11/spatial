@@ -39,13 +39,17 @@ describe('D17: ExamplesPage', () => {
     expect(screen.getByRole('button', { name: /show deep nesting example/i })).toBeInTheDocument()
   })
 
-  // Edge case 2: bad analysis shows fail, good analysis shows pass for re-renders section
-  it('bad analysis card shows fail and good shows pass in Re-renders section', () => {
+  // Edge case 2: bad analysis shows fail after clicks, good always stays pass
+  it('bad analysis card shows fail after 6 clicks, good stays pass in Re-renders section', () => {
     renderPage()
-    const badCard = screen.getByRole('region', { name: /engine analysis: bad pattern/i })
-    const goodCard = screen.getByRole('region', { name: /engine analysis: good pattern/i })
-    expect(badCard).toHaveTextContent('fail')
+    // Good panel uses renderCount=1 — always pass
+    const goodCard = screen.getByRole('region', { name: /engine analysis: good: with react\.memo/i })
     expect(goodCard).toHaveTextContent('pass')
+    // Bad panel: click 6 times to exceed render-count threshold of 5
+    const badButton = screen.getAllByRole('button', { name: /update parent state/i })[0]
+    for (let i = 0; i < 6; i++) fireEvent.click(badButton)
+    const badCard = screen.getByRole('region', { name: /engine analysis: bad: no memoization/i })
+    expect(badCard).toHaveTextContent('fail')
   })
 
   // Failure case: nav buttons have aria-label attributes
