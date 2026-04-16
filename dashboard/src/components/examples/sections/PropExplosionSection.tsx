@@ -1,46 +1,7 @@
+import { useState } from 'react'
 import type { ComponentNode, PerformanceMetrics } from '../../../lib/engine'
+import { LiveAnalysisCard } from '../LiveAnalysisCard'
 import { ExampleSection } from '../ExampleSection'
-
-// ── Engine trees ──────────────────────────────────────────────────────────────
-
-const BAD_TREE: ComponentNode = {
-  id: 'widget',
-  type: 'Widget',
-  props: {
-    isActive: true,
-    isDisabled: false,
-    isLoading: false,
-    isReadOnly: false,
-    isSelected: true,
-    isVisible: true,
-    isCollapsed: false,
-    isExpanded: true,
-    theme: 'dark',
-    size: 'lg',
-    variant: 'primary',
-    mode: 'edit',
-    label: 'Submit',
-    placeholder: 'Enter value',
-    onSubmit: null,
-    onCancel: null,
-    onChange: null,
-    onFocus: null,
-    onBlur: null,
-    className: 'widget--main',
-  },
-}
-const BAD_METRICS: PerformanceMetrics = { renderCount: 2, layoutShifts: 0, fpsDrop: 0, memoryUsage: 0 }
-
-const GOOD_TREE: ComponentNode = {
-  id: 'submit-button',
-  type: 'SubmitButton',
-  props: {
-    isLoading: false,
-    label: 'Submit',
-    onSubmit: null,
-  },
-}
-const GOOD_METRICS: PerformanceMetrics = { renderCount: 2, layoutShifts: 0, fpsDrop: 0, memoryUsage: 0 }
 
 // ── Code snippets ─────────────────────────────────────────────────────────────
 
@@ -70,78 +31,107 @@ function SubmitButton({ isLoading, label, onSubmit }) {
 // Variants are separate components, not boolean flags
 function EditableField({ value, onChange, placeholder }) {
   return <input value={value} onChange={onChange} placeholder={placeholder} />
-}
-
-// Composition over configuration
-function Widget() {
-  return (
-    <>
-      <EditableField value={value} onChange={onChange} placeholder="Enter value" />
-      <SubmitButton label="Submit" onSubmit={handleSubmit} />
-    </>
-  )
 }`
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+const BOOL_FLAG_NAMES = [
+  'isActive', 'isDisabled', 'isLoading', 'isReadOnly', 'isSelected',
+  'isVisible', 'isCollapsed', 'isExpanded', 'isFocused', 'isHighlighted',
+  'isChecked', 'isRequired', 'isValid', 'isPending', 'isBusy',
+]
+
+function buildWidgetTree(boolCount: number): ComponentNode {
+  const boolProps = Object.fromEntries(
+    BOOL_FLAG_NAMES.slice(0, boolCount).map((name, i) => [name, i % 2 === 0])
+  )
+  return {
+    id: 'Widget',
+    type: 'Widget',
+    props: {
+      ...boolProps,
+      theme: 'dark',
+      size: 'lg',
+      label: 'Submit',
+      onSubmit: null,
+      onChange: null,
+    },
+  }
+}
 
 // ── Demo components ───────────────────────────────────────────────────────────
 
-const BAD_PROPS = [
-  ['isActive', 'true'], ['isDisabled', 'false'], ['isLoading', 'false'],
-  ['isReadOnly', 'false'], ['isSelected', 'true'], ['isVisible', 'true'],
-  ['isCollapsed', 'false'], ['isExpanded', 'true'],
-  ['theme', '"dark"'], ['size', '"lg"'], ['variant', '"primary"'], ['mode', '"edit"'],
-  ['label', '"Submit"'], ['placeholder', '"Enter value"'],
-  ['onSubmit', 'fn'], ['onCancel', 'fn'], ['onChange', 'fn'],
-  ['onFocus', 'fn'], ['onBlur', 'fn'], ['className', '"widget--main"'],
-]
-
-const GOOD_PROPS = [
-  ['isLoading', 'false'],
-  ['label', '"Submit"'],
-  ['onSubmit', 'fn'],
-]
-
-function PropTable({ props, tint }: { props: string[][]; tint: 'red' | 'green' }) {
-  const nameClass = tint === 'red' ? 'text-red-300' : 'text-emerald-300'
-  return (
-    <div className="rounded bg-gray-900 p-3 font-mono text-xs space-y-0.5 max-h-40 overflow-y-auto">
-      {props.map(([k, v]) => (
-        <div key={k} className="flex gap-2">
-          <span className={nameClass}>{k}</span>
-          <span className="text-gray-500">=</span>
-          <span className="text-gray-300">{v}</span>
-        </div>
-      ))}
-    </div>
-  )
-}
-
 function BadDemo() {
+  const [boolCount, setBoolCount] = useState(8)
+
+  const tree = buildWidgetTree(boolCount)
+  const metrics: PerformanceMetrics = { renderCount: 1, layoutShifts: 0, fpsDrop: 0, memoryUsage: 0 }
+  const totalProps = boolCount + 5 // 5 fixed non-boolean props
+
   return (
-    <div className="space-y-2">
-      <p className="text-xs text-gray-500">{BAD_PROPS.length} props on one component:</p>
-      <PropTable props={BAD_PROPS} tint="red" />
-      <div className="flex gap-2 text-xs text-red-400/80">
-        <span>8 boolean flags</span>
-        <span>·</span>
-        <span>4 string variants</span>
-        <span>·</span>
-        <span>5 handlers</span>
+    <div className="space-y-3">
+      <LiveAnalysisCard tree={tree} metrics={metrics} label="Prop-heavy widget" />
+      <div className="space-y-2">
+        <div className="flex items-center gap-3">
+          <label htmlFor="bool-slider" className="text-xs text-gray-400 whitespace-nowrap">
+            Boolean props: <span className="text-gray-200 font-mono">{boolCount}</span>
+            <span className="text-gray-500"> (total: {totalProps})</span>
+          </label>
+          <input
+            id="bool-slider"
+            type="range"
+            min={0}
+            max={15}
+            value={boolCount}
+            onChange={e => setBoolCount(Number(e.target.value))}
+            className="flex-1 accent-indigo-500"
+            aria-label="Boolean props"
+          />
+        </div>
+        <p className="text-xs text-gray-500">
+          boolean-prop-overload fires at &gt; 5 booleans · prop-count fires at total &gt; 15
+        </p>
+      </div>
+      <div className="rounded bg-gray-900 p-3 font-mono text-xs space-y-0.5 max-h-36 overflow-y-auto">
+        {BOOL_FLAG_NAMES.slice(0, boolCount).map((name, i) => (
+          <div key={name} className="flex gap-2">
+            <span className="text-red-300">{name}</span>
+            <span className="text-gray-500">=</span>
+            <span className="text-gray-300">{i % 2 === 0 ? 'true' : 'false'}</span>
+          </div>
+        ))}
+        {(['theme', 'size', 'label', 'onSubmit', 'onChange'] as const).map(name => (
+          <div key={name} className="flex gap-2">
+            <span className="text-gray-400">{name}</span>
+            <span className="text-gray-500">=</span>
+            <span className="text-gray-300">…</span>
+          </div>
+        ))}
       </div>
     </div>
   )
 }
 
+const GOOD_TREE: ComponentNode = {
+  id: 'SubmitButton',
+  type: 'SubmitButton',
+  props: { isLoading: false, label: 'Submit', onSubmit: null },
+}
+const GOOD_METRICS: PerformanceMetrics = { renderCount: 1, layoutShifts: 0, fpsDrop: 0, memoryUsage: 0 }
+
 function GoodDemo() {
   return (
-    <div className="space-y-2">
-      <p className="text-xs text-gray-500">Focused component — {GOOD_PROPS.length} props:</p>
-      <PropTable props={GOOD_PROPS} tint="green" />
-      <div className="flex gap-2 text-xs text-emerald-400/80">
-        <span>1 boolean</span>
-        <span>·</span>
-        <span>1 label</span>
-        <span>·</span>
-        <span>1 handler</span>
+    <div className="space-y-3">
+      <LiveAnalysisCard tree={GOOD_TREE} metrics={GOOD_METRICS} label="Focused component" />
+      <p className="text-xs text-gray-500">3 focused props — one responsibility per component</p>
+      <div className="rounded bg-gray-900 p-3 font-mono text-xs space-y-0.5">
+        {[['isLoading', 'false'], ['label', '"Submit"'], ['onSubmit', 'fn']].map(([k, v]) => (
+          <div key={k} className="flex gap-2">
+            <span className="text-emerald-300">{k}</span>
+            <span className="text-gray-500">=</span>
+            <span className="text-gray-300">{v}</span>
+          </div>
+        ))}
       </div>
     </div>
   )
@@ -153,10 +143,10 @@ export function PropExplosionSection() {
   return (
     <ExampleSection
       title="Prop Explosion"
-      description="Components that accept too many props — especially many boolean flags — are trying to do too much. They're hard to test, hard to read, and every prop adds diffing cost on re-render. Split them into focused components and use composition instead of configuration."
+      description="Components with too many boolean flags are trying to do too much. Drag the slider to add boolean props — the engine flags boolean-prop-overload above 5 and prop-count above 15 total props."
       ruleNames={['prop-count', 'boolean-prop-overload']}
-      bad={{ code: BAD_CODE, tree: BAD_TREE, metrics: BAD_METRICS, demo: <BadDemo /> }}
-      good={{ code: GOOD_CODE, tree: GOOD_TREE, metrics: GOOD_METRICS, demo: <GoodDemo /> }}
+      bad={{ code: BAD_CODE, demo: <BadDemo /> }}
+      good={{ code: GOOD_CODE, demo: <GoodDemo /> }}
     />
   )
 }

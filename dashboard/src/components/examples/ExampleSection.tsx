@@ -1,12 +1,8 @@
 import type { ReactNode } from 'react'
-import type { ComponentNode, PerformanceMetrics } from '../../lib/engine'
 import { CodeBlock } from './CodeBlock'
-import { LiveAnalysisCard } from './LiveAnalysisCard'
 
 type Side = {
   code: string
-  tree: ComponentNode
-  metrics: PerformanceMetrics
   demo: ReactNode
 }
 
@@ -47,7 +43,6 @@ export function ExampleSection({ title, description, ruleNames, bad, good }: Pro
               {bad.demo}
             </div>
             <CodeBlock code={bad.code} label="Code" />
-            <LiveAnalysisCard tree={bad.tree} metrics={bad.metrics} label="bad pattern" />
           </div>
         </div>
 
@@ -62,7 +57,6 @@ export function ExampleSection({ title, description, ruleNames, bad, good }: Pro
               {good.demo}
             </div>
             <CodeBlock code={good.code} label="Code" />
-            <LiveAnalysisCard tree={good.tree} metrics={good.metrics} label="good pattern" />
           </div>
         </div>
       </div>
