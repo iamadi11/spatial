@@ -3,7 +3,7 @@ id: "D27"
 title: "Live session health score — pass-ratio meter on /live"
 type: feature
 priority: 4
-status: ready
+status: active
 created: 2026-04-17
 sot-section: "Section 16.6"
 depends-on: "D25"
@@ -33,3 +33,44 @@ depends-on: "D25"
 - Empty snapshots → component renders nothing (or a neutral placeholder)
 - Component has accessible labels
 - All existing tests pass
+
+## QA Test Plan
+
+**Happy path**:
+1. All snapshots pass → renders "100%", emerald color
+2. All snapshots fail → renders "0%", red color
+3. Mixed 2/4 → renders "50%", yellow color
+
+**Edge cases**:
+1. Empty snapshots → null render (no region element in DOM)
+2. Single passing snapshot → renders "100%"
+3. 9/10 pass (90%) → green styling, "90%" label
+4. All-unknown → 0% pass, red styling, "0%" label
+
+**Failure case**:
+1. Single passing snapshot → "100%"
+
+**Unknown case**: N/A (pure computation, no unknown state)
+
+## Implementation Plan
+
+1. `dashboard/src/components/LiveHealthScore.tsx` — pure component
+   - `getScoreColor(pct)` → `{ bar, label }` Tailwind classes
+   - `passCount` = filter `status === 'pass'`
+   - `pct` = `Math.round(passCount / total * 100)`
+   - Progress bar with `aria-label`, percentage `<span>` with accessible label
+   - Returns `null` when `snapshots.length === 0`
+2. `dashboard/src/pages/LivePage.tsx` — added `<LiveHealthScore>` above `<LiveSessionStats>`
+
+## Validation Report
+
+Date: 2026-04-17
+
+| Gate | Status | Notes |
+|------|--------|-------|
+| PM Validation | PASS | Problem, scope, non-goals, done-when all defined |
+| QA Validation | PASS | 7 tests: 3 happy, 4 edge/failure — all pass |
+| Dev Validation | PASS | Pure component, no any, no engine calls in component |
+| Test Coverage | PASS | 207/207 tests pass |
+
+Overall: PASS

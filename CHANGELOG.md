@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [dash-0.22.0] - 2026-04-17
+
+### Added
+- [D27] `LiveHealthScore` component — color-coded pass-ratio meter displayed above `LiveSessionStats` on `/live`. Computes `passCount / total * 100`, rounded to the nearest integer. Green (≥ 80%), yellow (50–79%), red (< 50%). Includes an accessible progress bar (`role="progressbar"`) and `aria-label`. Returns `null` when the snapshot ring buffer is empty. Pure component, no state.
+
 ## [0.26.0] - 2026-04-17
 
 ### Added
