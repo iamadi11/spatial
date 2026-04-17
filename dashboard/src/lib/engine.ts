@@ -26,6 +26,9 @@ import { createSingleChildChainRule } from '@engine/rules/single-child-chain'
 import { createMemoCandidateRule } from '@engine/rules/memo-candidate'
 import { createMultiTypeSiblingFanoutRule } from '@engine/rules/multi-type-sibling-fanout'
 import { createClassnameTokenSprawlRule } from '@engine/rules/classname-token-sprawl'
+import { createPropDrillingDepthRule } from '@engine/rules/prop-drilling-depth'
+import { createMissingKeyPropRule } from '@engine/rules/missing-key-prop'
+import { createFragmentSingleChildRule } from '@engine/rules/fragment-single-child'
 
 // Re-export engine types for components to use
 export type { ComponentNode, PerformanceResult, PerformanceIssue, PerformanceMetrics } from '@engine/types'
@@ -75,6 +78,8 @@ export type RuleOptions = {
   classnameTokenSprawlMaxTokens?: number
   /** Max trimmed character length of `className` before classname-token-sprawl triggers (default 400). */
   classnameTokenSprawlMaxLength?: number
+  /** Max consecutive levels a prop key may be drilled before prop-drilling-depth fires (default 3). */
+  propDrillingDepthThreshold?: number
 }
 
 const RULE_CATALOG: RuleMetadata[] = [
@@ -200,6 +205,24 @@ const RULE_CATALOG: RuleMetadata[] = [
     severity: 'warning',
     defaultThreshold: 10,
   },
+  {
+    name: 'prop-drilling-depth',
+    description: 'Flags props drilled through more than N consecutive component levels — signals tight coupling that should use context or co-location.',
+    severity: 'warning',
+    defaultThreshold: 3,
+  },
+  {
+    name: 'missing-key-prop',
+    description: 'Flags parent nodes with 2+ same-type children that all lack key props — causes unnecessary reconciliation on list updates.',
+    severity: 'warning',
+    defaultThreshold: 0,
+  },
+  {
+    name: 'fragment-single-child',
+    description: 'Flags Fragment nodes wrapping exactly one child — the Fragment adds a reconciliation node without grouping benefit.',
+    severity: 'warning',
+    defaultThreshold: 0,
+  },
 ]
 
 /**
@@ -242,6 +265,8 @@ export function runAnalysis(
   registry.register(createAnonymousComponentRule())
   registry.register(createBooleanPropOverloadRule())
   registry.register(createMemoCandidateRule())
+  registry.register(createMissingKeyPropRule())
+  registry.register(createFragmentSingleChildRule())
   registry.register(
     createMultiTypeSiblingFanoutRule({
       minDirectChildren: options.multiTypeSiblingFanoutMinChildren,
@@ -264,6 +289,9 @@ export function runAnalysis(
 
   const singleChildChainIssue = createSingleChildChainRule().check(root)
   if (singleChildChainIssue !== null) treeIssues.push(singleChildChainIssue)
+
+  const propDrillingIssue = createPropDrillingDepthRule(options.propDrillingDepthThreshold).check(root)
+  if (propDrillingIssue !== null) treeIssues.push(propDrillingIssue)
 
   if (treeIssues.length === 0) return baseResult
 

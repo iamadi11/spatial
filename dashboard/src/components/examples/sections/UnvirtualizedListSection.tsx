@@ -62,7 +62,7 @@ function BadDemo() {
     children: Array.from({ length: count }, (_, i) => ({
       id: `product-${i}`,
       type: 'ProductItem',
-      props: { name: `Product ${i + 1}` },
+      props: { name: `Product ${i + 1}`, key: `product-${i}` },
     })),
   }
   const metrics: PerformanceMetrics = { renderCount: 1, layoutShifts: 0, fpsDrop: 0, memoryUsage: 0 }
@@ -111,7 +111,7 @@ const GOOD_TREE: ComponentNode = {
   children: Array.from({ length: 10 }, (_, i) => ({
     id: `product-${i}`,
     type: 'ProductItem',
-    props: { name: `Product ${i + 1}` },
+    props: { name: `Product ${i + 1}`, key: `product-${i}` },
   })),
 }
 const GOOD_METRICS: PerformanceMetrics = { renderCount: 1, layoutShifts: 0, fpsDrop: 0, memoryUsage: 0 }

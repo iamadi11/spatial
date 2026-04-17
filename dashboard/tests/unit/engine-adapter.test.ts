@@ -15,9 +15,9 @@ const baseMetrics: PerformanceMetrics = {
 
 describe('D02: getRuleCatalog', () => {
   // Happy path 1: returns all registered rules
-  it('returns exactly 20 rules', () => {
+  it('returns exactly 23 rules', () => {
     const catalog = getRuleCatalog()
-    expect(catalog).toHaveLength(20)
+    expect(catalog).toHaveLength(23)
   })
 
   // Happy path 2: each rule has required metadata fields
