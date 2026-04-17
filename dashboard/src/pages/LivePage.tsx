@@ -9,6 +9,7 @@
 import { useState, useEffect, useRef } from 'react'
 import type { PerformanceResult } from '../lib/engine'
 import { IssueHistoryTimeline } from '../components/IssueHistoryTimeline'
+import { IssueGroupedList } from '../components/IssueGroupedList'
 import type { Snapshot } from '../components/IssueHistoryTimeline'
 
 const POLL_INTERVAL_MS = 500
@@ -96,6 +97,16 @@ export function LivePage() {
             </p>
           </div>
         </div>
+      )}
+
+      {/* Current issues grouped by rule */}
+      {latest && latest.result.issues.length > 0 && (
+        <section aria-label="Current issues by rule" role="region">
+          <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">
+            Current issues
+          </h2>
+          <IssueGroupedList issues={latest.result.issues} />
+        </section>
       )}
 
       {/* History timeline */}
