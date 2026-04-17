@@ -7,8 +7,10 @@ import { DeepNestingSection } from '../components/examples/sections/DeepNestingS
 import { PropDrillingSection } from '../components/examples/sections/PropDrillingSection'
 import { MissingKeySection } from '../components/examples/sections/MissingKeySection'
 import { FragmentSection } from '../components/examples/sections/FragmentSection'
+import { ContextInstabilitySection } from '../components/examples/sections/ContextInstabilitySection'
+import { RecursiveComponentSection } from '../components/examples/sections/RecursiveComponentSection'
 
-type SectionId = 'rerender' | 'wrapper' | 'props' | 'list' | 'nesting' | 'drilling' | 'missing-key' | 'fragment'
+type SectionId = 'rerender' | 'wrapper' | 'props' | 'list' | 'nesting' | 'drilling' | 'missing-key' | 'fragment' | 'context' | 'recursive'
 
 type Section = {
   id: SectionId
@@ -26,6 +28,8 @@ const SECTIONS: Section[] = [
   { id: 'drilling', label: 'Prop Drilling', emoji: '🪝', component: <PropDrillingSection /> },
   { id: 'missing-key', label: 'Missing Key Props', emoji: '🗝️', component: <MissingKeySection /> },
   { id: 'fragment', label: 'Unnecessary Fragment', emoji: '🔲', component: <FragmentSection /> },
+  { id: 'context', label: 'Context Value Instability', emoji: '⚡', component: <ContextInstabilitySection /> },
+  { id: 'recursive', label: 'Recursive Component', emoji: '🔄', component: <RecursiveComponentSection /> },
 ]
 
 export function ExamplesPage() {

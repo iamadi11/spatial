@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [dash-0.21.0] - 2026-04-17
+
+### Added
+- [D26] `ContextInstabilitySection` — interactive bad/good demo for `context-value-instability` rule. Bad pattern: Provider with object value (new reference every render). Good pattern: Provider with stable string primitive.
+- [D26] `RecursiveComponentSection` — interactive bad/good demo for `recursive-component` rule. Bad pattern: `TreeNode` rendering inside another `TreeNode`. Good pattern: unique types per level (`TreeRoot → TreeBranch → TreeLeaf`).
+- Both sections wired into ExamplesPage nav with accessible aria-labels. `context-value-instability` (node-level) and `recursive-component` (tree-level) registered in `runAnalysis`.
+
 ## [0.25.0] - 2026-04-17
 
 ### Added
