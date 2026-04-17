@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.23.0] - 2026-04-17
+
+### Added
+- [037] `fragment-single-child` rule — flags React Fragment nodes (`Fragment` or `React.Fragment`) that wrap exactly 1 child. A single-child Fragment adds a reconciliation node without grouping anything. Empty Fragments (0 children) and valid multi-child Fragments (2+) are not flagged. O(1) per node. Pure function, no DOM.
+
 ## [0.22.0] - 2026-04-17
 
 ### Added
