@@ -27,3 +27,34 @@ depends-on: "005, 006"
 - Rule detects prop drilling when same key appears at 4+ consecutive levels
 - Rule returns null when no key exceeds the threshold
 - Unit tests cover happy path, edge cases, failure, unknown
+
+## QA Test Plan
+
+**Happy path**:
+1. Returns null when same prop at exactly 3 consecutive levels (= threshold, not exceeded)
+2. Returns null when nodes have no props
+
+**Edge cases**:
+1. Returns issue when prop drills through 4 consecutive levels (> threshold 3)
+2. Returns null when prop appears non-consecutively (gap resets chain)
+3. Different props at each level — no single prop drills — returns null
+
+**Failure cases**:
+1. Issue nodeId points to node where drilling was first detected
+
+**Unknown/deterministic**:
+1. Returns null for empty root (no props, no children)
+2. Custom threshold respected — depth 3 fires at threshold 2
+
+## Validation Report
+
+Date: 2026-04-17
+
+| Gate | Status | Notes |
+|------|--------|-------|
+| PM Validation | PASS | Problem, scope, non-goals, done-when present |
+| QA Validation | PASS | 8 tests: happy/edge/failure/unknown |
+| Dev Gate | PASS | Pure function, no DOM, no randomness, O(n) DFS |
+| Test Coverage | PASS | 34 engine test files, 283 tests all passing; tsc --noEmit clean |
+
+Overall: PASS
