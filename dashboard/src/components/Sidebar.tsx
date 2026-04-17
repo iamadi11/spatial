@@ -4,6 +4,7 @@ const ENGINE_VERSION = '0.20.0'
 
 const NAV_LINKS: { to: string; label: string; end?: boolean }[] = [
   { to: '/', label: 'Home', end: true },
+  { to: '/live', label: 'Live' },
   { to: '/rules', label: 'Rules' },
   { to: '/examples', label: 'Examples' },
 ]

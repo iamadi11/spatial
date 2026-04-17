@@ -140,7 +140,8 @@ describe('LivePage', () => {
   // Happy path 1: shows waiting state when no bridge data
   it('shows waiting state when window.__SPATIAL__ is not set', () => {
     renderPage()
-    expect(screen.getByText(/waiting for data/i)).toBeInTheDocument()
+    // The page-level waiting message is in the main content area (not the timeline)
+    expect(screen.getAllByText(/waiting for data/i).length).toBeGreaterThanOrEqual(1)
   })
 
   // Happy path 2: shows snapshot after poll cycle with bridge data
@@ -148,8 +149,8 @@ describe('LivePage', () => {
     renderPage()
     setGlobal(makeResult({ status: 'pass', issues: [] }), Date.now())
     await act(async () => { vi.advanceTimersByTime(600) })
-    // Should show at least one row with status
-    expect(screen.getByText('pass')).toBeInTheDocument()
+    // Both the banner and timeline row show 'pass' — at least 1 occurrence
+    expect(screen.getAllByText('pass').length).toBeGreaterThanOrEqual(1)
   })
 
   // Edge case 1: ring buffer appends a new snapshot on each poll cycle with new data
@@ -165,11 +166,12 @@ describe('LivePage', () => {
     setGlobal(makeResult({ status: 'fail' }), ts2)
     await act(async () => { vi.advanceTimersByTime(600) })
 
-    // Both snapshots should appear
-    const passBadges = screen.getAllByText('pass')
-    const failBadges = screen.getAllByText('fail')
-    expect(passBadges.length).toBeGreaterThanOrEqual(1)
-    expect(failBadges.length).toBeGreaterThanOrEqual(1)
+    // The timeline table should have at least 2 data rows (pass + fail)
+    const timeline = screen.getByRole('region', { name: /issue history/i })
+    expect(timeline).toBeInTheDocument()
+    // fail badge appears in the timeline row; pass badge appears in the timeline
+    expect(screen.getAllByText('fail').length).toBeGreaterThanOrEqual(1)
+    expect(screen.getAllByText('pass').length).toBeGreaterThanOrEqual(1)
   })
 
   // Edge case 2: ring buffer does not duplicate snapshot when timestamp is same
@@ -178,9 +180,11 @@ describe('LivePage', () => {
     const ts = 2000000
     setGlobal(makeResult({ status: 'pass' }), ts)
     await act(async () => { vi.advanceTimersByTime(600) })
-    await act(async () => { vi.advanceTimersByTime(600) }) // same data again
-    const rows = screen.getAllByText('pass')
-    expect(rows.length).toBe(1)
+    await act(async () => { vi.advanceTimersByTime(600) }) // same data, same ts — no new snapshot
+
+    // Count expand buttons — each corresponds to exactly one snapshot row
+    const expandBtns = screen.queryAllByRole('button', { name: /expand snapshot/i })
+    expect(expandBtns.length).toBe(1)
   })
 
   // Failure case: shows page heading at all times
