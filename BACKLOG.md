@@ -71,5 +71,5 @@ Unified backlog for the **spatial engine** (numeric IDs) and the **dashboard** (
 | D19 | Home landing page at / (Spatial overview + links to Rules and Examples) | feature | 4        | done   | Section 16.3, 16.6 | D01, D06           |
 | D20 | Live issue history timeline (ring buffer of last N results on /live)    | feature | 2        | done   | Section 16.6       | D07, D14           |
 | D21 | Issue grouping by rule on /live (collapse flat list into rule groups)   | feature | 3        | done   | Section 16.6       | D07                |
-| D22 | Dark mode toggle (system preference + manual override)                  | feature | 4        | ready  | Section 16.6       | D06                |
+| D22 | Dark mode toggle (system preference + manual override)                  | feature | 4        | done   | Section 16.6       | D06                |
 | D23 | Live interactive examples — engine analyzes real demo state             | feature | 1        | done   | Section 16.3, 16.6 | D17                |
