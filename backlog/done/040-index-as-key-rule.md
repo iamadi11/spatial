@@ -31,3 +31,34 @@ depends-on: "005, 006"
 - Rule returns `triggered: false` when children are missing keys (not this rule's concern)
 - Rule returns `triggered: false` for single-child or different-type sibling groups
 - Tests cover happy/edge/failure/unknown
+
+## QA Test Plan
+
+**Happy path 1**: Same-type children with keys "0","1","2" → fires, rule=`index-as-key`.
+**Happy path 2**: Non-consecutive numeric keys ("0","5","10") → fires.
+**Edge case 1**: Stable string ID keys ("user-1","user-2") → does not fire.
+**Edge case 2**: Children without key props at all → does not fire (missing-key-prop handles this).
+**Edge case 3**: Different types with numeric keys → does not fire (groups independently).
+**Edge case 4**: Single child of a type → does not fire (group < 2).
+**Edge case 5**: Mixed keys (some numeric, some not) in same group → does not fire.
+**Failure case**: No children → does not fire.
+**Failure case 2**: Negative integer strings ("-1","-2") → does not fire.
+
+## Implementation Plan
+
+- `isNonNegativeIntegerString(value)`: regex `^\d+$` check — only digit strings pass
+- `detect(node, _metrics)`: group children by type → for each group ≥ 2 where all have `props.key` → check all keys are non-negative integer strings → fire
+- O(n) over children per node, O(1) per child key check. Pure function, no DOM.
+
+## Validation Report
+
+Date: 2026-04-17
+
+| Gate | Status | Notes |
+|------|--------|-------|
+| PM Validation | PASS | Problem, scope, non-goals, done-when present |
+| QA Gate | PASS | 9 tests: 2 happy, 5 edge, 2 failure |
+| Dev Gate | PASS | Pure function, no DOM, no randomness, O(n) |
+| Test Gate | PASS | 326 engine tests pass |
+
+Overall: PASS
