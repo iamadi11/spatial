@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.25.0] - 2026-04-17
+
+### Added
+- [039] `recursive-component` rule — flags the first node in the tree whose PascalCase `type` already appears in its ancestor chain, indicating a component rendering within an instance of itself. Lowercase DOM element types (`div`, `span`, etc.) are ignored. Uses DFS with a backtracking `Set<string>` of ancestor types. O(n). Pure function, no DOM.
+
 ## [dash-0.20.0] - 2026-04-17
 
 ### Added
