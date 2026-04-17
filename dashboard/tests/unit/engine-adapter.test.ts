@@ -17,7 +17,7 @@ describe('D02: getRuleCatalog', () => {
   // Happy path 1: returns all registered rules
   it('returns exactly 25 rules', () => {
     const catalog = getRuleCatalog()
-    expect(catalog).toHaveLength(25)
+    expect(catalog).toHaveLength(27)
   })
 
   // Happy path 2: each rule has required metadata fields

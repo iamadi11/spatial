@@ -31,6 +31,8 @@ import { createMissingKeyPropRule } from '@engine/rules/missing-key-prop'
 import { createFragmentSingleChildRule } from '@engine/rules/fragment-single-child'
 import { createContextValueInstabilityRule } from '@engine/rules/context-value-instability'
 import { createRecursiveComponentRule } from '@engine/rules/recursive-component'
+import { createIndexAsKeyRule } from '@engine/rules/index-as-key'
+import { createRenderPropOverloadRule } from '@engine/rules/render-prop-overload'
 
 // Re-export engine types for components to use
 export type { ComponentNode, PerformanceResult, PerformanceIssue, PerformanceMetrics } from '@engine/types'
@@ -237,6 +239,18 @@ const RULE_CATALOG: RuleMetadata[] = [
     severity: 'warning',
     defaultThreshold: 0,
   },
+  {
+    name: 'index-as-key',
+    description: 'Flags same-type sibling groups where all children have numeric string key props — the signature of key={index}. Index keys cause React to incorrectly reuse components on list reorder.',
+    severity: 'warning',
+    defaultThreshold: 0,
+  },
+  {
+    name: 'render-prop-overload',
+    description: 'Flags components with more than 3 non-event-handler function props — too many render props indicate responsibility creep and defeat memoization.',
+    severity: 'warning',
+    defaultThreshold: 3,
+  },
 ]
 
 /**
@@ -282,6 +296,8 @@ export function runAnalysis(
   registry.register(createMissingKeyPropRule())
   registry.register(createFragmentSingleChildRule())
   registry.register(createContextValueInstabilityRule())
+  registry.register(createIndexAsKeyRule())
+  registry.register(createRenderPropOverloadRule())
   registry.register(
     createMultiTypeSiblingFanoutRule({
       minDirectChildren: options.multiTypeSiblingFanoutMinChildren,
