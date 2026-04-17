@@ -45,6 +45,8 @@ Unified backlog for the **spatial engine** (numeric IDs) and the **dashboard** (
 | 035 | Prop drilling depth detection rule (flag deep prop propagation)         | rule | 3        | done   | Section 12, 7          | 005, 006          |
 | 036 | Missing key prop detection rule (flag unkeyed list siblings)            | rule | 3        | done   | Section 12, 7          | 005, 006          |
 | 037 | Fragment single-child detection rule (flag unnecessary wrappers)        | rule | 4        | done   | Section 12, 7          | 005, 006          |
+| 038 | Context value instability detection rule (flag non-primitive Provider values) | rule | 3   | ready  | Section 12, 7          | 005, 006          |
+| 039 | Recursive component detection rule (flag type in own ancestor chain)    | rule | 4        | ready  | Section 12, 7          | 003, 005, 006     |
 
 ## Dashboard Items
 
@@ -73,3 +75,5 @@ Unified backlog for the **spatial engine** (numeric IDs) and the **dashboard** (
 | D21 | Issue grouping by rule on /live (collapse flat list into rule groups)   | feature | 3        | done   | Section 16.6       | D07                |
 | D22 | Dark mode toggle (system preference + manual override)                  | feature | 4        | done   | Section 16.6       | D06                |
 | D23 | Live interactive examples — engine analyzes real demo state             | feature | 1        | done   | Section 16.3, 16.6 | D17                |
+| D24 | Interactive examples for prop-drilling, missing-key, and fragment rules | feature | 2        | ready  | Section 16.6       | D23                |
+| D25 | Live session stats panel — pass/fail ratio and top firing rules on /live | feature | 3       | ready  | Section 16.6       | D20, D21           |
