@@ -47,6 +47,8 @@ Unified backlog for the **spatial engine** (numeric IDs) and the **dashboard** (
 | 037 | Fragment single-child detection rule (flag unnecessary wrappers)        | rule | 4        | done   | Section 12, 7          | 005, 006          |
 | 038 | Context value instability detection rule (flag non-primitive Provider values) | rule | 3   | done   | Section 12, 7          | 005, 006          |
 | 039 | Recursive component detection rule (flag type in own ancestor chain)    | rule | 4        | done   | Section 12, 7          | 003, 005, 006     |
+| 040 | Index-as-key detection rule (flag numeric index keys in sibling groups)  | rule | 3        | ready  | Section 12, 7          | 005, 006          |
+| 041 | Render-prop overload detection rule (too many non-event function props)   | rule | 4        | ready  | Section 12, 7          | 005, 006          |
 
 ## Dashboard Items
 
@@ -77,3 +79,5 @@ Unified backlog for the **spatial engine** (numeric IDs) and the **dashboard** (
 | D23 | Live interactive examples — engine analyzes real demo state             | feature | 1        | done   | Section 16.3, 16.6 | D17                |
 | D24 | Interactive examples for prop-drilling, missing-key, and fragment rules | feature | 2        | done   | Section 16.6       | D23                |
 | D25 | Live session stats panel — pass/fail ratio and top firing rules on /live | feature | 3       | done   | Section 16.6       | D20, D21           |
+| D26 | Interactive examples for context-value-instability and recursive-component rules | feature | 2 | ready  | Section 16.6       | D24                |
+| D27 | Live session health score — pass-ratio meter on /live                     | feature | 4       | ready  | Section 16.6       | D25                |
