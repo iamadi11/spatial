@@ -11,6 +11,7 @@ import type { PerformanceResult } from '../lib/engine'
 import { IssueHistoryTimeline } from '../components/IssueHistoryTimeline'
 import { IssueGroupedList } from '../components/IssueGroupedList'
 import { LiveSessionStats } from '../components/LiveSessionStats'
+import { LiveHealthScore } from '../components/LiveHealthScore'
 import type { Snapshot } from '../components/IssueHistoryTimeline'
 
 const POLL_INTERVAL_MS = 500
@@ -109,6 +110,9 @@ export function LivePage() {
           <IssueGroupedList issues={latest.result.issues} />
         </section>
       )}
+
+      {/* Health score */}
+      <LiveHealthScore snapshots={snapshots} />
 
       {/* Session stats */}
       <LiveSessionStats snapshots={snapshots} />
