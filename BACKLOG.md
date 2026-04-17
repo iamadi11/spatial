@@ -76,4 +76,4 @@ Unified backlog for the **spatial engine** (numeric IDs) and the **dashboard** (
 | D22 | Dark mode toggle (system preference + manual override)                  | feature | 4        | done   | Section 16.6       | D06                |
 | D23 | Live interactive examples — engine analyzes real demo state             | feature | 1        | done   | Section 16.3, 16.6 | D17                |
 | D24 | Interactive examples for prop-drilling, missing-key, and fragment rules | feature | 2        | done   | Section 16.6       | D23                |
-| D25 | Live session stats panel — pass/fail ratio and top firing rules on /live | feature | 3       | ready  | Section 16.6       | D20, D21           |
+| D25 | Live session stats panel — pass/fail ratio and top firing rules on /live | feature | 3       | done   | Section 16.6       | D20, D21           |
