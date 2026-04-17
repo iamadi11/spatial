@@ -42,7 +42,7 @@ Unified backlog for the **spatial engine** (numeric IDs) and the **dashboard** (
 | 032 | Single-child chain detection rule (wrapper-hell trees)              | rule    | 4        | done   | Section 4.2.2, 7, 11  | 003, 005, 006     |
 | 033 | Multi-type sibling fan-out detection rule (kitchen-sink parent renders) | rule | 4        | done   | Section 4.2.2, 7, 12  | 005, 006          |
 | 034 | className token sprawl detection rule (oversized utility-class strings) | rule | 4        | done   | Section 4.2.2, 7, 12  | 005, 006          |
-| 035 | Prop drilling depth detection rule (flag deep prop propagation)         | rule | 3        | ready  | Section 12, 7          | 005, 006          |
+| 035 | Prop drilling depth detection rule (flag deep prop propagation)         | rule | 3        | done   | Section 12, 7          | 005, 006          |
 | 036 | Missing key prop detection rule (flag unkeyed list siblings)            | rule | 3        | ready  | Section 12, 7          | 005, 006          |
 | 037 | Fragment single-child detection rule (flag unnecessary wrappers)        | rule | 4        | ready  | Section 12, 7          | 005, 006          |
 

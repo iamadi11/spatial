@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.21.0] - 2026-04-17
+
+### Added
+- [035] `prop-drilling-depth` rule — flags when the same prop key propagates through more than N consecutive ancestor-descendant component levels (default threshold: 3, fires at depth > 3). A gap in prop presence resets the consecutive count. Returns one issue pointing to the node where the threshold was first crossed. O(n) DFS — pure function, no DOM.
+
 ## [dash-0.17.0] - 2026-04-17
 
 ### Added

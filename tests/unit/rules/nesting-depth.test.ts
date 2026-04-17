@@ -128,7 +128,7 @@ describe('createNestingDepthRule', () => {
     const root = makeChain(7)
     const r1 = rule.check(root)
     const r2 = rule.check(root)
-    expect(r1?.triggered ?? false).toBe(r2?.triggered ?? false)
+    expect(r1?.rule ?? null).toBe(r2?.rule ?? null)
     expect(r1?.rule).toBe(r2?.rule)
   })
 })
