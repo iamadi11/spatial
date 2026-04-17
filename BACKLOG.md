@@ -48,7 +48,7 @@ Unified backlog for the **spatial engine** (numeric IDs) and the **dashboard** (
 | 038 | Context value instability detection rule (flag non-primitive Provider values) | rule | 3   | done   | Section 12, 7          | 005, 006          |
 | 039 | Recursive component detection rule (flag type in own ancestor chain)    | rule | 4        | done   | Section 12, 7          | 003, 005, 006     |
 | 040 | Index-as-key detection rule (flag numeric index keys in sibling groups)  | rule | 3        | done   | Section 12, 7          | 005, 006          |
-| 041 | Render-prop overload detection rule (too many non-event function props)   | rule | 4        | ready  | Section 12, 7          | 005, 006          |
+| 041 | Render-prop overload detection rule (too many non-event function props)   | rule | 4        | done   | Section 12, 7          | 005, 006          |
 
 ## Dashboard Items
 

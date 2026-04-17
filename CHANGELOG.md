@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.27.0] - 2026-04-17
+
+### Added
+- [041] `render-prop-overload` rule — flags component nodes with more than 3 non-event-handler function props (props whose keys do not start with `on`). Render props (`renderHeader`, `getLabel`, `formatRow`, etc.) create new references on every parent render, defeating memoization. Event handler props (`onClick`, `onChange`, etc.) are excluded — handled by `event-handler-count`. O(1) per node, pure function, no DOM.
+
 ## [dash-0.22.0] - 2026-04-17
 
 ### Added
