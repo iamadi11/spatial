@@ -4,8 +4,11 @@ import { WrapperHellSection } from '../components/examples/sections/WrapperHellS
 import { PropExplosionSection } from '../components/examples/sections/PropExplosionSection'
 import { UnvirtualizedListSection } from '../components/examples/sections/UnvirtualizedListSection'
 import { DeepNestingSection } from '../components/examples/sections/DeepNestingSection'
+import { PropDrillingSection } from '../components/examples/sections/PropDrillingSection'
+import { MissingKeySection } from '../components/examples/sections/MissingKeySection'
+import { FragmentSection } from '../components/examples/sections/FragmentSection'
 
-type SectionId = 'rerender' | 'wrapper' | 'props' | 'list' | 'nesting'
+type SectionId = 'rerender' | 'wrapper' | 'props' | 'list' | 'nesting' | 'drilling' | 'missing-key' | 'fragment'
 
 type Section = {
   id: SectionId
@@ -20,6 +23,9 @@ const SECTIONS: Section[] = [
   { id: 'props', label: 'Prop Explosion', emoji: '💣', component: <PropExplosionSection /> },
   { id: 'list', label: 'Unvirtualized List', emoji: '📜', component: <UnvirtualizedListSection /> },
   { id: 'nesting', label: 'Deep Nesting', emoji: '🪆', component: <DeepNestingSection /> },
+  { id: 'drilling', label: 'Prop Drilling', emoji: '🪝', component: <PropDrillingSection /> },
+  { id: 'missing-key', label: 'Missing Key Props', emoji: '🗝️', component: <MissingKeySection /> },
+  { id: 'fragment', label: 'Unnecessary Fragment', emoji: '🔲', component: <FragmentSection /> },
 ]
 
 export function ExamplesPage() {

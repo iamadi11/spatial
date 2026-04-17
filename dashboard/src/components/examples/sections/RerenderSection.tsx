@@ -80,7 +80,7 @@ function BadDemo() {
     children: NAMES.map((name, i) => ({
       id: `card-${i}`,
       type: 'UserCard',
-      props: { name },
+      props: { name, key: `card-${i}` },
     })),
   }
   const metrics: PerformanceMetrics = {
@@ -124,7 +124,7 @@ function GoodDemo() {
     children: NAMES.map((name, i) => ({
       id: `card-${i}`,
       type: 'MemoUserCard',
-      props: { name },
+      props: { name, key: `card-${i}` },
     })),
   }
   const metrics: PerformanceMetrics = {
