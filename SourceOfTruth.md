@@ -609,7 +609,13 @@ dashboard/           ← dev-time visualisation app (React 19 consumer)
   src/
     lib/             ← engine adapter + live bridge (only place engine is called)
     components/      ← React display components
+      IssueHistoryTimeline.tsx  ← ring-buffer snapshot table (D20)
+      examples/      ← interactive bad/good pattern components (D23)
     pages/           ← page-level components
+      LivePage.tsx   ← /live — polls window.__SPATIAL__, renders history timeline (D20)
+      ExamplesPage.tsx  ← /examples — 5 live interactive pattern sections (D17/D23)
+      RuleCatalogPage.tsx  ← /rules
+      HomePage.tsx   ← /
   backlog/           ← dashboard work items (ready/active/done)
   tests/             ← vitest + React Testing Library
   package.json       ← dashboard dependencies (React 19, Vite, Tailwind)

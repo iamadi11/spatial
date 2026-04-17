@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [dash-0.16.0] - 2026-04-17
+
+### Added
+- [D20] Live issue history timeline — `/live` page added with a ring buffer (max 50 entries) of `PerformanceResult` snapshots. Polls `window.__SPATIAL__` every 500ms; deduplicates by timestamp; renders as an expandable table showing time, status badge, and issue count per row. Clicking a row expands inline issue detail. Sidebar now links to `/live`.
+
 ## [dash-0.15.0] - 2026-04-17
 
 ### Changed
