@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.26.0] - 2026-04-17
+
+### Added
+- [040] `index-as-key` rule — flags same-type sibling groups where all children have `props.key` set to a non-negative integer string, indicating `key={index}` usage. Index-based keys cause React to incorrectly match elements on list reorder. Complementary to `missing-key-prop` (which handles absent keys). O(n) over children, pure function.
+
 ## [dash-0.21.0] - 2026-04-17
 
 ### Added
