@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [dash-0.20.0] - 2026-04-17
+
+### Added
+- [D25] `LiveSessionStats` component — compact stats panel above the history timeline on `/live`. Shows total snapshot count, pass/fail/unknown breakdown with color-coded badges, and top-3 rules by fire frequency across all snapshots. Pure component (no state), accessible `role="region"` with `aria-label="Session stats"`. Handles empty state gracefully.
+
 ## [0.24.0] - 2026-04-17
 
 ### Added

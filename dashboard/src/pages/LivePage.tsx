@@ -10,6 +10,7 @@ import { useState, useEffect, useRef } from 'react'
 import type { PerformanceResult } from '../lib/engine'
 import { IssueHistoryTimeline } from '../components/IssueHistoryTimeline'
 import { IssueGroupedList } from '../components/IssueGroupedList'
+import { LiveSessionStats } from '../components/LiveSessionStats'
 import type { Snapshot } from '../components/IssueHistoryTimeline'
 
 const POLL_INTERVAL_MS = 500
@@ -108,6 +109,9 @@ export function LivePage() {
           <IssueGroupedList issues={latest.result.issues} />
         </section>
       )}
+
+      {/* Session stats */}
+      <LiveSessionStats snapshots={snapshots} />
 
       {/* History timeline */}
       <section aria-label="Issue history" role="region">
