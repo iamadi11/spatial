@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.22.0] - 2026-04-17
+
+### Added
+- [036] `missing-key-prop` rule — flags parent nodes with 2+ same-type children that ALL lack a `props.key` value. Groups children by `type`; fires for the first group of 2+ members where every member is keyless. One issue per parent node (the first offending group). O(n) per node. Pure function, no DOM.
+
 ## [0.21.0] - 2026-04-17
 
 ### Added
