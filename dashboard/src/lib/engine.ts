@@ -29,6 +29,8 @@ import { createClassnameTokenSprawlRule } from '@engine/rules/classname-token-sp
 import { createPropDrillingDepthRule } from '@engine/rules/prop-drilling-depth'
 import { createMissingKeyPropRule } from '@engine/rules/missing-key-prop'
 import { createFragmentSingleChildRule } from '@engine/rules/fragment-single-child'
+import { createContextValueInstabilityRule } from '@engine/rules/context-value-instability'
+import { createRecursiveComponentRule } from '@engine/rules/recursive-component'
 
 // Re-export engine types for components to use
 export type { ComponentNode, PerformanceResult, PerformanceIssue, PerformanceMetrics } from '@engine/types'
@@ -223,6 +225,18 @@ const RULE_CATALOG: RuleMetadata[] = [
     severity: 'warning',
     defaultThreshold: 0,
   },
+  {
+    name: 'context-value-instability',
+    description: 'Flags Context.Provider nodes passing a non-primitive value — objects, arrays, and functions create new references on every render, causing all consumers to re-render.',
+    severity: 'warning',
+    defaultThreshold: 0,
+  },
+  {
+    name: 'recursive-component',
+    description: 'Flags the first component whose PascalCase type already appears in its ancestor chain — recursive rendering increases reconciliation cost and risks infinite loops.',
+    severity: 'warning',
+    defaultThreshold: 0,
+  },
 ]
 
 /**
@@ -267,6 +281,7 @@ export function runAnalysis(
   registry.register(createMemoCandidateRule())
   registry.register(createMissingKeyPropRule())
   registry.register(createFragmentSingleChildRule())
+  registry.register(createContextValueInstabilityRule())
   registry.register(
     createMultiTypeSiblingFanoutRule({
       minDirectChildren: options.multiTypeSiblingFanoutMinChildren,
@@ -292,6 +307,9 @@ export function runAnalysis(
 
   const propDrillingIssue = createPropDrillingDepthRule(options.propDrillingDepthThreshold).check(root)
   if (propDrillingIssue !== null) treeIssues.push(propDrillingIssue)
+
+  const recursiveIssue = createRecursiveComponentRule().check(root)
+  if (recursiveIssue !== null) treeIssues.push(recursiveIssue)
 
   if (treeIssues.length === 0) return baseResult
 
