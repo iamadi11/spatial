@@ -3,7 +3,7 @@ id: "D22"
 title: "Dark mode toggle (system preference + manual override)"
 type: feature
 priority: 4
-status: ready
+status: active
 created: 2026-04-17
 sot-section: "Section 16.6"
 depends-on: "D06"
@@ -28,3 +28,16 @@ depends-on: "D06"
 - Toggle switches between dark and light classes
 - Preference persisted to localStorage
 - All existing tests pass
+
+## Validation Report
+
+Date: 2026-04-17
+
+| Gate | Status | Notes |
+|------|--------|-------|
+| PM Validation | PASS | Problem, scope, non-goals, done-when present |
+| QA Validation | PASS | 7 tests: 2 happy, 4 edge, 1 failure; aria-label present |
+| Dev Gate | PASS | No `any`; strict TS; browser APIs isolated in component (adapter layer) |
+| Test Coverage | PASS | 17 test files, 167 tests all passing; tsc --noEmit clean |
+
+Overall: PASS

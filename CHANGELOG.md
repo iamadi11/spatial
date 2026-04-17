@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [dash-0.18.0] - 2026-04-17
+
+### Added
+- [D22] Dark mode toggle — `ThemeToggle` component added to Sidebar. Reads system preference (`prefers-color-scheme: dark`) on mount; localStorage key `spatial-theme` takes priority. Clicking toggles the `dark` class on `document.documentElement` and persists choice to localStorage. Accessible button with `aria-label` and `aria-pressed`.
+
 ## [0.23.0] - 2026-04-17
 
 ### Added

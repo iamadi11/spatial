@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom'
+import { ThemeToggle } from './ThemeToggle'
 
-const ENGINE_VERSION = '0.20.0'
+const ENGINE_VERSION = '0.23.0'
 
 const NAV_LINKS: { to: string; label: string; end?: boolean }[] = [
   { to: '/', label: 'Home', end: true },
@@ -39,8 +40,9 @@ export function Sidebar() {
         ))}
       </ul>
 
-      <div className="px-2 pt-4 border-t border-gray-800">
-        <span className="text-xs text-gray-600">engine v{ENGINE_VERSION}</span>
+      <div className="px-2 pt-4 border-t border-gray-800 space-y-2">
+        <ThemeToggle />
+        <span className="block text-xs text-gray-600 px-2">engine v{ENGINE_VERSION}</span>
       </div>
     </nav>
   )
