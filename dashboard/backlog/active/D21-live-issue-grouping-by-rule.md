@@ -3,7 +3,7 @@ id: "D21"
 title: "Issue grouping by rule on /live (collapse flat list into rule groups)"
 type: feature
 priority: 3
-status: ready
+status: active
 created: 2026-04-17
 sot-section: "Section 16.6"
 depends-on: "D07"
