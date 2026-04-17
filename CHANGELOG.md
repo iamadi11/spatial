@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.24.0] - 2026-04-17
+
+### Added
+- [038] `context-value-instability` rule — flags `*.Provider` nodes whose `value` prop is a non-primitive (object, array, or function). Such values create a new reference on every parent render, causing all context consumers to re-render unnecessarily. Primitives (string, number, boolean, null, undefined) are explicitly allowed and not flagged. O(1) per node. Pure function, no DOM.
+
 ## [dash-0.18.0] - 2026-04-17
 
 ### Added
