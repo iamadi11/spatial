@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [dash-0.17.0] - 2026-04-17
+
+### Added
+- [D21] Issue grouping by rule on /live — `IssueGroupedList` component groups flat `PerformanceIssue[]` by `rule` name into collapsible sections with count badges. Groups start expanded; clicking the header toggles open/closed. Error-severity groups get distinct red styling. Integrated into `/live` as "Current issues" section above the history timeline.
+
 ## [dash-0.16.0] - 2026-04-17
 
 ### Added
