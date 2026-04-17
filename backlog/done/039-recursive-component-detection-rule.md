@@ -30,3 +30,14 @@ depends-on: "003, 005, 006"
 - Rule returns null for trees with no recursive types
 - Rule ignores lowercase (DOM element) types
 - Tests cover happy/edge/failure/unknown
+
+## QA Test Plan
+
+**Happy path 1**: Tree with `TreeNode → TreeNode` (same PascalCase type in child) → fires with `rule: 'recursive-component'`, `nodeId` = inner TreeNode id.
+**Happy path 2**: Tree with `A → B → A` (same type appears 2 levels up) → fires on second `A` node.
+**Edge case 1**: Non-recursive tree `App → Header → Nav` → returns null.
+**Edge case 2**: Lowercase types `div → div → div` → returns null (DOM elements ignored).
+**Edge case 3**: PascalCase type appears as siblings (not ancestor-descendant) → returns null.
+**Edge case 4**: Single root node with no children → returns null.
+**Failure case**: Tree with mixed PascalCase and lowercase where only lowercase repeats → returns null.
+**Unknown case**: Rule is deterministic — always returns `PerformanceIssue | null` (no unknown branch needed).
